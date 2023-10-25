@@ -6,4 +6,4 @@ mix event_store.setup
 chmod a+x _build/prod/rel/soon_ready/bin/soon_ready
 
 # Start server
-_build/prod/rel/soon_ready/bin/soon_ready start_iex
+_build/prod/rel/soon_ready/bin/soon_ready start
