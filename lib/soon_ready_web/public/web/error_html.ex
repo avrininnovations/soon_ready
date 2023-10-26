@@ -1,4 +1,4 @@
-defmodule SoonReadyWeb.ErrorHTML do
+defmodule SoonReadyWeb.Public.Web.ErrorHtml do
   use SoonReadyWeb, :html
 
   # If you want to customize your error pages,
