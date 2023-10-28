@@ -1,9 +1,5 @@
 defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetails do
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
-
-  alias __MODULE__
-  alias SoonReady.Onboarding.DomainConcepts.EmailAddress
-  alias SoonReady.Onboarding.DomainEvents.WaitlistJoined
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   attributes do
     attribute :person_id, :uuid, allow_nil?: false, primary_key?: true
@@ -30,5 +26,10 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetai
     define_for SoonReady.Onboarding.Setup.Api
     define :generate
     define :get
+  end
+
+  postgres do
+    repo SoonReady.Repo
+    table "onboarding__personally_identifiable_information__encryption_details"
   end
 end

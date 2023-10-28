@@ -1,5 +1,5 @@
 defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -31,6 +31,11 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
     define_for SoonReady.Onboarding.Setup.Api
     define :add
     define :get_by_email
+  end
+
+  postgres do
+    repo SoonReady.Repo
+    table "onboarding__read_models__waitlist_members"
   end
 
   def handle(%WaitlistJoined{id: id, email_hash: email_hash}, _metadata) do
