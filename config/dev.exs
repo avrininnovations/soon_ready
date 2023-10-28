@@ -1,8 +1,5 @@
 import Config
 
-# Configure vault encryption
-config :soon_ready, cloak_key: "bpwvj1ymg6QHhliAspHGbmememgqd2kcw1lK0d7ltDs="
-
 # Configure your database
 config :soon_ready, SoonReady.Repo,
   username: "postgres",
