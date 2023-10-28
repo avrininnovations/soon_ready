@@ -1,5 +1,6 @@
 defmodule SoonReady.Onboarding.Commands.Router do
-  use Ash.Resource
+  use Ash.Resource, data_layer: :embedded
+  
   use Commanded.Commands.Router
 
   alias SoonReady.Onboarding.Commands.JoinWaitlist

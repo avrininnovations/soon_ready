@@ -19,7 +19,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
     define :create
   end
 
-  def execute(%{__struct__: __MODULE__, id: id, email: email} = command, aggregate_state) do
+  def execute(%{__struct__: __MODULE__, id: id, email: email} = _command, _aggregate_state) do
     WaitlistJoined.create!(%{id: id, email: email})
   end
 end
