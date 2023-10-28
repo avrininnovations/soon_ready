@@ -11,7 +11,7 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
   alias SoonReady.Onboarding.DomainEvents.WaitlistJoined
 
   attributes do
-    attribute :id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :person_id, :uuid, allow_nil?: false, primary_key?: true
     attribute :email, EmailAddress
   end
 
@@ -38,10 +38,10 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
     table "onboarding__read_models__waitlist_members"
   end
 
-  def handle(%WaitlistJoined{id: id, email_hash: email_hash}, _metadata) do
-    case SoonReady.Vault.decrypt(%{person_id: id, cipher_text: email_hash}) do
+  def handle(%WaitlistJoined{person_id: person_id, email_hash: email_hash}, _metadata) do
+    case SoonReady.Vault.decrypt(%{person_id: person_id, cipher_text: email_hash}) do
       {:ok, email} ->
-        with {:ok, _waitlist_member} <- WaitlistMembers.add(%{id: id, email: email}) do
+        with {:ok, _waitlist_member} <- WaitlistMembers.add(%{person_id: person_id, email: email}) do
           :ok
         end
       :error ->

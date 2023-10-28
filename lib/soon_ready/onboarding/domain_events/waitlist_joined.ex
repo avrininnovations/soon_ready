@@ -6,7 +6,7 @@ defmodule SoonReady.Onboarding.DomainEvents.WaitlistJoined do
   alias SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetails
 
   attributes do
-    attribute :id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :person_id, :uuid, allow_nil?: false, primary_key?: true
     attribute :email_hash, :string
     attribute :event_version, :integer, default: 1
   end
@@ -24,7 +24,7 @@ defmodule SoonReady.Onboarding.DomainEvents.WaitlistJoined do
 
       change fn changeset, _context ->
         Ash.Changeset.before_action(changeset, fn changeset ->
-          person_id = Ash.Changeset.get_attribute(changeset, :id)
+          person_id = Ash.Changeset.get_attribute(changeset, :person_id)
           email = Ash.Changeset.get_argument(changeset, :email)
 
           with {:ok, _encryption_details} <- EncryptionDetails.generate(%{person_id: person_id}),

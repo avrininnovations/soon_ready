@@ -6,7 +6,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
   alias SoonReady.Onboarding.DomainEvents.WaitlistJoined
 
   attributes do
-    uuid_primary_key :id
+    uuid_primary_key :person_id
     attribute :email, EmailAddress, allow_nil?: false
   end
 
@@ -19,7 +19,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
     define :create
   end
 
-  def execute(%{__struct__: __MODULE__, id: id, email: email} = _command, _aggregate_state) do
-    WaitlistJoined.create!(%{id: id, email: email})
+  def execute(%{__struct__: __MODULE__, person_id: person_id, email: email} = _command, _aggregate_state) do
+    WaitlistJoined.create!(%{person_id: person_id, email: email})
   end
 end

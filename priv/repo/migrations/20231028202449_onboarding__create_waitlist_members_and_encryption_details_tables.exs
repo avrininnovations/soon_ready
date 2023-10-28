@@ -9,7 +9,7 @@ defmodule SoonReady.Repo.Migrations.OnboardingCreateWaitlistMembersAndEncryption
 
   def up do
     create table(:onboarding__read_models__waitlist_members, primary_key: false) do
-      add :id, :uuid, null: false, primary_key: true
+      add :person_id, :uuid, null: false, primary_key: true
       add :email, :text
     end
 
