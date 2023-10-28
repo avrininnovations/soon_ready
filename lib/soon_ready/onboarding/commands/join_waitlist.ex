@@ -4,6 +4,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
   alias SoonReady.Onboarding.DomainConcepts.EmailAddress
 
   attributes do
+    uuid_primary_key :id
     attribute :email, EmailAddress, allow_nil?: false
   end
 

@@ -114,27 +114,20 @@ defmodule SoonReadyWeb.Public.Web.HomepageLive do
 
     case AshPhoenix.Form.submit(validated_form) do
       {:ok, join_waitlist_command} ->
-        # case SoonReady.Application.dispatch(join_waitlist_command) do
-        #   :ok ->
-        #     socket =
-        #       socket
-        #       |> put_flash(:info, "Awesome! You've joined other innovators on our waitlist 😎")
-        #       |> redirect(to: ~p"/")
-        #     {:noreply, socket}
-        #   {:error, _error} ->
-        #     socket =
-        #       socket
-        #       |> assign(form: validated_form)
-        #       |> put_flash(:error, "Oops! Some error stopped us from adding you to our waitlist. Please contact our administrators.")
-        #     {:noreply, socket}
-        # end
-
-
-        socket =
-          socket
-          |> put_flash(:info, "Awesome! You've joined other innovators on our waitlist 😎")
-          |> redirect(to: ~p"/")
-        {:noreply, socket}
+        case SoonReady.Application.dispatch(join_waitlist_command) do
+          :ok ->
+            socket =
+              socket
+              |> put_flash(:info, "Awesome! You've joined other innovators on our waitlist 😎")
+              |> redirect(to: ~p"/")
+            {:noreply, socket}
+          {:error, _error} ->
+            socket =
+              socket
+              |> assign(form: validated_form)
+              |> put_flash(:error, "Oops! Some error stopped us from adding you to our waitlist. Please contact our administrators.")
+            {:noreply, socket}
+        end
       {:error, form_with_errors} ->
         {:noreply, assign(socket, form: form_with_errors)}
     end
