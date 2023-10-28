@@ -4,6 +4,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
   alias __MODULE__.Validations.EmailIsUnique
   alias SoonReady.Onboarding.DomainConcepts.EmailAddress
   alias SoonReady.Onboarding.DomainEvents.WaitlistJoined
+  alias SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetails
 
   attributes do
     uuid_primary_key :id
@@ -19,12 +20,18 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
     define :create
   end
 
+  defp encrypt(plain_text, for: person_id) do
+    with :error <- SoonReady.Vault.encrypt(%{person_id: person_id, plain_text: plain_text}, :onboarding) do
+      {:error, :encryption_failed}
+    end
+  end
+
   def execute(%{__struct__: __MODULE__, id: id, email: email} = command, aggregate_state) do
-    case SoonReady.Vault.encrypt(%{person_id: id, plain_text: email}, :onboarding) do
-      {:ok, email_hash} ->
-        WaitlistJoined.create!(%{id: id, email_hash: email_hash})
-      :error ->
-        {:error, :email_hashing_failed}
+    # TODO: Put in transaction
+    with {:ok, _encryption_details} <- EncryptionDetails.generate(%{person_id: id}),
+          {:ok, email_hash} <- encrypt(email, for: id)
+    do
+      WaitlistJoined.create!(%{id: id, email_hash: email_hash})
     end
   end
 end

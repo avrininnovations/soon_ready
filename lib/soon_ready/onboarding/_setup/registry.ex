@@ -6,5 +6,6 @@ defmodule SoonReady.Onboarding.Setup.Registry do
 
   entries do
     entry SoonReady.Onboarding.ReadModels.WaitlistMembers
+    entry SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetails
   end
 end
