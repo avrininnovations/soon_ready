@@ -1,10 +1,10 @@
 defmodule SoonReadyWeb.Public.Web.HomepageLive do
   use SoonReadyWeb, :live_view
 
-  alias SoonReadyWeb.Public.Web.HomepageLive.ViewModel.WaitlistForm
+  alias SoonReady.Onboarding.Commands.JoinWaitlist
 
   def mount(_params, _session, socket) do
-    form =  AshPhoenix.Form.for_create(WaitlistForm, :create, api: SoonReadyWeb.Public.Setup.Api)
+    form =  AshPhoenix.Form.for_create(JoinWaitlist, :create, api: SoonReady.Onboarding.Setup.Api)
     {:ok, assign(socket, :form, form)}
   end
 
@@ -113,21 +113,28 @@ defmodule SoonReadyWeb.Public.Web.HomepageLive do
     validated_form = AshPhoenix.Form.validate(socket.assigns.form, form_data, errors: socket.assigns.form.errors || false)
 
     case AshPhoenix.Form.submit(validated_form) do
-      {:ok, %{email: email} = _view_model_data} ->
-        case SoonReady.Onboarding.UseCases.join_waitlist(email) do
-          {:ok, _use_case_data} ->
-            socket =
-              socket
-              |> put_flash(:info, "Awesome! You've joined other innovators on our waitlist 😎")
-              |> redirect(to: ~p"/")
-            {:noreply, socket}
-          {:error, _error} ->
-            socket =
-              socket
-              |> assign(form: validated_form)
-              |> put_flash(:error, "Oops! Some error stopped us from adding you to our waitlist. Please contact our administrators.")
-            {:noreply, socket}
-        end
+      {:ok, join_waitlist_command} ->
+        # case SoonReady.Application.dispatch(join_waitlist_command) do
+        #   :ok ->
+        #     socket =
+        #       socket
+        #       |> put_flash(:info, "Awesome! You've joined other innovators on our waitlist 😎")
+        #       |> redirect(to: ~p"/")
+        #     {:noreply, socket}
+        #   {:error, _error} ->
+        #     socket =
+        #       socket
+        #       |> assign(form: validated_form)
+        #       |> put_flash(:error, "Oops! Some error stopped us from adding you to our waitlist. Please contact our administrators.")
+        #     {:noreply, socket}
+        # end
+
+
+        socket =
+          socket
+          |> put_flash(:info, "Awesome! You've joined other innovators on our waitlist 😎")
+          |> redirect(to: ~p"/")
+        {:noreply, socket}
       {:error, form_with_errors} ->
         {:noreply, assign(socket, form: form_with_errors)}
     end

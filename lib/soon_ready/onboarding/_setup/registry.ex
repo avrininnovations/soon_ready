@@ -1,10 +1,10 @@
-defmodule SoonReadyWeb.Public.Setup.Registry do
+defmodule SoonReady.Onboarding.Setup.Registry do
   use Ash.Registry,
     extensions: [
       Ash.Registry.ResourceValidations
     ]
 
   entries do
-    
+
   end
 end
