@@ -13,11 +13,16 @@ defmodule SoonReady.Onboarding.Aggregates.WaitlistMember do
 
   actions do
     defaults [:create, :read]
+
+    read :get_by_email do
+      get_by [:email]
+    end
   end
 
   code_interface do
     define_for SoonReady.Onboarding.Setup.Api
     define :create
+    define :get_by_email
   end
 
   def execute(_aggregate_state, %JoinWaitlist{id: id, email: email} = command) do
