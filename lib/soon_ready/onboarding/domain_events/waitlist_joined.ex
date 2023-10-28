@@ -2,9 +2,6 @@ defmodule SoonReady.Onboarding.DomainEvents.WaitlistJoined do
   use Ash.Resource, data_layer: :embedded,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.Onboarding.DomainConcepts.EmailAddress
-  alias SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetails
-
   attributes do
     attribute :person_id, :uuid, allow_nil?: false, primary_key?: true
     attribute :email_hash, :string, allow_nil?: false
