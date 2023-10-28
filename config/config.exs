@@ -11,12 +11,16 @@ config :soon_ready,
   ecto_repos: [SoonReady.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :soon_ready, event_stores: [SoonReady.EventStore]
+
+config :soon_ready, ash_apis: [SoonReady.Onboarding.Setup.Api]
+
 # Configures the endpoint
 config :soon_ready, SoonReadyWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [html: SoonReadyWeb.ErrorHTML, json: SoonReadyWeb.ErrorJSON],
+    formats: [html: SoonReadyWeb.Public.Web.ErrorHtml, json: SoonReadyWeb.Public.Json.ErrorJson],
     layout: false
   ],
   pubsub_server: SoonReady.PubSub,

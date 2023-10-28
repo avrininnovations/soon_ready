@@ -5,6 +5,15 @@ defmodule SoonReady.Application do
 
   use Application
 
+  use Commanded.Application,
+    otp_app: :soon_ready,
+    event_store: [
+      adapter: Commanded.EventStore.Adapters.EventStore,
+      event_store: SoonReady.EventStore
+    ]
+
+  router SoonReady.Onboarding.Commands.Router
+
   @impl true
   def start(_type, _args) do
     children = [
@@ -17,7 +26,14 @@ defmodule SoonReady.Application do
       # Start a worker by calling: SoonReady.Worker.start_link(arg)
       # {SoonReady.Worker, arg},
       # Start to serve requests, typically the last entry
-      SoonReadyWeb.Endpoint
+      SoonReadyWeb.Endpoint,
+
+      # Cloak Encryption
+      SoonReady.Vault,
+
+      # Commanded
+      __MODULE__,
+      SoonReady.Onboarding.Setup.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

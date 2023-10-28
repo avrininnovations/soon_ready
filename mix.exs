@@ -52,6 +52,12 @@ defmodule SoonReady.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
+      {:ash, "~> 2.16"},
+      {:ash_phoenix, "~> 1.2"},
+      {:ash_postgres, "~> 1.3"},
+      {:commanded, "~> 1.4"},
+      {:commanded_eventstore_adapter, "~> 1.4"},
+      {:cloak, "~> 1.1"},
     ]
   end
 

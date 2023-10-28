@@ -14,10 +14,10 @@ defmodule SoonReadyWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", SoonReadyWeb do
+  scope "/", SoonReadyWeb.Public.Web do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", HomepageLive, :home
   end
 
   # Other scopes may use custom stacks.
