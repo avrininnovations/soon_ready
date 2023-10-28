@@ -5,6 +5,11 @@ defmodule SoonReady.Vault do
     config =
       Keyword.put(config, :ciphers, [
         personally_identifiable_information: {
+          SoonReady.Vault.PersonallyIdentifiableInformationCipher2,
+          tag: "AES.GCM.V1",
+          iv_length: 12
+        },
+        personally_identifiable_information: {
           SoonReady.Vault.PersonallyIdentifiableInformationCipher,
           tag: "AES.GCM.V1",
           iv_length: 12

@@ -1,4 +1,4 @@
-defmodule SoonReady.Vault.PersonallyIdentifiableInformationCipher do
+defmodule SoonReady.Vault.PersonallyIdentifiableInformationCipher2 do
   @behaviour Cloak.Cipher
 
   @key "Y/tty5KdmwYC1PoY+i7Fp18umZhYfDRw8DjcFrMFDVg=" |> Base.decode64!()
@@ -25,15 +25,16 @@ defmodule SoonReady.Vault.PersonallyIdentifiableInformationCipher do
 
   @impl true
   def decrypt(ciphertext, opts) do
-    IO.inspect(:DECRYPT_1)
+    IO.inspect(:DECRYPT_2)
     opts = put_in(opts[:key], key!(opts))
     Cloak.Ciphers.AES.GCM.decrypt(ciphertext, opts)
   end
 
   @impl true
   def can_decrypt?(ciphertext, opts) do
-    IO.inspect(:can_decrypt_1)
+    IO.inspect(:can_decrypt_2)
     opts = put_in(opts[:key], key!(opts))
     Cloak.Ciphers.AES.GCM.can_decrypt?(ciphertext, opts)
+    false
   end
 end
