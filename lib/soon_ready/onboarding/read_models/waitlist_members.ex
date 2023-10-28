@@ -33,9 +33,14 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
     define :get_by_email
   end
 
-  def handle(%WaitlistJoined{id: id, email: email}, _metadata) do
-    with {:ok, _waitlist_member} <- WaitlistMembers.add(%{id: id, email: email}) do
-      :ok
+  def handle(%WaitlistJoined{id: id, email_hash: email_hash}, _metadata) do
+    case SoonReady.Vault.decrypt(%{person_id: id, cipher_text: email_hash}) do
+      {:ok, email} ->
+        with {:ok, _waitlist_member} <- WaitlistMembers.add(%{id: id, email: email}) do
+          :ok
+        end
+      :error ->
+        {:error, :email_decryption_failed}
     end
   end
 end

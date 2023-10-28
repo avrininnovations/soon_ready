@@ -18,7 +18,10 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
   def encrypt(%{person_id: person_id, plain_text: plain_text}, opts) when is_binary(plain_text) do
     with {:ok, key} <- get_key(person_id) do
       opts = put_in(opts[:key], key)
-      Cloak.Ciphers.AES.GCM.encrypt(plain_text, opts)
+
+      with {:ok, cipher_text} <- Cloak.Ciphers.AES.GCM.encrypt(plain_text, opts) do
+        {:ok, Base.encode64(cipher_text)}
+      end
     end
   end
 
@@ -30,7 +33,10 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
   def decrypt(%{person_id: person_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
     with {:ok, key} <- get_key(person_id) do
       opts = put_in(opts[:key], key)
-      Cloak.Ciphers.AES.GCM.decrypt(cipher_text, opts)
+
+      cipher_text
+      |> Base.decode64!()
+      |> Cloak.Ciphers.AES.GCM.decrypt(opts)
     end
   end
 
@@ -43,7 +49,10 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
     case get_key(person_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
-        Cloak.Ciphers.AES.GCM.can_decrypt?(cipher_text, opts)
+
+        cipher_text
+        |> Base.decode64!()
+        |> Cloak.Ciphers.AES.GCM.decrypt(opts)
       :error ->
         false
     end

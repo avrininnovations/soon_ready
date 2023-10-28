@@ -20,6 +20,11 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
   end
 
   def execute(%{__struct__: __MODULE__, id: id, email: email} = command, aggregate_state) do
-    WaitlistJoined.create!(%{id: id, email: email})
+    case SoonReady.Vault.encrypt(%{person_id: id, plain_text: email}, :onboarding) do
+      {:ok, email_hash} ->
+        WaitlistJoined.create!(%{id: id, email_hash: email_hash})
+      :error ->
+        {:error, :email_hashing_failed}
+    end
   end
 end
