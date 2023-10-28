@@ -7,7 +7,7 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetai
   end
 
   actions do
-    defaults [:read]
+    defaults [:read, :destroy]
 
     create :generate do
       primary? true
@@ -26,6 +26,8 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetai
     define_for SoonReady.Onboarding.Setup.Api
     define :generate
     define :get
+    define :read
+    define :destroy
   end
 
   postgres do
