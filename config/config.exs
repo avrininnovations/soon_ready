@@ -11,6 +11,8 @@ config :soon_ready,
   ecto_repos: [SoonReady.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :soon_ready, event_stores: [SoonReady.EventStore]
+
 # Configures the endpoint
 config :soon_ready, SoonReadyWeb.Endpoint,
   url: [host: "localhost"],
