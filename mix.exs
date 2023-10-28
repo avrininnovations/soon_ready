@@ -56,6 +56,7 @@ defmodule SoonReady.MixProject do
       {:ash_phoenix, "~> 1.2"},
       {:commanded, "~> 1.4"},
       {:commanded_eventstore_adapter, "~> 1.4"},
+      {:cloak, "~> 1.1"},
     ]
   end
 

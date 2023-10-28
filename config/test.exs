@@ -1,5 +1,8 @@
 import Config
 
+# Configure vault encryption
+config :soon_ready, cloak_key: "WMecPlmzEqqczOf3v95r38L6vOsAeAWpyeBHbypLi48="
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used

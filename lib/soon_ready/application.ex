@@ -28,6 +28,9 @@ defmodule SoonReady.Application do
       # Start to serve requests, typically the last entry
       SoonReadyWeb.Endpoint,
 
+      # Cloak Encryption
+      SoonReady.Vault,
+
       # Commanded
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
