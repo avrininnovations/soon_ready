@@ -1,27 +1,21 @@
 defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
   @behaviour Cloak.Cipher
 
+  require Logger
   alias SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetails
-
-  defp get_key(person_id) do
-    case EncryptionDetails.get(%{person_id: person_id}) do
-      {:ok, %{cloak_key: nil}} ->
-        :error
-      {:ok, %{cloak_key: cloak_key}} ->
-        {:ok, Base.decode64!(cloak_key)}
-      {:error, _error} ->
-        :error
-    end
-  end
 
   @impl true
   def encrypt(%{person_id: person_id, plain_text: plain_text}, opts) when is_binary(plain_text) do
-    with {:ok, key} <- get_key(person_id) do
-      opts = put_in(opts[:key], key)
+    case EncryptionDetails.get_key(person_id) do
+      {:ok, key} ->
+        opts = put_in(opts[:key], key)
 
-      with {:ok, cipher_text} <- Cloak.Ciphers.AES.GCM.encrypt(plain_text, opts) do
-        {:ok, Base.encode64(cipher_text)}
-      end
+        with {:ok, cipher_text} <- Cloak.Ciphers.AES.GCM.encrypt(plain_text, opts) do
+          {:ok, Base.encode64(cipher_text)}
+        end
+      {:error, error} ->
+        Logger.warning("Encryption failure for person_id: #{person_id}. Error: #{error}")
+        :error
     end
   end
 
@@ -31,12 +25,16 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
 
   @impl true
   def decrypt(%{person_id: person_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
-    with {:ok, key} <- get_key(person_id) do
-      opts = put_in(opts[:key], key)
+    case EncryptionDetails.get_key(person_id) do
+      {:ok, key} ->
+        opts = put_in(opts[:key], key)
 
-      cipher_text
-      |> Base.decode64!()
-      |> Cloak.Ciphers.AES.GCM.decrypt(opts)
+        cipher_text
+        |> Base.decode64!()
+        |> Cloak.Ciphers.AES.GCM.decrypt(opts)
+      {:error, error} ->
+        Logger.warning("Decryption failure for person_id: #{person_id}. Error: #{error}")
+        :error
     end
   end
 
@@ -46,14 +44,14 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
 
   @impl true
   def can_decrypt?(%{person_id: person_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
-    case get_key(person_id) do
+    case EncryptionDetails.get_key(person_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
 
         cipher_text
         |> Base.decode64!()
         |> Cloak.Ciphers.AES.GCM.can_decrypt?(opts)
-      :error ->
+      {:error, _error} ->
         false
     end
   end

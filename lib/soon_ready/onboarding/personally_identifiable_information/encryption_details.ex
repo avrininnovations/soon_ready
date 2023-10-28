@@ -3,7 +3,7 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetai
 
   attributes do
     attribute :person_id, :uuid, allow_nil?: false, primary_key?: true
-    attribute :cloak_key, :string
+    attribute :cloak_key, :string, allow_nil?: false
   end
 
   actions do
@@ -33,5 +33,11 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetai
   postgres do
     repo SoonReady.Repo
     table "onboarding__personally_identifiable_information__encryption_details"
+  end
+
+  def get_key(person_id) do
+    with {:ok, %{__struct__: __MODULE__, cloak_key: cloak_key}} <- __MODULE__.get(%{person_id: person_id}) do
+      {:ok, Base.decode64!(cloak_key)}
+    end
   end
 end
