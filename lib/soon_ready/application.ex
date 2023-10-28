@@ -28,8 +28,9 @@ defmodule SoonReady.Application do
       # Start to serve requests, typically the last entry
       SoonReadyWeb.Endpoint,
 
-      # Commanded Application
+      # Commanded
       __MODULE__,
+      SoonReady.Onboarding.Setup.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

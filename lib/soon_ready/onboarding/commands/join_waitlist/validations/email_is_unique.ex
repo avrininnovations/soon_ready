@@ -2,7 +2,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist.Validations.EmailIsUnique d
   use Ash.Resource.Validation
 
   alias Ash.Error.Changes.InvalidAttribute
-  alias SoonReady.Onboarding.Aggregates.WaitlistMember
+  alias SoonReady.Onboarding.ReadModels.WaitlistMembers
 
   @opt_schema [
     email_field: [
@@ -29,7 +29,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist.Validations.EmailIsUnique d
       nil ->
         :ok
       email ->
-        case WaitlistMember.get_by_email(%{email: email}) do
+        case WaitlistMembers.get_by_email(%{email: email}) do
           # {:ok, _waitlist_member} ->
           #   {:error, InvalidAttribute.exception(
           #     field: opts[:field],

@@ -5,6 +5,6 @@ defmodule SoonReady.Onboarding.Setup.Registry do
     ]
 
   entries do
-    entry SoonReady.Onboarding.Aggregates.WaitlistMember
+    entry SoonReady.Onboarding.ReadModels.WaitlistMembers
   end
 end
