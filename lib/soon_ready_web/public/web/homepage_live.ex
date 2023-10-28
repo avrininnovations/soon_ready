@@ -47,13 +47,14 @@ defmodule SoonReadyWeb.Public.Web.HomepageLive do
 
   attr :field, Phoenix.HTML.FormField, required: true
 
-  def email_field(assigns) do
+  def email_input(assigns) do
     assigns = assign(assigns, :errors, Enum.map(assigns.field.errors, &translate_error(&1)))
     ~H"""
     <input
       id={@field.id}
       name={@field.name}
-      type="email"
+      type="text"
+      inputmode="email"
       value={@field.value}
       class={[
         "block md:w-96 w-full p-3 text-sm text-gray-900",
@@ -64,6 +65,14 @@ defmodule SoonReadyWeb.Public.Web.HomepageLive do
       ]}
       placeholder="Provide your email to get updates..."
     >
+    """
+  end
+
+  attr :field, Phoenix.HTML.FormField, required: true
+
+  def error_message(assigns) do
+    assigns = assign(assigns, :errors, Enum.map(assigns.field.errors, &translate_error(&1)))
+    ~H"""
     <.error :for={msg <- @errors}><%= msg %></.error>
     """
   end
@@ -77,11 +86,17 @@ defmodule SoonReadyWeb.Public.Web.HomepageLive do
           <div class="flex flex-wrap lg:flex-nowrap items-center mb-3">
             <div class="relative w-full lg:w-auto mb-3 lg:mb-0 lg:mr-3">
               <label for="member_email" class="hidden mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Email address</label>
-              <.email_field field={f[:email]} />
+              <.email_input field={f[:email]} />
+              <div class="lg:hidden">
+                <.error_message field={f[:email]} />
+              </div>
             </div>
             <div class="w-full lg:w-auto">
               <input type="submit" value="Join our waitlist" class="w-full px-5 py-3 text-sm font-medium text-center text-white rounded-lg cursor-pointer bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" name="member_submit" id="member_submit">
             </div>
+          </div>
+          <div class="hidden lg:block">
+            <.error_message field={f[:email]} />
           </div>
         </.form>
       </:waitlist_form>
