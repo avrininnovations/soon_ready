@@ -30,11 +30,6 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist.Validations.EmailIsUnique d
         :ok
       email ->
         case WaitlistMembers.get_by_email(%{email: email}) do
-          # {:ok, _waitlist_member} ->
-          #   {:error, InvalidAttribute.exception(
-          #     field: opts[:field],
-          #     message: "already in waitlist"
-          #   )}
           {:error, %Ash.Error.Query.NotFound{}} ->
             :ok
           _ ->
@@ -42,9 +37,6 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist.Validations.EmailIsUnique d
               field: opts[:email_field],
               message: "already in waitlist"
             )}
-          # {:error, error} ->
-          #   IO.inspect(error)
-          #   :ok
         end
     end
   end
