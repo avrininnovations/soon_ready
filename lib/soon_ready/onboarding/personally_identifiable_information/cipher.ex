@@ -14,12 +14,13 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
           {:ok, Base.encode64(cipher_text)}
         end
       {:error, error} ->
-        Logger.warning("Encryption failure for person_id: #{person_id}. Error: #{error}")
+        Logger.warning("Encryption failed for person_id: #{person_id}. Error: #{error}")
         :error
     end
   end
 
   def encrypt(_value, _opts) do
+    Logger.warning("Encryption failed")
     :error
   end
 
@@ -33,12 +34,13 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
         |> Base.decode64!()
         |> Cloak.Ciphers.AES.GCM.decrypt(opts)
       {:error, error} ->
-        Logger.warning("Decryption failure for person_id: #{person_id}. Error: #{error}")
+        Logger.warning("Decryption failed for person_id: #{person_id}. Error: #{error}")
         :error
     end
   end
 
   def decrypt(_value, _opts) do
+    Logger.warning("Decryption failed")
     :error
   end
 
