@@ -52,7 +52,7 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher do
 
         cipher_text
         |> Base.decode64!()
-        |> Cloak.Ciphers.AES.GCM.decrypt(opts)
+        |> Cloak.Ciphers.AES.GCM.can_decrypt?(opts)
       :error ->
         false
     end

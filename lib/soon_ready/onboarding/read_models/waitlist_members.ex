@@ -6,6 +6,8 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
     name: "#{__MODULE__}",
     consistency: :strong
 
+  require Logger
+
   alias __MODULE__
   alias SoonReady.Onboarding.DomainConcepts.EmailAddress
   alias SoonReady.Onboarding.DomainEvents.WaitlistJoined
@@ -45,7 +47,9 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
           :ok
         end
       :error ->
-        {:error, :email_decryption_failed}
+        error = :email_decryption_failed
+        Logger.warning("An error occured. Module: #{__MODULE__} Error: #{error}")
+        {:error, error}
     end
   end
 end
