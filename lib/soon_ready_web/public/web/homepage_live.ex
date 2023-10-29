@@ -37,7 +37,7 @@ defmodule SoonReadyWeb.Public.Web.HomepageLive do
           </p>
           <%= render_slot(@waitlist_form) %>
         </div>
-        <div class="hidden lg:mt-0 lg:col-span-5 xl:col-span-4 lg:flex">
+        <div class="lg:mt-0 lg:col-span-5 xl:col-span-4 lg:flex">
           <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mobile-app.svg" alt="phone illustration">
         </div>
       </div>

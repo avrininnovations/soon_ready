@@ -6,7 +6,6 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
     name: "#{__MODULE__}",
     consistency: :strong
 
-  alias __MODULE__
   alias SoonReady.Onboarding.DomainConcepts.EmailAddress
   alias SoonReady.Onboarding.DomainEvents.WaitlistJoined
 
@@ -41,7 +40,7 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
   def handle(%WaitlistJoined{person_id: person_id, email_hash: email_hash}, _metadata) do
     case SoonReady.Vault.decrypt(%{person_id: person_id, cipher_text: email_hash}) do
       {:ok, email} ->
-        with {:ok, _waitlist_member} <- WaitlistMembers.add(%{person_id: person_id, email: email}) do
+        with {:ok, _waitlist_member} <- __MODULE__.add(%{person_id: person_id, email: email}) do
           :ok
         end
       :error ->
