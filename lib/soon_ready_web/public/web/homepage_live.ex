@@ -30,10 +30,10 @@ defmodule SoonReadyWeb.Public.Web.HomepageLive do
       <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-12 xl:gap-0 lg:py-16 lg:grid-cols-12">
         <div class="mr-auto place-self-center lg:col-span-7 xl:col-span-8">
           <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
-            One software company at a time...
+            Launching the future, one software company at a time...
           </h1>
           <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-            SoonReady is home for innovators who are trying to start successful software companies. Join other innovators on our waitlist.
+            SoonReady is home for innovators who are on the journey to launch successful software companies. Join other innovators on our waitlist.
           </p>
           <%= render_slot(@waitlist_form) %>
         </div>
