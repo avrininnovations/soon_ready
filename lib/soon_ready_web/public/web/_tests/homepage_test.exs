@@ -1,4 +1,4 @@
-defmodule SoonReadyWeb.PageControllerTest do
+defmodule SoonReadyWeb.HomepageTest do
   use SoonReadyWeb.ConnCase
 
   test "GET /", %{conn: conn} do
