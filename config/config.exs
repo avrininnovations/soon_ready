@@ -13,7 +13,10 @@ config :soon_ready,
 
 config :soon_ready, event_stores: [SoonReady.EventStore]
 
-config :soon_ready, ash_apis: [SoonReady.Onboarding.Setup.Api]
+config :soon_ready, ash_apis: [
+  SoonReady.Onboarding.Setup.Api,
+  SoonReadyWeb.Researcher.Setup.Api
+]
 
 # Configures the endpoint
 config :soon_ready, SoonReadyWeb.Endpoint,

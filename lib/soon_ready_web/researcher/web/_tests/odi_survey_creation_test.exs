@@ -14,5 +14,14 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
 
     assert_patch(view, ~p"/odi-survey/create/market-definition")
     assert resulting_html =~ "Market Definition"
+
+    resulting_html =
+      view
+      |> form("form", form: %{brand_name: "Big Brand Co", job_executor: "Person", job_to_be_done: "Do what persons do"})
+      |> put_submitter("button[name=submit]")
+      |> render_submit()
+
+    assert_patch(view, ~p"/odi-survey/create/desired-outcomes")
+    assert resulting_html =~ "Desired Outcomes"
   end
 end
