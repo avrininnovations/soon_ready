@@ -3,13 +3,13 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
   import Phoenix.LiveViewTest
 
   describe "happy path" do
-    test "WHEN: Researcher visits the survey creation url, THEN: The landing page is displayed", %{conn: conn} do
+    test "WHEN: Researcher tries to visit the survey creation url, THEN: The landing page is displayed", %{conn: conn} do
       {:ok, view, html} = live(conn, ~p"/odi-survey/create")
 
       assert html =~ "Welcome to the ODI Survey Creator!"
     end
 
-    test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher submits a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
+    test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher tries to submit a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
       {:ok, view, html} = live(conn, ~p"/odi-survey/create")
 
       resulting_html =
@@ -22,7 +22,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
       assert resulting_html =~ "Market Definition"
     end
 
-    test "GIVEN: Brand name has been submitted, WHEN: Researcher submits market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
+    test "GIVEN: Brand name has been submitted, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
       {:ok, view, html} = live(conn, ~p"/odi-survey/create")
       {:ok, view} = brand_name_has_been_submitted(view)
 
@@ -36,7 +36,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
       assert resulting_html =~ "Desired Outcomes"
     end
 
-    test "GIVEN: Market definition details have been submitted, WHEN: Researcher adds two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
+    test "GIVEN: Market definition details have been submitted, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
       {:ok, view, html} = live(conn, ~p"/odi-survey/create")
       {:ok, view} = brand_name_has_been_submitted(view)
       {:ok, view} = market_definition_details_have_been_submitted(view)
