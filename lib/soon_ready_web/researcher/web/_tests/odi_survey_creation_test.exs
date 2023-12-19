@@ -9,15 +9,16 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
 
     resulting_html =
       view
-      |> element("button", "Start Your Adventure")
-      |> render_click()
+      |> form("form", form: %{brand_name: "Big Brand Co"})
+      |> put_submitter("button[name=submit]")
+      |> render_submit()
 
     assert_patch(view, ~p"/odi-survey/create/market-definition")
     assert resulting_html =~ "Market Definition"
 
     resulting_html =
       view
-      |> form("form", form: %{brand_name: "Big Brand Co", job_executor: "Person", job_to_be_done: "Do what persons do"})
+      |> form("form", form: %{job_executor: "Person", job_to_be_done: "Do what persons do"})
       |> put_submitter("button[name=submit]")
       |> render_submit()
 
