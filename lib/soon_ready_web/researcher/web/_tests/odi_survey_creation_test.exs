@@ -23,5 +23,20 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
 
     assert_patch(view, ~p"/odi-survey/create/desired-outcomes")
     assert resulting_html =~ "Desired Outcomes"
+
+
+    resulting_html =
+      view
+      |> element("button", "Add job step")
+      |> render_click()
+
+    assert resulting_html =~ "Job Step 1"
+
+    resulting_html =
+      view
+      |> element("button", "Add job step")
+      |> render_click()
+
+    assert resulting_html =~ "Job Step 2"
   end
 end

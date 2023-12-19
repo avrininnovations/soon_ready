@@ -2,7 +2,11 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   use SoonReadyWeb, :live_view
 
   import SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.Components.Form, only: [text_field: 1, submit: 1]
-  alias SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.ViewModels.MarketDefinitionForm
+  alias SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.ViewModels.{
+    MarketDefinitionForm,
+    DesiredOutcomesForm
+  }
+  alias SoonReady.SurveyManagement.DomainConcepts.JobStep
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
@@ -15,7 +19,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     ~H"""
     <h2>Market Definition</h2>
 
-    <.form :let={f} for={@market_definition_form} phx-submit="submit">
+    <.form :let={f} for={@market_definition_form} phx-submit="submit-market-definition">
       <.text_field
         field={f[:brand_name]}
         label="What's the brand name for this survey?"
@@ -36,6 +40,14 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def render(%{live_action: :desired_outcomes} = assigns) do
     ~H"""
     <h2>Desired Outcomes</h2>
+
+    <.form :let={f} for={@desired_outcomes_form} phx-submit="submit-desired-outcomes">
+      <.inputs_for :let={ff} field={f[:job_steps]}>
+        Job Step <%= ff.index + 1 %>
+      </.inputs_for>
+    </.form>
+
+    <button phx-click="add-job-step">Add job step</button>
     """
   end
 
@@ -43,6 +55,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     socket =
       socket
       |> assign(:market_definition_form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, api: SoonReadyWeb.Researcher.Setup.Api))
+      |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyWeb.Researcher.Setup.Api, forms: [auto?: true]))
 
     {:ok, socket}
   end
@@ -55,7 +68,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition")}
   end
 
-  def handle_event("submit", %{"form" => form_params}, socket) do
+  def handle_event("submit-market-definition", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.market_definition_form, params: form_params) do
       {:ok, _view_model} ->
         {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes")}
@@ -63,5 +76,10 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
       {:error, form_with_error} ->
         {:noreply, assign(socket, market_definition_form: form_with_error)}
     end
+  end
+
+  def handle_event("add-job-step", _params, socket) do
+    desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, :job_steps, validate?: socket.assigns.desired_outcomes_form.errors || false)
+    {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
   end
 end
