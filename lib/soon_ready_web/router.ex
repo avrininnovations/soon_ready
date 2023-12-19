@@ -23,6 +23,7 @@ defmodule SoonReadyWeb.Router do
   scope "/", SoonReadyWeb.Researcher.Web do
     pipe_through :browser
 
+    live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions
     live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes
     live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition
     live "/odi-survey/create", OdiSurveyCreationLive, :landing_page

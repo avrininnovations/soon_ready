@@ -61,9 +61,17 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
 
         <button name={ff.name} phx-click="add-desired-outcome" phx-value-name={"#{ff.name}"}>Add desired outcome</button>
       </.inputs_for>
+
+      <.submit>Proceed</.submit>
     </.form>
 
     <button phx-click="add-job-step">Add job step</button>
+    """
+  end
+
+  def render(%{live_action: :screening_questions} = assigns) do
+    ~H"""
+    <h2>Screening Questions</h2>
     """
   end
 
@@ -98,6 +106,16 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, market_definition_form: form_with_error)}
+    end
+  end
+
+  def handle_event("submit-desired-outcomes", %{"form" => form_params}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.desired_outcomes_form, params: form_params) do
+      {:ok, _view_model} ->
+        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions")}
+
+      {:error, form_with_error} ->
+        {:noreply, assign(socket, desired_outcomes_form: form_with_error)}
     end
   end
 
