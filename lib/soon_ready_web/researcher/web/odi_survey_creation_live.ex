@@ -51,6 +51,15 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
           field={ff[:name]}
           label={"Job Step #{ff.index + 1}"}
         />
+
+        <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
+          <.text_input
+            field={fff[:value]}
+            placeholder="Desired Outcome"
+          />
+        </.inputs_for>
+
+        <button name={ff.name} phx-click="add-desired-outcome" phx-value-name={"#{ff.name}"}>Add desired outcome</button>
       </.inputs_for>
     </.form>
 
@@ -94,6 +103,11 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
 
   def handle_event("add-job-step", _params, socket) do
     desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, :job_steps, validate?: socket.assigns.desired_outcomes_form.errors || false)
+    {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
+  end
+
+  def handle_event("add-desired-outcome", %{"name" => name} = _params, socket) do
+    desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, "#{name}[desired_outcomes]", validate?: socket.assigns.desired_outcomes_form.errors || false)
     {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
   end
 end
