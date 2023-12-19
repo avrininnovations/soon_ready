@@ -47,7 +47,10 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
 
     <.form :let={f} for={@desired_outcomes_form} phx-submit="submit-desired-outcomes">
       <.inputs_for :let={ff} field={f[:job_steps]}>
-        Job Step <%= ff.index + 1 %>
+        <.text_field
+          field={ff[:name]}
+          label={"Job Step #{ff.index + 1}"}
+        />
       </.inputs_for>
     </.form>
 
