@@ -1,7 +1,12 @@
 defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   use SoonReadyWeb, :live_view
 
-  import SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.Components.Form, only: [text_input: 1, text_field: 1, submit: 1]
+  import SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.Components.Form, only: [
+    text_input: 1,
+    text_field: 1,
+    submit: 1,
+    checkbox: 1,
+  ]
   alias SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.ViewModels.{
     BrandNameForm,
     MarketDefinitionForm,
@@ -80,6 +85,16 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
           field={ff[:prompt]}
           label="Prompt"
         />
+
+        <.inputs_for :let={fff} field={ff[:options]}>
+          <.checkbox field={fff[:is_correct_option]} />
+          <.text_input
+            field={fff[:value]}
+            placeholder="Option"
+          />
+        </.inputs_for>
+
+        <button name={ff.name} phx-click="add-screening-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
       </.inputs_for>
 
       <.submit>Proceed</.submit>
@@ -146,6 +161,11 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
 
   def handle_event("add-screening-question", _params, socket) do
     screening_questions_form = AshPhoenix.Form.add_form(socket.assigns.screening_questions_form, :screening_questions, validate?: socket.assigns.screening_questions_form.errors || false)
+    {:noreply, assign(socket, screening_questions_form: screening_questions_form)}
+  end
+
+  def handle_event("add-screening-question-option", %{"name" => name} = _params, socket) do
+    screening_questions_form = AshPhoenix.Form.add_form(socket.assigns.screening_questions_form, "#{name}[options]", validate?: socket.assigns.screening_questions_form.errors || false)
     {:noreply, assign(socket, screening_questions_form: screening_questions_form)}
   end
 end

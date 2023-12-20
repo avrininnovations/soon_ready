@@ -122,6 +122,45 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
       assert has_element?(view, ~s{input[name="form[screening_questions][0][prompt]"]})
       assert has_element?(view, ~s{input[name="form[screening_questions][1][prompt]"]})
     end
+
+    test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
+      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
+      {:ok, view} = brand_name_has_been_submitted(view)
+      {:ok, view} = market_definition_details_have_been_submitted(view)
+      {:ok, view} = two_job_steps_have_been_added(view)
+      {:ok, view} = two_desired_outcomes_each_have_been_added(view)
+      {:ok, view} = desired_outcomes_have_been_submitted(view)
+      {:ok, view} = two_screening_questions_have_been_added(view)
+
+
+      view
+      |> element(~s{button[name="form[screening_questions][0]"]}, "Add option")
+      |> render_click()
+
+      view
+      |> element(~s{button[name="form[screening_questions][0]"]}, "Add option")
+      |> render_click()
+
+      view
+      |> element(~s{button[name="form[screening_questions][1]"]}, "Add option")
+      |> render_click()
+
+      view
+      |> element(~s{button[name="form[screening_questions][1]"]}, "Add option")
+      |> render_click()
+
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][value]"]})
+
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][value]"]})
+
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][value]"]})
+
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][value]"]})
+    end
   end
 
   defp brand_name_has_been_submitted(view) do
@@ -202,6 +241,22 @@ defmodule SoonReadyWeb.OdiSurveyCreationTest do
 
     assert_patch(view, ~p"/odi-survey/create/screening-questions")
     assert resulting_html =~ "Screening Questions"
+
+    {:ok, view}
+  end
+
+  defp two_screening_questions_have_been_added(view) do
+    view
+    |> element("button", "Add screening question")
+    |> render_click()
+
+    resulting_html =
+      view
+      |> element("button", "Add screening question")
+      |> render_click()
+
+    assert has_element?(view, ~s{input[name="form[screening_questions][0][prompt]"]})
+    assert has_element?(view, ~s{input[name="form[screening_questions][1][prompt]"]})
 
     {:ok, view}
   end

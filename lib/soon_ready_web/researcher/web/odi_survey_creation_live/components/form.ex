@@ -22,6 +22,14 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.Components.Form do
     """
   end
 
+  attr :field, Phoenix.HTML.FormField, required: true
+
+  def checkbox(assigns) do
+    ~H"""
+    <%= checkbox(@field.form, @field.field) %>
+    """
+  end
+
   slot :inner_block, required: true
 
   def submit(assigns) do
