@@ -18,6 +18,47 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicsQuestionsPageTest do
       assert has_element?(view, ~s{input[name="form[demographics_questions][0][prompt]"]})
       assert has_element?(view, ~s{input[name="form[demographics_questions][1][prompt]"]})
     end
+
+    test "GIVEN: Two demographics questions have been added, WHEN: Researcher tries to add two options each to the demographics questions, THEN: Two options field each are added to the demographics questions", %{conn: conn} do
+      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view} = two_demographics_questions_have_been_added(view)
+
+      view
+      |> element(~s{button[name="form[demographics_questions][0]"]}, "Add option")
+      |> render_click()
+
+      view
+      |> element(~s{button[name="form[demographics_questions][0]"]}, "Add option")
+      |> render_click()
+
+      view
+      |> element(~s{button[name="form[demographics_questions][1]"]}, "Add option")
+      |> render_click()
+
+      view
+      |> element(~s{button[name="form[demographics_questions][1]"]}, "Add option")
+      |> render_click()
+
+      assert has_element?(view, ~s{input[name="form[demographics_questions][0][options][0][value]"]})
+      assert has_element?(view, ~s{input[name="form[demographics_questions][0][options][1][value]"]})
+      assert has_element?(view, ~s{input[name="form[demographics_questions][1][options][0][value]"]})
+      assert has_element?(view, ~s{input[name="form[demographics_questions][1][options][1][value]"]})
+    end
+
+    test "GIVEN: Two options each have been added to two demographics questions, WHEN: Researcher tries to submit the demographics questions, THEN: The context questions page is displayed", %{conn: conn} do
+      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view} = two_demographics_questions_have_been_added(view)
+      {:ok, view} = two_options_each_have_been_added(view)
+
+      resulting_html =
+        view
+        |> form("form", form: %{demographics_questions: %{"0" => %{"prompt" => "Demographics Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Demographics Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
+        |> put_submitter("button[name=submit]")
+        |> render_submit()
+
+      assert_patch(view, ~p"/odi-survey/create/context-questions")
+      assert resulting_html =~ "Context Questions"
+    end
   end
 
   defp forms_in_previous_pages_have_been_filled(conn, path) do
@@ -136,5 +177,46 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicsQuestionsPageTest do
     assert resulting_html =~ "Demographics Questions"
 
     {:ok, view, resulting_html}
+  end
+
+  def two_demographics_questions_have_been_added(view) do
+    view
+    |> element("button", "Add demographics question")
+    |> render_click()
+
+    resulting_html =
+      view
+      |> element("button", "Add demographics question")
+      |> render_click()
+
+    assert has_element?(view, ~s{input[name="form[demographics_questions][0][prompt]"]})
+    assert has_element?(view, ~s{input[name="form[demographics_questions][1][prompt]"]})
+
+    {:ok, view}
+  end
+
+  def two_options_each_have_been_added(view) do
+    view
+    |> element(~s{button[name="form[demographics_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[demographics_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[demographics_questions][1]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[demographics_questions][1]"]}, "Add option")
+    |> render_click()
+
+    assert has_element?(view, ~s{input[name="form[demographics_questions][0][options][0][value]"]})
+    assert has_element?(view, ~s{input[name="form[demographics_questions][0][options][1][value]"]})
+    assert has_element?(view, ~s{input[name="form[demographics_questions][1][options][0][value]"]})
+    assert has_element?(view, ~s{input[name="form[demographics_questions][1][options][1][value]"]})
+
+    {:ok, view}
   end
 end
