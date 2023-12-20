@@ -104,6 +104,12 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     """
   end
 
+  def render(%{live_action: :demographics_questions} = assigns) do
+    ~H"""
+    <h2>Demographics Questions</h2>
+    """
+  end
+
   def mount(_params, _session, socket) do
     socket =
       socket
@@ -146,6 +152,16 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, desired_outcomes_form: form_with_error)}
+    end
+  end
+
+  def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.screening_questions_form, params: form_params) do
+      {:ok, _view_model} ->
+        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographics-questions")}
+
+      {:error, form_with_error} ->
+        {:noreply, assign(socket, screening_questions_form: form_with_error)}
     end
   end
 
