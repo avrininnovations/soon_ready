@@ -4,12 +4,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
 
   describe "happy path" do
     test "GIVEN: Desired outcomes have been submitted, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
-      {:ok, view} = brand_name_has_been_submitted(view)
-      {:ok, view} = market_definition_details_have_been_submitted(view)
-      {:ok, view} = two_job_steps_have_been_added(view)
-      {:ok, view} = two_desired_outcomes_each_have_been_added(view)
-      {:ok, view} = desired_outcomes_have_been_submitted(view)
+      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
 
       view
       |> element("button", "Add screening question")
@@ -25,12 +20,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     end
 
     test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
-      {:ok, view} = brand_name_has_been_submitted(view)
-      {:ok, view} = market_definition_details_have_been_submitted(view)
-      {:ok, view} = two_job_steps_have_been_added(view)
-      {:ok, view} = two_desired_outcomes_each_have_been_added(view)
-      {:ok, view} = desired_outcomes_have_been_submitted(view)
+      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_screening_questions_have_been_added(view)
 
 
@@ -64,7 +54,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     end
   end
 
-  defp brand_name_has_been_submitted(view) do
+  defp forms_in_previous_pages_have_been_filled(conn, path) do
+    {:ok, view, _html} = live(conn, path)
+
     resulting_html =
       view
       |> form("form", form: %{brand_name: "Big Brand Co"})
@@ -74,10 +66,6 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     assert_patch(view, ~p"/odi-survey/create/market-definition")
     assert resulting_html =~ "Market Definition"
 
-    {:ok, view}
-  end
-
-  defp market_definition_details_have_been_submitted(view) do
     resulting_html =
       view
       |> form("form", form: %{job_executor: "Person", job_to_be_done: "Do what persons do"})
@@ -87,10 +75,6 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     assert_patch(view, ~p"/odi-survey/create/desired-outcomes")
     assert resulting_html =~ "Desired Outcomes"
 
-    {:ok, view}
-  end
-
-  defp two_job_steps_have_been_added(view) do
     view
     |> element("button", "Add job step")
     |> render_click()
@@ -105,10 +89,6 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     assert resulting_html =~ "Job Step 2"
     assert has_element?(view, ~s{input[name="form[job_steps][1][name]"]})
 
-    {:ok, view}
-  end
-
-  defp two_desired_outcomes_each_have_been_added(view) do
     view
     |> element(~s{button[name="form[job_steps][0]"]}, "Add desired outcome")
     |> render_click()
@@ -130,10 +110,6 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     assert has_element?(view, ~s{input[name="form[job_steps][1][desired_outcomes][0][value]"]})
     assert has_element?(view, ~s{input[name="form[job_steps][1][desired_outcomes][1][value]"]})
 
-    {:ok, view}
-  end
-
-  defp desired_outcomes_have_been_submitted(view) do
     resulting_html =
       view
       |> form("form", form: %{job_steps: %{"0" => %{"name" => "Job Step 1", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}, "1" => %{"name" => "Job Step 2", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}}})
@@ -143,7 +119,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     assert_patch(view, ~p"/odi-survey/create/screening-questions")
     assert resulting_html =~ "Screening Questions"
 
-    {:ok, view}
+    {:ok, view, resulting_html}
   end
 
   defp two_screening_questions_have_been_added(view) do

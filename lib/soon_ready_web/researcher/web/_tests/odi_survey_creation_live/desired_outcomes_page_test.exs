@@ -3,10 +3,8 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
   import Phoenix.LiveViewTest
 
   describe "happy path" do
-    test "GIVEN: Market definition details have been submitted, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
-      {:ok, view} = brand_name_has_been_submitted(view)
-      {:ok, view} = market_definition_details_have_been_submitted(view)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
+      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
 
       view
       |> element("button", "Add job step")
@@ -24,9 +22,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
     end
 
     test "GIVEN: Two job steps have been added, WHEN: Researcher tries to add two desired outcomes each to both job steps, THEN: Two desired outcome fields are added to the first job step", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
-      {:ok, view} = brand_name_has_been_submitted(view)
-      {:ok, view} = market_definition_details_have_been_submitted(view)
+      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_job_steps_have_been_added(view)
 
       view
@@ -52,9 +48,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
     end
 
     test "GIVEN: Two desired outcome fields each have been added to two job steps, WHEN: Researcher tries to submit the desired outceoms, THEN: The screening question page is displayed", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
-      {:ok, view} = brand_name_has_been_submitted(view)
-      {:ok, view} = market_definition_details_have_been_submitted(view)
+      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_job_steps_have_been_added(view)
       {:ok, view} = two_desired_outcomes_each_have_been_added(view)
 
@@ -70,7 +64,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
     end
   end
 
-  defp brand_name_has_been_submitted(view) do
+  defp forms_in_previous_pages_have_been_filled(conn, path) do
+    {:ok, view, _html} = live(conn, path)
+
     resulting_html =
       view
       |> form("form", form: %{brand_name: "Big Brand Co"})
@@ -80,10 +76,6 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
     assert_patch(view, ~p"/odi-survey/create/market-definition")
     assert resulting_html =~ "Market Definition"
 
-    {:ok, view}
-  end
-
-  defp market_definition_details_have_been_submitted(view) do
     resulting_html =
       view
       |> form("form", form: %{job_executor: "Person", job_to_be_done: "Do what persons do"})
@@ -93,7 +85,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
     assert_patch(view, ~p"/odi-survey/create/desired-outcomes")
     assert resulting_html =~ "Desired Outcomes"
 
-    {:ok, view}
+    {:ok, view, resulting_html}
   end
 
   defp two_job_steps_have_been_added(view) do
