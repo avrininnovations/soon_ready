@@ -3,7 +3,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
   import Phoenix.LiveViewTest
 
   describe "happy path" do
-    test "GIVEN: Desired outcomes have been submitted, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
       {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
 
       view
