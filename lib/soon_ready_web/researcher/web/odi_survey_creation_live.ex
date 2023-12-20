@@ -5,7 +5,8 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   alias SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.ViewModels.{
     BrandNameForm,
     MarketDefinitionForm,
-    DesiredOutcomesForm
+    DesiredOutcomesForm,
+    ScreeningQuestionsForm,
   }
   alias SoonReady.SurveyManagement.DomainConcepts.JobStep
 
@@ -72,6 +73,19 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def render(%{live_action: :screening_questions} = assigns) do
     ~H"""
     <h2>Screening Questions</h2>
+
+    <.form :let={f} for={@screening_questions_form} phx-submit="submit-screening-questions">
+      <.inputs_for :let={ff} field={f[:screening_questions]}>
+        <.text_field
+          field={ff[:prompt]}
+          label="Prompt"
+        />
+      </.inputs_for>
+
+      <.submit>Proceed</.submit>
+    </.form>
+
+    <button phx-click="add-screening-question">Add screening question</button>
     """
   end
 
@@ -81,6 +95,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
       |> assign(:brand_name_form, AshPhoenix.Form.for_create(BrandNameForm, :create, api: SoonReadyWeb.Researcher.Setup.Api))
       |> assign(:market_definition_form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, api: SoonReadyWeb.Researcher.Setup.Api))
       |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyWeb.Researcher.Setup.Api, forms: [auto?: true]))
+      |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyWeb.Researcher.Setup.Api, forms: [auto?: true]))
 
     {:ok, socket}
   end
@@ -127,5 +142,10 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("add-desired-outcome", %{"name" => name} = _params, socket) do
     desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, "#{name}[desired_outcomes]", validate?: socket.assigns.desired_outcomes_form.errors || false)
     {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
+  end
+
+  def handle_event("add-screening-question", _params, socket) do
+    screening_questions_form = AshPhoenix.Form.add_form(socket.assigns.screening_questions_form, :screening_questions, validate?: socket.assigns.screening_questions_form.errors || false)
+    {:noreply, assign(socket, screening_questions_form: screening_questions_form)}
   end
 end
