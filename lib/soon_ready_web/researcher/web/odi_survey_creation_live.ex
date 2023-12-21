@@ -13,6 +13,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     DesiredOutcomesForm,
     ScreeningQuestionsForm,
     DemographicsQuestionsForm,
+    ContextQuestionsForm
   }
   alias SoonReady.SurveyManagement.DomainConcepts.JobStep
 
@@ -136,6 +137,28 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def render(%{live_action: :context_questions} = assigns) do
     ~H"""
     <h2>Context Questions</h2>
+
+    <.form :let={f} for={@context_questions_form} phx-submit="submit-context-questions">
+      <.inputs_for :let={ff} field={f[:context_questions]}>
+        <.text_field
+          field={ff[:prompt]}
+          label="Prompt"
+        />
+
+        <.inputs_for :let={fff} field={ff[:options]}>
+          <.text_input
+            field={fff[:value]}
+            placeholder="Option"
+          />
+        </.inputs_for>
+
+        <button name={ff.name} phx-click="add-context-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
+      </.inputs_for>
+
+      <.submit>Proceed</.submit>
+    </.form>
+
+    <button phx-click="add-context-question">Add context question</button>
     """
   end
 
@@ -147,6 +170,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
       |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyWeb.Researcher.Setup.Api, forms: [auto?: true]))
       |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyWeb.Researcher.Setup.Api, forms: [auto?: true]))
       |> assign(:demographics_questions_form, AshPhoenix.Form.for_create(DemographicsQuestionsForm, :create, api: SoonReadyWeb.Researcher.Setup.Api, forms: [auto?: true]))
+      |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyWeb.Researcher.Setup.Api, forms: [auto?: true]))
 
     {:ok, socket}
   end
@@ -205,6 +229,20 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     end
   end
 
+  def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.context_questions_form, params: form_params) do
+      {:ok, _view_model} ->
+        socket =
+          socket
+          |> push_redirect(to: ~p"/")
+          |> put_flash(:info, "Survey created successfully!")
+        {:noreply, socket}
+
+      {:error, form_with_error} ->
+        {:noreply, assign(socket, context_questions_form: form_with_error)}
+    end
+  end
+
   def handle_event("add-job-step", _params, socket) do
     desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, :job_steps, validate?: socket.assigns.desired_outcomes_form.errors || false)
     {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
@@ -233,5 +271,15 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("add-demographics-question-option", %{"name" => name} = _params, socket) do
     demographics_questions_form = AshPhoenix.Form.add_form(socket.assigns.demographics_questions_form, "#{name}[options]", validate?: socket.assigns.demographics_questions_form.errors || false)
     {:noreply, assign(socket, demographics_questions_form: demographics_questions_form)}
+  end
+
+  def handle_event("add-context-question", _params, socket) do
+    context_questions_form = AshPhoenix.Form.add_form(socket.assigns.context_questions_form, :context_questions, validate?: socket.assigns.context_questions_form.errors || false)
+    {:noreply, assign(socket, context_questions_form: context_questions_form)}
+  end
+
+  def handle_event("add-context-question-option", %{"name" => name} = _params, socket) do
+    context_questions_form = AshPhoenix.Form.add_form(socket.assigns.context_questions_form, "#{name}[options]", validate?: socket.assigns.context_questions_form.errors || false)
+    {:noreply, assign(socket, context_questions_form: context_questions_form)}
   end
 end
