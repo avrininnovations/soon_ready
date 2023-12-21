@@ -4,7 +4,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.MarketDefinitionPageTest do
 
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
 
       resulting_html =
         view

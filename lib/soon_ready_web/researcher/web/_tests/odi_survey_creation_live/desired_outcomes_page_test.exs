@@ -4,7 +4,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
 
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
 
       view
       |> element("button", "Add job step")
@@ -22,7 +22,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
     end
 
     test "GIVEN: Two job steps have been added, WHEN: Researcher tries to add two desired outcomes each to both job steps, THEN: Two desired outcome fields are added to the first job step", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_job_steps_have_been_added(view)
 
       view
@@ -48,7 +48,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
     end
 
     test "GIVEN: Two desired outcome fields each have been added to two job steps, WHEN: Researcher tries to submit the desired outceoms, THEN: The screening question page is displayed", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_job_steps_have_been_added(view)
       {:ok, view} = two_desired_outcomes_each_have_been_added(view)
 

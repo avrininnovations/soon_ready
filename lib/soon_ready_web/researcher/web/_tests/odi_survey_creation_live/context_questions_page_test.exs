@@ -4,23 +4,22 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ContextQuestionsPageTest do
 
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
 
       view
       |> element("button", "Add context question")
       |> render_click()
 
-      resulting_html =
-        view
-        |> element("button", "Add context question")
-        |> render_click()
+      view
+      |> element("button", "Add context question")
+      |> render_click()
 
       assert has_element?(view, ~s{input[name="form[context_questions][0][prompt]"]})
       assert has_element?(view, ~s{input[name="form[context_questions][1][prompt]"]})
     end
 
     test "GIVEN: Two context questions have been added, WHEN: Researcher tries to add two options each to the context questions, THEN: Two options field each are added to the context questions", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_context_questions_have_been_added(view)
 
       view
@@ -46,15 +45,14 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ContextQuestionsPageTest do
     end
 
     test "GIVEN: Two options each have been added to two context questions, WHEN: Researcher tries to submit the context questions, THEN: The context questions page is displayed", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_context_questions_have_been_added(view)
       {:ok, view} = two_options_each_have_been_added(view)
 
-      resulting_html =
-        view
-        |> form("form", form: %{context_questions: %{"0" => %{"prompt" => "Context Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Context Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
-        |> put_submitter("button[name=submit]")
-        |> render_submit()
+      view
+      |> form("form", form: %{context_questions: %{"0" => %{"prompt" => "Context Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Context Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
+      |> put_submitter("button[name=submit]")
+      |> render_submit()
 
       flash = assert_redirect(view, ~p"/")
       assert flash == %{"info" => "Survey created successfully!"}
@@ -130,10 +128,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ContextQuestionsPageTest do
     |> element("button", "Add screening question")
     |> render_click()
 
-    resulting_html =
-      view
-      |> element("button", "Add screening question")
-      |> render_click()
+    view
+    |> element("button", "Add screening question")
+    |> render_click()
 
     assert has_element?(view, ~s{input[name="form[screening_questions][0][prompt]"]})
     assert has_element?(view, ~s{input[name="form[screening_questions][1][prompt]"]})
@@ -180,10 +177,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ContextQuestionsPageTest do
     |> element("button", "Add demographics question")
     |> render_click()
 
-    resulting_html =
-      view
-      |> element("button", "Add demographics question")
-      |> render_click()
+    view
+    |> element("button", "Add demographics question")
+    |> render_click()
 
     assert has_element?(view, ~s{input[name="form[demographics_questions][0][prompt]"]})
     assert has_element?(view, ~s{input[name="form[demographics_questions][1][prompt]"]})
@@ -226,10 +222,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ContextQuestionsPageTest do
     |> element("button", "Add context question")
     |> render_click()
 
-    resulting_html =
-      view
-      |> element("button", "Add context question")
-      |> render_click()
+    view
+    |> element("button", "Add context question")
+    |> render_click()
 
     assert has_element?(view, ~s{input[name="form[context_questions][0][prompt]"]})
     assert has_element?(view, ~s{input[name="form[context_questions][1][prompt]"]})

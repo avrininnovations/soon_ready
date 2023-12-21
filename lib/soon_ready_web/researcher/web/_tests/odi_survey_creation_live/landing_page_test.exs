@@ -4,13 +4,13 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.LandingPageTest do
 
   describe "happy path" do
     test "WHEN: Researcher tries to visit the survey creation url, THEN: The landing page is displayed", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
+      {:ok, _view, html} = live(conn, ~p"/odi-survey/create")
 
       assert html =~ "Welcome to the ODI Survey Creator!"
     end
 
     test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher tries to submit a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
 
       resulting_html =
         view

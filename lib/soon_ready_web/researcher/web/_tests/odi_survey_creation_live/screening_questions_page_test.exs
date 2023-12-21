@@ -4,23 +4,22 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
 
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
 
       view
       |> element("button", "Add screening question")
       |> render_click()
 
-      resulting_html =
-        view
-        |> element("button", "Add screening question")
-        |> render_click()
+      view
+      |> element("button", "Add screening question")
+      |> render_click()
 
       assert has_element?(view, ~s{input[name="form[screening_questions][0][prompt]"]})
       assert has_element?(view, ~s{input[name="form[screening_questions][1][prompt]"]})
     end
 
     test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_screening_questions_have_been_added(view)
 
 
@@ -54,7 +53,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     end
 
     test "GIVEN: Two options each have been added to two screening questions, WHEN: Researcher tries to submit the screening questions, THEN: The demographics questions page is displayed", %{conn: conn} do
-      {:ok, view, html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
+      {:ok, view, _html} = forms_in_previous_pages_have_been_filled(conn, ~p"/odi-survey/create")
       {:ok, view} = two_screening_questions_have_been_added(view)
       {:ok, view} = two_options_each_have_been_added(view)
 
@@ -142,10 +141,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
     |> element("button", "Add screening question")
     |> render_click()
 
-    resulting_html =
-      view
-      |> element("button", "Add screening question")
-      |> render_click()
+    view
+    |> element("button", "Add screening question")
+    |> render_click()
 
     assert has_element?(view, ~s{input[name="form[screening_questions][0][prompt]"]})
     assert has_element?(view, ~s{input[name="form[screening_questions][1][prompt]"]})
