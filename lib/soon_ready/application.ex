@@ -13,6 +13,7 @@ defmodule SoonReady.Application do
     ]
 
   router SoonReady.Onboarding.Commands.Router
+  router SoonReady.SurveyManagement.Commands.Router
 
   @impl true
   def start(_type, _args) do
