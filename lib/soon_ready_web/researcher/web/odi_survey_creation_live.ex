@@ -174,24 +174,27 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     {:ok, socket}
   end
 
-  def handle_params(_params, _url, socket) do
-    {:noreply, socket}
+  def handle_params(params, _url, socket) do
+    {:noreply, assign(socket, params: params)}
   end
 
   def handle_event("submit-brand-name", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.brand_name_form, params: form_params) do
       {:ok, _view_model} ->
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{%{brand_name_form: form_params}}")}
+        params = Map.put(socket.assigns.params, :brand_name_form, form_params)
+        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{params}")}
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, brand_name_form: form_with_error)}
     end
   end
 
-  def handle_event("submit-market-definition", %{"form" => form_params}, socket) do
+  def handle_event("submit-market-definition", %{"form" => form_params} = params, socket) do
+    # IO.inspect(params)
     case AshPhoenix.Form.submit(socket.assigns.market_definition_form, params: form_params) do
       {:ok, _view_model} ->
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes")}
+        params = Map.put(socket.assigns.params, :market_definition_form, form_params)
+        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{params}")}
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, market_definition_form: form_with_error)}
