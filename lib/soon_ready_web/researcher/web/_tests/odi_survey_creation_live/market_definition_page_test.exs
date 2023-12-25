@@ -31,8 +31,11 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.MarketDefinitionPageTest do
 
   def assert_query_params(path) do
     %{query: query} = URI.parse(path)
-    query_params = URI.decode_query(query)
-    assert query_params["market_definition_form[job_executor]"] == @params[:job_executor]
-    assert query_params["market_definition_form[job_to_be_done]"] == @params[:job_to_be_done]
+    %{"market_definition_form" => %{
+      "job_executor" => job_executor,
+      "job_to_be_done" => job_to_be_done
+    }} = Plug.Conn.Query.decode(query)
+    assert job_executor == @params[:job_executor]
+    assert job_to_be_done == @params[:job_to_be_done]
   end
 end

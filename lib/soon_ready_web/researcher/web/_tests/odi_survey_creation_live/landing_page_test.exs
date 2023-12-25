@@ -32,7 +32,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.LandingPageTest do
 
   def assert_query_params(path) do
     %{query: query} = URI.parse(path)
-    query_params = URI.decode_query(query)
-    assert query_params["brand_name_form[brand_name]"] == @params[:brand_name]
+    %{"brand_name_form" => %{"brand_name" => brand_name}} = Plug.Conn.Query.decode(query)
+    assert brand_name == @params[:brand_name]
   end
 end
