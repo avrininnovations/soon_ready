@@ -14,7 +14,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.LandingPageTest do
     test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher tries to submit a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
 
-      resulting_html = submit_brand_form(view, @params)
+      resulting_html = submit_form(view)
 
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/market-definition"
@@ -23,9 +23,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.LandingPageTest do
     end
   end
 
-  def submit_brand_form(view, params \\ @params) do
+  def submit_form(view) do
     view
-    |> form("form", form: params)
+    |> form("form", form: @params)
     |> put_submitter("button[name=submit]")
     |> render_submit()
   end

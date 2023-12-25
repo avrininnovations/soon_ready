@@ -10,7 +10,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicQuestionsPageTest do
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two demographic questions, THEN: Two demographic question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_brand_form(view)
+      LandingPage.submit_form(view)
       MarketDefinitionPage.submit_form(view)
       DesiredOutcomesPage.add_two_job_steps(view)
       DesiredOutcomesPage.add_two_desired_outcomes_each(view)
@@ -27,7 +27,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicQuestionsPageTest do
 
     test "GIVEN: Two demographic questions have been added, WHEN: Researcher tries to add two options each to the demographic questions, THEN: Two options field each are added to the demographic questions", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_brand_form(view)
+      LandingPage.submit_form(view)
       MarketDefinitionPage.submit_form(view)
       DesiredOutcomesPage.add_two_job_steps(view)
       DesiredOutcomesPage.add_two_desired_outcomes_each(view)
@@ -47,7 +47,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicQuestionsPageTest do
 
     test "GIVEN: Two options each have been added to two demographic questions, WHEN: Researcher tries to submit the demographic questions, THEN: The context questions page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_brand_form(view)
+      LandingPage.submit_form(view)
       MarketDefinitionPage.submit_form(view)
       DesiredOutcomesPage.add_two_job_steps(view)
       DesiredOutcomesPage.add_two_desired_outcomes_each(view)
