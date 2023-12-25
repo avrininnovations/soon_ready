@@ -17,11 +17,9 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.LandingPageTest do
       resulting_html = submit_brand_form(view, @params)
 
       path = assert_patch(view)
-      %{query: query} = URI.parse(path)
-      query_params = URI.decode_query(query)
       assert path =~ ~p"/odi-survey/create/market-definition"
       assert resulting_html =~ "Market Definition"
-      assert query_params["brand_name_form[brand_name]"] == @params[:brand_name]
+      assert_query_params(path)
     end
   end
 
@@ -30,5 +28,11 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.LandingPageTest do
     |> form("form", form: params)
     |> put_submitter("button[name=submit]")
     |> render_submit()
+  end
+
+  def assert_query_params(path) do
+    %{query: query} = URI.parse(path)
+    query_params = URI.decode_query(query)
+    assert query_params["brand_name_form[brand_name]"] == @params[:brand_name]
   end
 end
