@@ -10,10 +10,10 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.MarketDefinitionPageTest do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      assert_patch(view)
 
       resulting_html = submit_form(view)
 
+      _market_definition_page_path = assert_patch(view)
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/desired-outcomes"
       assert resulting_html =~ "Desired Outcomes"
