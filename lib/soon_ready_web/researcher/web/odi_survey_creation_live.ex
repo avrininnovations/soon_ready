@@ -181,7 +181,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-brand-name", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.brand_name_form, params: form_params) do
       {:ok, _view_model} ->
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition")}
+        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{%{brand_name_form: form_params}}")}
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, brand_name_form: form_with_error)}
@@ -231,6 +231,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.context_questions_form, params: form_params) do
       {:ok, _view_model} ->
+
         socket =
           socket
           |> push_redirect(to: ~p"/")

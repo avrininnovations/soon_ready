@@ -8,7 +8,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      LandingPage.submit_brand_form(view)
       MarketDefinitionPage.submit_form(view)
 
       resulting_html = add_two_job_steps(view)
@@ -21,7 +21,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
 
     test "GIVEN: Two job steps have been added, WHEN: Researcher tries to add two desired outcomes each to both job steps, THEN: Two desired outcome fields are added to the first job step", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      LandingPage.submit_brand_form(view)
       MarketDefinitionPage.submit_form(view)
       add_two_job_steps(view)
 
@@ -35,7 +35,7 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
 
     test "GIVEN: Two desired outcome fields each have been added to two job steps, WHEN: Researcher tries to submit the desired outceoms, THEN: The screening question page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      LandingPage.submit_brand_form(view)
       MarketDefinitionPage.submit_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
