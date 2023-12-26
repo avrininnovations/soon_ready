@@ -92,7 +92,6 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
 
   def assert_query_params(path) do
     %{query: query} = URI.parse(path)
-    query_params = URI.decode_query(query)
     %{"desired_outcomes_form" => query_params} = Plug.Conn.Query.decode(query)
     assert SoonReady.Utils.is_equal_or_subset?(@params, query_params)
   end
