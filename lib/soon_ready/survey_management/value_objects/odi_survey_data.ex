@@ -17,4 +17,13 @@ defmodule SoonReady.SurveyManagement.ValueObjects.OdiSurveyData do
     attribute :demographic_questions, {:array, DemographicQuestion}, allow_nil?: false, constraints: [min_length: 1]
     attribute :context_questions, {:array, ContextQuestion}, allow_nil?: false, constraints: [min_length: 1]
   end
+
+  actions do
+    create :new
+  end
+
+  code_interface do
+    define_for SoonReady.SurveyManagement.Setup.Api
+    define :new
+  end
 end

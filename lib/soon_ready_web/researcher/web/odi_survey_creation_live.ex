@@ -1,6 +1,7 @@
 defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   use SoonReadyWeb, :live_view
 
+  require Logger
   import SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive.Components.Form, only: [
     text_input: 1,
     text_field: 1,
@@ -15,6 +16,8 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     DemographicQuestionsForm,
     ContextQuestionsForm
   }
+  alias SoonReady.SurveyManagement.UseCases
+  alias SoonReady.SurveyManagement.ValueObjects.OdiSurveyData
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
@@ -181,7 +184,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-brand-name", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.brand_name_form, params: form_params) do
       {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, :brand_name_form, form_params)
+        params = Map.put(socket.assigns.params, "brand_name_form", form_params)
         {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{params}")}
 
       {:error, form_with_error} ->
@@ -192,7 +195,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-market-definition", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.market_definition_form, params: form_params) do
       {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, :market_definition_form, form_params)
+        params = Map.put(socket.assigns.params, "market_definition_form", form_params)
         {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{params}")}
 
       {:error, form_with_error} ->
@@ -203,7 +206,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-desired-outcomes", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.desired_outcomes_form, params: form_params) do
       {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, :desired_outcomes_form, form_params)
+        params = Map.put(socket.assigns.params, "desired_outcomes_form", form_params)
         {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{params}")}
 
       {:error, form_with_error} ->
@@ -214,7 +217,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.screening_questions_form, params: form_params) do
       {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, :screening_questions_form, form_params)
+        params = Map.put(socket.assigns.params, "screening_questions_form", form_params)
         {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{params}")}
 
       {:error, form_with_error} ->
@@ -225,7 +228,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.demographic_questions_form, params: form_params) do
       {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, :demographic_questions_form, form_params)
+        params = Map.put(socket.assigns.params, "demographic_questions_form", form_params)
         {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{params}")}
 
       {:error, form_with_error} ->
@@ -236,12 +239,26 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.context_questions_form, params: form_params) do
       {:ok, _view_model} ->
+        params = Map.put(socket.assigns.params, "context_questions_form", form_params)
 
-        socket =
-          socket
-          |> push_redirect(to: ~p"/")
-          |> put_flash(:info, "Survey created successfully!")
-        {:noreply, socket}
+        with {:ok, %OdiSurveyData{} = odi_survey_data} <- normalize(params),
+              {:ok, _command} <- UseCases.publish_odi_survey(odi_survey_data)
+        do
+          socket =
+            socket
+            |> push_redirect(to: ~p"/")
+            |> put_flash(:info, "Survey created successfully!")
+          {:noreply, socket}
+        else
+          {:error, error} ->
+            socket =
+              socket
+              |> push_patch(to: ~p"/odi-survey/create/context-questions?#{params}")
+              |> put_flash(:error, "Survey creation failed. Please try again or contact support.")
+
+              Logger.error("Survey creation failed: #{inspect(error)}")
+            {:noreply, socket}
+        end
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, context_questions_form: form_with_error)}
@@ -286,5 +303,36 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("add-context-question-option", %{"name" => name} = _params, socket) do
     context_questions_form = AshPhoenix.Form.add_form(socket.assigns.context_questions_form, "#{name}[options]", validate?: socket.assigns.context_questions_form.errors || false)
     {:noreply, assign(socket, context_questions_form: context_questions_form)}
+  end
+
+  defp normalize(params) do
+    OdiSurveyData.new(%{
+      brand: params["brand_name_form"]["brand_name"],
+      market: %{job_executor: params["market_definition_form"]["job_executor"],
+                job_to_be_done: params["market_definition_form"]["job_to_be_done"]},
+      job_steps: Enum.map(params["desired_outcomes_form"]["job_steps"], fn {_index, job_step} ->
+        %{name: job_step["name"],
+          desired_outcomes: Enum.map(job_step["desired_outcomes"], fn {_index, desired_outcome} -> desired_outcome["value"] end)
+        }
+      end),
+      screening_questions: Enum.map(params["screening_questions_form"]["screening_questions"], fn {_index, screening_question} ->
+        %{prompt: screening_question["prompt"],
+          options: Enum.map(screening_question["options"], fn {_index, option} ->
+            %{value: option["value"],
+              is_correct: option["is_correct_option"]}
+          end)
+        }
+      end),
+      demographic_questions: Enum.map(params["demographic_questions_form"]["demographic_questions"], fn {_index, demographic_question} ->
+        %{prompt: demographic_question["prompt"],
+          options: Enum.map(demographic_question["options"], fn {_index, option} -> option["value"] end)
+        }
+      end),
+      context_questions: Enum.map(params["context_questions_form"]["context_questions"], fn {_index, context_question} ->
+        %{prompt: context_question["prompt"],
+          options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
+        }
+      end)
+    })
   end
 end

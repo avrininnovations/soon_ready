@@ -17,7 +17,7 @@ defmodule SoonReady.Utils do
     end)
   end
 
-  def is_equal_or_subset?(investigated_list, comparison_list, nested)
+  def is_equal_or_subset?(investigated_list, comparison_list, _nested)
       when is_list(investigated_list) and is_list(comparison_list)
   do
     value_pairs = Enum.zip(investigated_list, comparison_list)
@@ -26,7 +26,7 @@ defmodule SoonReady.Utils do
     end)
   end
 
-  def is_equal_or_subset?(investigated_value, comparison_value, nested) do
+  def is_equal_or_subset?(investigated_value, comparison_value, _nested) do
     investigated_value == comparison_value
   end
 end
