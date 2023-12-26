@@ -71,9 +71,4 @@ defmodule SoonReady.SurveyManagement.Tests.UseCasesTest do
         flunk("Expected ODI survey to be published but got: #{inspect(error)}")
     end
   end
-
-  # rename brand_name to brand
-  # rename market_details to market
-  # move job name concept
-  # move desired outcomes concept
 end
