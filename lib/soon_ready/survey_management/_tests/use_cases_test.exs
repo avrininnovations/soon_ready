@@ -58,12 +58,12 @@ defmodule SoonReady.SurveyManagement.Tests.UseCasesTest do
       assert_receive_event(Application, OdiSurveyPublished,
         fn event -> event.survey_id == survey_id end,
         fn event ->
-          assert SoonReady.Utils.partially_equal?(odi_survey_data.brand, event.brand)
-          assert SoonReady.Utils.partially_equal?(odi_survey_data.market, event.market)
-          assert SoonReady.Utils.partially_equal?(odi_survey_data.job_steps, event.job_steps)
-          assert SoonReady.Utils.partially_equal?(odi_survey_data.screening_questions, event.screening_questions)
-          assert SoonReady.Utils.partially_equal?(odi_survey_data.demographic_questions, event.demographic_questions)
-          assert SoonReady.Utils.partially_equal?(odi_survey_data.context_questions, event.context_questions)
+          assert SoonReady.Utils.is_equal_or_subset?(event.brand, odi_survey_data.brand)
+          assert SoonReady.Utils.is_equal_or_subset?(event.market, odi_survey_data.market)
+          assert SoonReady.Utils.is_equal_or_subset?(event.job_steps, odi_survey_data.job_steps)
+          assert SoonReady.Utils.is_equal_or_subset?(event.screening_questions, odi_survey_data.screening_questions)
+          assert SoonReady.Utils.is_equal_or_subset?(event.demographic_questions, odi_survey_data.demographic_questions)
+          assert SoonReady.Utils.is_equal_or_subset?(event.context_questions, odi_survey_data.context_questions)
         end
       )
     else
@@ -71,4 +71,9 @@ defmodule SoonReady.SurveyManagement.Tests.UseCasesTest do
         flunk("Expected ODI survey to be published but got: #{inspect(error)}")
     end
   end
+
+  # rename brand_name to brand
+  # rename market_details to market
+  # move job name concept
+  # move desired outcomes concept
 end
