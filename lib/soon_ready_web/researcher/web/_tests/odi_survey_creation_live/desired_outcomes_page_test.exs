@@ -5,6 +5,8 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
   alias SoonReadyWeb.OdiSurveyCreationLive.LandingPageTest, as: LandingPage
   alias SoonReadyWeb.OdiSurveyCreationLive.MarketDefinitionPageTest, as: MarketDefinitionPage
 
+  @params %{"job_steps" => %{"0" => %{"name" => "Job Step 1", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}, "1" => %{"name" => "Job Step 2", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}}}
+
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
@@ -42,8 +44,14 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
 
       resulting_html = submit_form(view)
 
-      assert_patch(view, ~p"/odi-survey/create/screening-questions")
+      _market_definition_page_path = assert_patch(view)
+      _desired_outcomes_page_path = assert_patch(view)
+      path = assert_patch(view)
+      assert path =~ ~p"/odi-survey/create/screening-questions"
       assert resulting_html =~ "Screening Questions"
+      LandingPage.assert_query_params(path)
+      MarketDefinitionPage.assert_query_params(path)
+      assert_query_params(path)
     end
   end
 
@@ -77,8 +85,15 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest do
 
   def submit_form(view) do
     view
-    |> form("form", form: %{job_steps: %{"0" => %{"name" => "Job Step 1", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}, "1" => %{"name" => "Job Step 2", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}}})
+    |> form("form", form: @params)
     |> put_submitter("button[name=submit]")
     |> render_submit()
+  end
+
+  def assert_query_params(path) do
+    %{query: query} = URI.parse(path)
+    query_params = URI.decode_query(query)
+    %{"desired_outcomes_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert SoonReady.Utils.is_equal_or_subset?(@params, query_params)
   end
 end

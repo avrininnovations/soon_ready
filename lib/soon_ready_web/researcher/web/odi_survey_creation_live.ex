@@ -189,8 +189,7 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
     end
   end
 
-  def handle_event("submit-market-definition", %{"form" => form_params} = params, socket) do
-    # IO.inspect(params)
+  def handle_event("submit-market-definition", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.market_definition_form, params: form_params) do
       {:ok, _view_model} ->
         params = Map.put(socket.assigns.params, :market_definition_form, form_params)
@@ -204,7 +203,8 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-desired-outcomes", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.desired_outcomes_form, params: form_params) do
       {:ok, _view_model} ->
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions")}
+        params = Map.put(socket.assigns.params, :desired_outcomes_form, form_params)
+        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{params}")}
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, desired_outcomes_form: form_with_error)}
