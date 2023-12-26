@@ -225,7 +225,8 @@ defmodule SoonReadyWeb.Researcher.Web.OdiSurveyCreationLive do
   def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.demographic_questions_form, params: form_params) do
       {:ok, _view_model} ->
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions")}
+        params = Map.put(socket.assigns.params, :demographic_questions_form, form_params)
+        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{params}")}
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, demographic_questions_form: form_with_error)}

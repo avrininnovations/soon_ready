@@ -7,6 +7,8 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicQuestionsPageTest do
   alias SoonReadyWeb.OdiSurveyCreationLive.DesiredOutcomesPageTest, as: DesiredOutcomesPage
   alias SoonReadyWeb.OdiSurveyCreationLive.ScreeningQuestionsPageTest, as: ScreeningQuestionsPage
 
+  @params %{"demographic_questions" => %{"0" => %{"prompt" => "Demographic Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Demographic Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}}
+
   describe "happy path" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two demographic questions, THEN: Two demographic question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
@@ -60,8 +62,18 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicQuestionsPageTest do
 
       resulting_html = submit_form(view)
 
-      assert_patch(view, ~p"/odi-survey/create/context-questions")
+      _market_definition_page_path = assert_patch(view)
+      _desired_outcomes_page_path = assert_patch(view)
+      _screening_questions_page_path = assert_patch(view)
+      _demographic_questions_page_path = assert_patch(view)
+      path = assert_patch(view)
+      assert path =~ ~p"/odi-survey/create/context-questions"
       assert resulting_html =~ "Context Questions"
+      LandingPage.assert_query_params(path)
+      MarketDefinitionPage.assert_query_params(path)
+      DesiredOutcomesPage.assert_query_params(path)
+      ScreeningQuestionsPage.assert_query_params(path)
+      assert_query_params(path)
     end
   end
 
@@ -95,8 +107,14 @@ defmodule SoonReadyWeb.OdiSurveyCreationLive.DemographicQuestionsPageTest do
 
   def submit_form(view) do
     view
-    |> form("form", form: %{demographic_questions: %{"0" => %{"prompt" => "Demographic Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Demographic Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
+    |> form("form", form: @params)
     |> put_submitter("button[name=submit]")
     |> render_submit()
+  end
+
+  def assert_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"demographic_questions_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert SoonReady.Utils.is_equal_or_subset?(@params, query_params)
   end
 end
