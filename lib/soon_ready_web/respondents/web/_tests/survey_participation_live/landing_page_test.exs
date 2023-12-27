@@ -73,7 +73,9 @@ defmodule SoonReadyWeb.Respondents.Web.Tests.SurveyParticipationLive.LandingPage
         assert_query_params(path)
       else
         {:error, error} ->
-          flunk("Error publishing survey: #{inspect(error)}")
+          flunk("Error: #{inspect(error)}")
+        _ ->
+          flunk("An unexpected error occurred")
       end
     end
   end
