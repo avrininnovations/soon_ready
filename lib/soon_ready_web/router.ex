@@ -31,6 +31,14 @@ defmodule SoonReadyWeb.Router do
     live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
   end
 
+  scope "/", SoonReadyWeb.Respondents.Web do
+    pipe_through :browser
+
+    live "/survey/participate/:survey_id", SurveyParticipationLive, :landing_page
+    live "/survey/participate/:survey_id/screening-questions", SurveyParticipationLive, :screening_questions
+  end
+
+
   # Other scopes may use custom stacks.
   # scope "/api", SoonReadyWeb do
   #   pipe_through :api
