@@ -43,7 +43,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewMo
           })
         end)
         Ash.Changeset.change_attribute(changeset, :questions, questions)
-        # |> IO.inspect(label: "changeset")
       end
     end
   end
