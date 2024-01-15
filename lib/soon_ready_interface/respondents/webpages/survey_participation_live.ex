@@ -6,6 +6,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ScreeningForm,
     ContactDetailsForm,
     DemographicsForm,
+    ContextForm,
   }
   alias SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
 
@@ -93,6 +94,27 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ~H"""
     <div>
       <h1>Context</h1>
+
+      <.form :let={f} for={@context_form} phx-submit="submit-context-questions">
+        <.inputs_for :let={ff} field={f[:questions]}>
+          <Doggo.input
+            field={ff[:response]}
+            type="radio-group"
+            label={ff.data.prompt}
+            options={Enum.map(ff.data.options, fn option -> {option, option} end)}
+          />
+        </.inputs_for>
+
+        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
+      </.form>
+    </div>
+    """
+  end
+
+  def render(%{live_action: :comparison} = assigns) do
+    ~H"""
+    <div>
+      <h1>Comparison</h1>
     </div>
     """
   end
@@ -110,6 +132,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:ok, survey} = ActiveOdiSurveys.get(survey_id)
     {:ok, screening_form_view_model} = ScreeningForm.from_read_model(survey)
     {:ok, demographics_form_view_model} = DemographicsForm.from_read_model(survey)
+    {:ok, context_form_view_model} = ContextForm.from_read_model(survey)
 
     socket =
       socket
@@ -131,6 +154,18 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         questions: [
           type: :list,
           data: demographics_form_view_model.questions,
+          update_action: :update,
+          transform_params: fn form, params, _arg3 ->
+            params
+            |> Map.put("prompt", form.data.prompt)
+            |> Map.put("options", form.data.options)
+          end
+        ]
+      ]))
+      |> assign(:context_form, AshPhoenix.Form.for_update(context_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
+        questions: [
+          type: :list,
+          data: context_form_view_model.questions,
           update_action: :update,
           transform_params: fn form, params, _arg3 ->
             params
@@ -193,6 +228,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, demographics_form: form_with_error)}
+    end
+  end
+
+  def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.context_form, params: form_params) do
+      {:ok, _view_model} ->
+        params = Map.put(socket.assigns.params, "context_form", form_params)
+        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/comparison?#{params}")}
+
+      {:error, form_with_error} ->
+        {:noreply, assign(socket, context_form: form_with_error)}
     end
   end
 end
