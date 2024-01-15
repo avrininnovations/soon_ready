@@ -1,7 +1,6 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   use SoonReadyInterface, :live_view
 
-  import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.{
     NicknameForm,
     ScreeningForm
@@ -14,11 +13,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       <h1>Welcome to our Survey!</h1>
 
       <.form :let={f} for={@nickname_form} phx-submit="submit-nickname">
-        <.text_input
+        <Doggo.input
           field={f[:nickname]}
           placeholder="What's your nickname?"
         />
-        <.submit>Start Your Adventure</.submit>
+        <Doggo.button type="submit" name="submit">Start Your Adventure</Doggo.button>
       </.form>
     </div>
     """
@@ -39,7 +38,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
           />
         </.inputs_for>
 
-        <.submit>Take your Next Step</.submit>
+        <Doggo.button type="submit" name="submit">Take your Next Step</Doggo.button>
       </.form>
     </div>
     """
@@ -68,7 +67,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     socket =
       socket
-      |> assign(:survey_id, survey_id)
       |> assign(:nickname_form, AshPhoenix.Form.for_create(NicknameForm, :create, api: SoonReadyInterface.Respondents.Setup.Api))
       |> assign(:screening_form, AshPhoenix.Form.for_update(screening_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
         questions: [
@@ -94,7 +92,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     case AshPhoenix.Form.submit(socket.assigns.nickname_form, params: form_params) do
       {:ok, _view_model} ->
         params = Map.put(socket.assigns.params, "nickname_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.survey_id}/screening-questions?#{params}")}
+        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/screening-questions?#{params}")}
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, nickname_form: form_with_error)}
@@ -106,13 +104,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       {:ok, view_model} ->
         if view_model.all_responses_are_correct do
           params = Map.put(socket.assigns.params, "screening_form", form_params)
-          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.survey_id}/contact-details?#{params}")}
+          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/contact-details?#{params}")}
         else
-          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.survey_id}/thank-you")}
+          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
         end
 
       {:error, form_with_error} ->
-        # IO.inspect(form_with_error, label: "form_with_error")
         {:noreply, assign(socket, screening_form: form_with_error)}
     end
   end
