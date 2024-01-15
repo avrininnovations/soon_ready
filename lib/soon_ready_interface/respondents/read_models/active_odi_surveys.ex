@@ -1,11 +1,10 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys do
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
     name: "#{__MODULE__}",
-    # TODO: Update consistency to read from environment variable
-    consistency: :strong
+    consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
   alias SoonReady.SurveyManagement.ValueObjects.{
     Market,
@@ -45,6 +44,11 @@ defmodule SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys do
     define :get do
       args [:id]
     end
+  end
+
+  postgres do
+    repo SoonReady.Repo
+    table "respondents__read_models__active_odi_surveys"
   end
 
   def handle(%OdiSurveyPublished{} = event, _metadata) do
