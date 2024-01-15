@@ -21,7 +21,7 @@ defmodule SoonReady.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      SoonReadyWeb.Telemetry,
+      SoonReadyInterface.Telemetry,
       SoonReady.Repo,
       {DNSCluster, query: Application.get_env(:soon_ready, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: SoonReady.PubSub},
@@ -30,7 +30,7 @@ defmodule SoonReady.Application do
       # Start a worker by calling: SoonReady.Worker.start_link(arg)
       # {SoonReady.Worker, arg},
       # Start to serve requests, typically the last entry
-      SoonReadyWeb.Endpoint,
+      SoonReadyInterface.Endpoint,
 
       # Cloak Encryption
       SoonReady.Vault,
@@ -38,7 +38,7 @@ defmodule SoonReady.Application do
       # Commanded
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
-      SoonReadyWeb.Respondents.Setup.Supervisor,
+      SoonReadyInterface.Respondents.Setup.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -51,7 +51,7 @@ defmodule SoonReady.Application do
   # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
-    SoonReadyWeb.Endpoint.config_change(changed, removed)
+    SoonReadyInterface.Endpoint.config_change(changed, removed)
     :ok
   end
 end

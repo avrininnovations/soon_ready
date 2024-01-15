@@ -17,16 +17,16 @@ config :soon_ready, ash_apis: [
   SoonReady.Onboarding.Setup.Api,
   SoonReady.SurveyManagement.Setup.Api,
 
-  SoonReadyWeb.Researcher.Setup.Api,
-  SoonReadyWeb.Respondents.Setup.Api,
+  SoonReadyInterface.Researcher.Setup.Api,
+  SoonReadyInterface.Respondents.Setup.Api,
 ]
 
 # Configures the endpoint
-config :soon_ready, SoonReadyWeb.Endpoint,
+config :soon_ready, SoonReadyInterface.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [html: SoonReadyWeb.Public.Web.ErrorHtml, json: SoonReadyWeb.Public.Json.ErrorJson],
+    formats: [html: SoonReadyInterface.Public.Web.ErrorHtml, json: SoonReadyInterface.Public.Json.ErrorJson],
     layout: false
   ],
   pubsub_server: SoonReady.PubSub,

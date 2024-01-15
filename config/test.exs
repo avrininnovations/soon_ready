@@ -27,7 +27,7 @@ config :soon_ready, consistency: :strong
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :soon_ready, SoonReadyWeb.Endpoint,
+config :soon_ready, SoonReadyInterface.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "8U9sc96Mq3KRMmTradgKFD5wua3dJ5olRmxbuDptdcdghx06QUoZBFKOno5k7rMB",
   server: false
