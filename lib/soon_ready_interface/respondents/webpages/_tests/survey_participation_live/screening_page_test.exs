@@ -61,7 +61,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
           {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
           {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
-          _ <- LandingPage.submit_form(view),
+          _ <- LandingPage.submit_response(view),
           _ <- assert_patch(view)
     do
       resulting_html = submit_response(view, @correct_form_params)
@@ -82,7 +82,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
           {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
           {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
-          _ = LandingPage.submit_form(view),
+          _ = LandingPage.submit_response(view),
           _ = assert_patch(view)
     do
       resulting_html = submit_response(view, @incorrect_form_params)

@@ -65,7 +65,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
             {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
             {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}")
       do
-        resulting_html = submit_form(view)
+        resulting_html = submit_response(view)
 
         path = assert_patch(view)
         assert path =~ "/survey/participate/#{use_case_data.survey_id}/screening-questions"
@@ -80,7 +80,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     end
   end
 
-  def submit_form(view) do
+  def submit_response(view) do
     view
     |> form("form", form: @form_params)
     |> put_submitter("button[name=submit]")
