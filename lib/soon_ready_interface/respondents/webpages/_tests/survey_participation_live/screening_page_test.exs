@@ -60,9 +60,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
     with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
           {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
-          {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
-          _ = LandingPage.submit_form(view),
-          _ = assert_patch(view)
+          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
+          _ <- LandingPage.submit_form(view),
+          _ <- assert_patch(view)
     do
       resulting_html = submit_response(view, @correct_form_params)
 
@@ -98,7 +98,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     end
   end
 
-  def submit_response(view, params) do
+  def submit_response(view, params \\ @correct_form_params) do
     view
     |> form("form", form: params)
     |> put_submitter("button[name=submit]")
