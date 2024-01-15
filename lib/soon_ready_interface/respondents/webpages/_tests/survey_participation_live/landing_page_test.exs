@@ -80,9 +80,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     end
   end
 
-  def submit_response(view) do
+  def submit_response(view, params \\ @form_params) do
     view
-    |> form("form", form: @form_params)
+    |> form("form", form: params)
     |> put_submitter("button[name=submit]")
     |> render_submit()
   end
