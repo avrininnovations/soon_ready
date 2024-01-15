@@ -3,7 +3,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.{
     NicknameForm,
-    ScreeningForm
+    ScreeningForm,
+    ContactDetailsForm,
   }
   alias SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
 
@@ -48,6 +49,28 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ~H"""
     <div>
       <h1>Contact Details</h1>
+
+      <.form :let={f} for={@contact_details_form} phx-submit="submit-contact-details">
+        <Doggo.input
+          field={f[:email]}
+          type="email"
+          placeholder="Email"
+        />
+        <Doggo.input
+          field={f[:phone_number]}
+          type="tel"
+          placeholder="Phone Number"
+        />
+        <Doggo.button type="submit" name="submit">Submit</Doggo.button>
+      </.form>
+    </div>
+    """
+  end
+
+  def render(%{live_action: :demographics} = assigns) do
+    ~H"""
+    <div>
+      <h1>Demographics</h1>
     </div>
     """
   end
@@ -80,6 +103,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
           end
         ]
       ]))
+      |> assign(:contact_details_form, AshPhoenix.Form.for_create(ContactDetailsForm, :create, api: SoonReadyInterface.Respondents.Setup.Api))
 
     {:ok, socket}
   end
@@ -111,6 +135,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, screening_form: form_with_error)}
+    end
+  end
+
+  def handle_event("submit-contact-details", %{"form" => form_params}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.contact_details_form, params: form_params) do
+      {:ok, _view_model} ->
+        params = Map.put(socket.assigns.params, "contact_details_form", form_params)
+        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/demographics?#{params}")}
+
+      {:error, form_with_error} ->
+        {:noreply, assign(socket, contact_details_form: form_with_error)}
     end
   end
 end
