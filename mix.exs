@@ -61,6 +61,7 @@ defmodule SoonReady.MixProject do
       {:commanded, "~> 1.4"},
       {:commanded_eventstore_adapter, "~> 1.4"},
       {:cloak, "~> 1.1"},
+      {:doggo, "~> 0.4"},
     ]
   end
 

@@ -36,6 +36,7 @@ defmodule SoonReadyWeb.Router do
 
     live "/survey/participate/:survey_id", SurveyParticipationLive, :landing_page
     live "/survey/participate/:survey_id/screening-questions", SurveyParticipationLive, :screening_questions
+    live "/survey/participate/:survey_id/contact-details", SurveyParticipationLive, :contact_details
   end
 
 
