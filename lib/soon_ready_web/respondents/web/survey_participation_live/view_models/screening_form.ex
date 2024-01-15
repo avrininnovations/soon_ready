@@ -8,6 +8,20 @@ defmodule SoonReadyWeb.Respondents.Web.SurveyParticipationLive.ViewModels.Screen
     attribute :questions, {:array, Question}, allow_nil?: false
   end
 
+  calculations do
+    calculate :all_responses_are_correct, :boolean, fn record, _context ->
+      Enum.all?(record.questions, fn question ->
+        Enum.any?(question.options, fn option ->
+          option.is_correct && question.response == option.value
+        end)
+      end)
+    end
+  end
+
+  changes do
+    change load(:all_responses_are_correct)
+  end
+
   actions do
     defaults [:create, :read, :update]
 

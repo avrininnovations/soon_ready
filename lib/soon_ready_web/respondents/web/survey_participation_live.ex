@@ -53,6 +53,14 @@ defmodule SoonReadyWeb.Respondents.Web.SurveyParticipationLive do
     """
   end
 
+  def render(%{live_action: :thank_you} = assigns) do
+    ~H"""
+    <div>
+      <h1>Thank You!</h1>
+    </div>
+    """
+  end
+
   def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
     # TODO: Make asyncronous
     {:ok, survey} = ActiveOdiSurveys.get(survey_id)
@@ -95,9 +103,13 @@ defmodule SoonReadyWeb.Respondents.Web.SurveyParticipationLive do
 
   def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.screening_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "screening_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.survey_id}/contact-details?#{params}")}
+      {:ok, view_model} ->
+        if view_model.all_responses_are_correct do
+          params = Map.put(socket.assigns.params, "screening_form", form_params)
+          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.survey_id}/contact-details?#{params}")}
+        else
+          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.survey_id}/thank-you")}
+        end
 
       {:error, form_with_error} ->
         # IO.inspect(form_with_error, label: "form_with_error")

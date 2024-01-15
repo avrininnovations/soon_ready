@@ -50,32 +50,57 @@ defmodule SoonReadyWeb.Respondents.Web.Tests.SurveyParticipationLive.ScreeningQu
     }
   }
 
-  describe "happy path" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
-      with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
-            {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
-            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
-            _ = LandingPage.submit_form(view),
-            _ = assert_patch(view)
-      do
-        resulting_html = submit_correct_response(view)
+  @incorrect_form_params %{
+    "questions" => %{
+      "0" => %{"response" => "Option 1"},
+      "1" => %{"response" => "Option 2"}
+    }
+  }
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{use_case_data.survey_id}/contact-details"
-        assert resulting_html =~ "Contact Details"
-        assert_query_params_has_correct_responses(path)
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+  test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
+    with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
+          {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
+          {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
+          _ = LandingPage.submit_form(view),
+          _ = assert_patch(view)
+    do
+      resulting_html = submit_response(view, @correct_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{use_case_data.survey_id}/contact-details"
+      assert resulting_html =~ "Contact Details"
+      assert_query_params_has_correct_responses(path)
+    else
+      {:error, error} ->
+        flunk("Error: #{inspect(error)}")
+      _ ->
+        flunk("An unexpected error occurred")
     end
   end
 
-  def submit_correct_response(view) do
+  test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn} do
+    with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
+          {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
+          {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
+          _ = LandingPage.submit_form(view),
+          _ = assert_patch(view)
+    do
+      resulting_html = submit_response(view, @incorrect_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{use_case_data.survey_id}/thank-you"
+      assert resulting_html =~ "Thank You!"
+    else
+      {:error, error} ->
+        flunk("Error: #{inspect(error)}")
+      _ ->
+        flunk("An unexpected error occurred")
+    end
+  end
+
+  def submit_response(view, params) do
     view
-    |> form("form", form: @correct_form_params)
+    |> form("form", form: params)
     |> put_submitter("button[name=submit]")
     |> render_submit()
   end
