@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.ContactDetailsTest do
+defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.ContactDetailsPageTest do
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
