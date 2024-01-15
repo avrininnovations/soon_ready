@@ -14,13 +14,13 @@ defmodule SoonReadyInterface.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", SoonReadyInterface.Public.Web do
+  scope "/", SoonReadyInterface.Public.Webpages do
     pipe_through :browser
 
     live "/", HomepageLive, :home
   end
 
-  scope "/", SoonReadyInterface.Researcher.Web do
+  scope "/", SoonReadyInterface.Researcher.Webpages do
     pipe_through :browser
 
     live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions
@@ -31,7 +31,7 @@ defmodule SoonReadyInterface.Router do
     live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
   end
 
-  scope "/", SoonReadyInterface.Respondents.Web do
+  scope "/", SoonReadyInterface.Respondents.Webpages do
     pipe_through :browser
 
     live "/survey/participate/:survey_id", SurveyParticipationLive, :landing_page

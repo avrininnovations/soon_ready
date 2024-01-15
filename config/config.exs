@@ -26,7 +26,7 @@ config :soon_ready, SoonReadyInterface.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [html: SoonReadyInterface.Public.Web.ErrorHtml, json: SoonReadyInterface.Public.Json.ErrorJson],
+    formats: [html: SoonReadyInterface.Public.Webpages.ErrorHtml, json: SoonReadyInterface.Public.Json.ErrorJson],
     layout: false
   ],
   pubsub_server: SoonReady.PubSub,
