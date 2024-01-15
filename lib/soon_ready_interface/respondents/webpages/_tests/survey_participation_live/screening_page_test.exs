@@ -69,7 +69,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
       path = assert_patch(view)
       assert path =~ ~p"/survey/participate/#{use_case_data.survey_id}/contact-details"
       assert resulting_html =~ "Contact Details"
-      assert_query_params_has_correct_responses(path)
+      assert_query_params(path)
     else
       {:error, error} ->
         flunk("Error: #{inspect(error)}")
@@ -105,9 +105,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     |> render_submit()
   end
 
-  def assert_query_params_has_correct_responses(path) do
+  def assert_query_params(path, params \\ @correct_form_params) do
     %{query: query} = URI.parse(path)
     %{"screening_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert SoonReady.Utils.is_equal_or_subset?(@correct_form_params, query_params)
+    assert SoonReady.Utils.is_equal_or_subset?(params, query_params)
   end
 end
