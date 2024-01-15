@@ -49,7 +49,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     phone_number: "1234567890",
   }
 
-  test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics is displayed", %{conn: conn} do
+  test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn} do
     with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
           {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
           {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
