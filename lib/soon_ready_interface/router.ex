@@ -40,6 +40,7 @@ defmodule SoonReadyInterface.Router do
     live "/survey/participate/:survey_id/demographics", SurveyParticipationLive, :demographics
     live "/survey/participate/:survey_id/context", SurveyParticipationLive, :context
     live "/survey/participate/:survey_id/comparison", SurveyParticipationLive, :comparison
+    live "/survey/participate/:survey_id/desired-outcome-ratings", SurveyParticipationLive, :desired_outcome_ratings
     live "/survey/participate/:survey_id/thank-you", SurveyParticipationLive, :thank_you
   end
 

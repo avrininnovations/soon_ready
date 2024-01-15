@@ -7,6 +7,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ContactDetailsForm,
     DemographicsForm,
     ContextForm,
+    ComparisonForm,
   }
   alias SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
 
@@ -115,6 +116,45 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ~H"""
     <div>
       <h1>Comparison</h1>
+
+      <.form :let={f} for={@comparison_form} phx-submit="submit-comparison-questions">
+        <Doggo.input
+          field={f[:alternatives_used]}
+          type="textarea"
+          label={"What products, services or platforms have you used to #{f.data.job_to_be_done}?"}
+        />
+        <Doggo.input
+          field={f[:additional_resources_used]}
+          type="textarea"
+          label="What additional things do you usually use/require when you're using any of the above?"
+        />
+        <Doggo.input
+          field={f[:amount_spent_annually_in_naira]}
+          type="number"
+          label={"In total, how much would you estimate that you spend annually to #{f.data.job_to_be_done}?"}
+        />
+        <Doggo.input
+          field={f[:is_willing_to_pay_more]}
+          type="radio-group"
+          label="Would you be willing to pay more for a better solution?"
+          options={[{"Yes", "Yes"}, {"No", "No"}]}
+        />
+        <Doggo.input
+          field={f[:extra_amount_willing_to_pay_in_naira]}
+          type="number"
+          label="If yes, how much extra would you be willing to pay annually to get the job done perfectly?"
+        />
+
+        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
+      </.form>
+    </div>
+    """
+  end
+
+  def render(%{live_action: :desired_outcome_ratings} = assigns) do
+    ~H"""
+    <div>
+      <h1>Desired Outcome Ratings</h1>
     </div>
     """
   end
@@ -133,6 +173,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:ok, screening_form_view_model} = ScreeningForm.from_read_model(survey)
     {:ok, demographics_form_view_model} = DemographicsForm.from_read_model(survey)
     {:ok, context_form_view_model} = ContextForm.from_read_model(survey)
+    {:ok, comparison_form_view_model} = ComparisonForm.initialize(survey.market.job_to_be_done)
 
     socket =
       socket
@@ -174,7 +215,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
           end
         ]
       ]))
-
+      |> assign(:comparison_form, AshPhoenix.Form.for_update(comparison_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api))
 
     {:ok, socket}
   end
@@ -239,6 +280,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, context_form: form_with_error)}
+    end
+  end
+
+  def handle_event("submit-comparison-questions", %{"form" => form_params}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.comparison_form, params: form_params) do
+      {:ok, _view_model} ->
+        params = Map.put(socket.assigns.params, "comparison_form", form_params)
+        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/desired-outcome-ratings?#{params}")}
+
+      {:error, form_with_error} ->
+        {:noreply, assign(socket, comparison_form: form_with_error)}
     end
   end
 end
