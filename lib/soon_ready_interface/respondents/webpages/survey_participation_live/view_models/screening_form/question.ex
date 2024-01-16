@@ -6,6 +6,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewMo
   attributes do
     attribute :prompt, :string, allow_nil?: false
     attribute :options, {:array, Option}, allow_nil?: false
+    # TODO: Resolve nil inconsistency
     attribute :response, :string, allow_nil?: true
   end
 

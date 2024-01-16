@@ -8,6 +8,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     DemographicsForm,
     ContextForm,
     ComparisonForm,
+    DesiredOutcomeRatingForm
   }
   alias SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
 
@@ -155,6 +156,39 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ~H"""
     <div>
       <h1>Desired Outcome Ratings</h1>
+
+      <.form :let={f} for={@desired_outcome_rating_form} phx-submit="submit-desired-outcome-ratings">
+        <.inputs_for :let={ff} field={f[:job_steps]}>
+          <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
+            <Doggo.input
+              field={fff[:importance]}
+              type="radio-group"
+              label={"When you #{ff.data.name}, how important is it to you to:"}
+              options={[
+                {"Not At All Important", "Not At All Important"},
+                {"Somewhat Important", "Somewhat Important"},
+                {"Important", "Important"},
+                {"Very Important", "Very Important"},
+                {"Extremely Important", "Extremely Important"},
+              ]}
+            />
+            <Doggo.input
+              field={fff[:satisfaction]}
+              type="radio-group"
+              label={"Given your current solutions, how are you with your ability to:"}
+              options={[
+                {"Not At All Satisfied", "Not At All Satisfied"},
+                {"Somewhat Satisfied", "Somewhat Satisfied"},
+                {"Satisfied", "Satisfied"},
+                {"Very Satisfied", "Very Satisfied"},
+                {"Extremely Satisfied", "Extremely Satisfied"},
+              ]}
+            />
+          </.inputs_for>
+        </.inputs_for>
+
+        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
+      </.form>
     </div>
     """
   end
@@ -174,6 +208,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:ok, demographics_form_view_model} = DemographicsForm.from_read_model(survey)
     {:ok, context_form_view_model} = ContextForm.from_read_model(survey)
     {:ok, comparison_form_view_model} = ComparisonForm.initialize(survey.market.job_to_be_done)
+    {:ok, desired_outcome_rating_form_view_model} = DesiredOutcomeRatingForm.from_read_model(survey)
 
     socket =
       socket
@@ -216,6 +251,29 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         ]
       ]))
       |> assign(:comparison_form, AshPhoenix.Form.for_update(comparison_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api))
+      |> assign(:desired_outcome_rating_form, AshPhoenix.Form.for_update(desired_outcome_rating_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
+        job_steps: [
+          type: :list,
+          data: desired_outcome_rating_form_view_model.job_steps,
+          update_action: :update,
+          transform_params: fn form, params, _arg3 -> Map.put(params, "name", form.data.name) end,
+          forms: [
+            desired_outcomes: [
+              type: :list,
+              data: fn job_step -> job_step.desired_outcomes end,
+              update_action: :update,
+              transform_params: fn form, params, arg3 ->
+                # IO.inspect(form, label: "form")
+                IO.inspect(params, label: "params")
+                IO.inspect(arg3, label: "arg3")
+
+                Map.put(params, "name", form.data.name)
+                # |> IO.inspect()
+              end
+            ]
+          ]
+        ]
+      ]))
 
     {:ok, socket}
   end
@@ -291,6 +349,23 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
       {:error, form_with_error} ->
         {:noreply, assign(socket, comparison_form: form_with_error)}
+    end
+  end
+
+  def handle_event("submit-desired-outcome-ratings", %{"form" => form_params}, socket) do
+    # IO.inspect("DEBUG: Pre submission")
+    case AshPhoenix.Form.submit(socket.assigns.desired_outcome_rating_form, params: form_params) do
+      {:ok, _view_model} ->
+        params = Map.put(socket.assigns.params, "desired_outcome_rating_form", form_params)
+        # TODO: Execute use case with params
+        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
+
+      {:error, form_with_error} ->
+        # keys = Map.keys(form_with_error)
+        # IO.inspect(keys, label: "keys")
+        # IO.inspect(form_with_error.source, label: "source")
+        # IO.inspect(form_with_error.params, label: "params")
+        {:noreply, assign(socket, desired_outcome_rating_form: form_with_error)}
     end
   end
 end
