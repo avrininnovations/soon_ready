@@ -262,14 +262,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
               type: :list,
               data: fn job_step -> job_step.desired_outcomes end,
               update_action: :update,
-              transform_params: fn form, params, arg3 ->
-                # IO.inspect(form, label: "form")
-                IO.inspect(params, label: "params")
-                IO.inspect(arg3, label: "arg3")
-
-                Map.put(params, "name", form.data.name)
-                # |> IO.inspect()
-              end
+              transform_params: fn form, params, _arg3 -> Map.put(params, "name", form.data.name) end
             ]
           ]
         ]
