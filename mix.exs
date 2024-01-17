@@ -56,7 +56,8 @@ defmodule SoonReady.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
       {:ash, "~> 2.16"},
-      {:ash_phoenix, "~> 1.2"},
+      # TODO: Update when PR is merged:
+      {:ash_phoenix, git: "https://github.com/kingdomcoding/ash_phoenix.git"},
       {:ash_postgres, "~> 1.3"},
       {:commanded, "~> 1.4"},
       {:commanded_eventstore_adapter, "~> 1.4"},
