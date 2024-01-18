@@ -354,10 +354,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
 
       {:error, form_with_error} ->
-        # keys = Map.keys(form_with_error)
-        # IO.inspect(keys, label: "keys")
-        # IO.inspect(form_with_error.source, label: "source")
-        # IO.inspect(form_with_error.params, label: "params")
         {:noreply, assign(socket, desired_outcome_rating_form: form_with_error)}
     end
   end
