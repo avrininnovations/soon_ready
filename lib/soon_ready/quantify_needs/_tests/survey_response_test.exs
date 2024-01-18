@@ -96,10 +96,12 @@ defmodule SoonReady.QuantifyNeeds.Tests.SurveyResponseTest do
             assert_receive_event(Application, SurveyResponseSubmitted,
               fn event -> event.id == survey_response_id end,
               fn event ->
-                decrypted_participant = SurveyResponse.decrypt(event.hashed_participant)
+                {:ok, decrypted_participant} = SurveyResponse.decrypt_participant_details(event.participant)
 
                 assert event.survey_id == survey_id
-                assert SoonReady.Utils.is_equal_or_subset?(decrypted_participant, @survey_response_details.participant)
+                assert decrypted_participant.nickname == @survey_response_details.participant.nickname
+                assert decrypted_participant.email == @survey_response_details.participant.email
+                assert decrypted_participant.phone_number == @survey_response_details.participant.phone_number
                 assert SoonReady.Utils.is_equal_or_subset?(event.screening_responses, @survey_response_details.screening_responses)
                 assert SoonReady.Utils.is_equal_or_subset?(event.demographic_responses, @survey_response_details.demographic_responses)
                 assert SoonReady.Utils.is_equal_or_subset?(event.context_responses, @survey_response_details.context_responses)

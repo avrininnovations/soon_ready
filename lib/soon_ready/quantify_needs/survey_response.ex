@@ -1,9 +1,11 @@
 defmodule SoonReady.QuantifyNeeds.SurveyResponse do
   use Ash.Resource, data_layer: :embedded
 
+  require Logger
   alias SoonReady.QuantifyNeeds.SurveyResponse.ValueObjects.{Participant, Response, JobStep}
   alias SoonReady.QuantifyNeeds.SurveyResponse.Commands.SubmitSurveyResponse
   alias SoonReady.QuantifyNeeds.SurveyResponse.DomainEvents.SurveyResponseSubmitted
+  alias SoonReady.QuantifyNeeds.SurveyResponse.Encryption.Cipher
 
   attributes do
     uuid_primary_key :id
@@ -43,29 +45,46 @@ defmodule SoonReady.QuantifyNeeds.SurveyResponse do
     define :submit
   end
 
+  def decrypt_participant_details(%{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash}) do
+    with {:ok, nickname} <- Cipher.decrypt_text(nickname_hash),
+         {:ok, email} <- Cipher.decrypt_text(email_hash),
+         {:ok, phone_number} <- Cipher.decrypt_text(phone_number_hash)
+    do
+      %{nickname: nickname, email: email, phone_number: phone_number}
+    else
+      {:error, error} ->
+        Logger.warning("Decryption failed, #{inspect(error)}")
+        {:error, error}
+    end
+  end
+
 
   # Command Handling
   use Commanded.Commands.Router
   dispatch SubmitSurveyResponse, to: __MODULE__, identity: :id
 
-  def execute(_aggregate_state, %SubmitSurveyResponse{} = command) do
-    with {:ok, participant_hash} <- __MODULE__.encrypt_participant(command) do
-      SurveyResponseSubmitted.new(%{
-        id: command.id,
-        survey_id: command.survey_id,
-        participant_hash: participant_hash,
-        screening_responses: command.screening_responses,
-        demographic_responses: command.demographic_responses,
-        context_responses: command.context_responses,
-        comparison_responses: command.comparison_responses,
-        desired_outcome_ratings: command.desired_outcome_ratings
-      })
-    end
-  end
-
-  defp encrypt_participant(%__MODULE__{id: survey_response_id, participant: participant}) do
-    with :error <- SoonReady.Vault.encrypt(%{person_id: person_id, participant: participant}, :onboarding) do
-      {:error, :participant_encryption_failed}
+  def execute(_aggregate_state, %SubmitSurveyResponse{id: survey_response_id} = command) do
+    with {:ok, cipher} <- Cipher.initialize(%{id: survey_response_id}) do
+      with {:ok, nickname_hash} <- Cipher.encrypt_text(command.participant.nickname, cipher),
+            {:ok, email_hash} <- Cipher.encrypt_text(command.participant.email, cipher),
+            {:ok, phone_number_hash} <- Cipher.encrypt_text(command.participant.phone_number, cipher)
+      do
+        SurveyResponseSubmitted.new(%{
+          id: command.id,
+          survey_id: command.survey_id,
+          participant: %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash},
+          screening_responses: command.screening_responses,
+          demographic_responses: command.demographic_responses,
+          context_responses: command.context_responses,
+          comparison_responses: command.comparison_responses,
+          desired_outcome_ratings: command.desired_outcome_ratings
+        })
+      else
+        {:error, error} ->
+          Logger.warning("Encryption failed, #{inspect(error)}")
+          Cipher.destroy!(cipher)
+          {:error, error}
+      end
     end
   end
 
