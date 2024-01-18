@@ -50,8 +50,8 @@ defmodule SoonReady.QuantifyNeeds.SurveyResponse.Encryption.Cipher do
     {:error, :encryption_failed}
   end
 
-  def decrypt_text(cipher_text) do
-    with :error <- SoonReady.Vault.decrypt(cipher_text) do
+  def decrypt_text(cipher_text, for: survey_response_id) do
+    with :error <- SoonReady.Vault.decrypt(%{id: survey_response_id, cipher_text: cipher_text}) do
       Logger.warning("Decryption failed")
       {:error, :decryption_failed}
     end
@@ -84,7 +84,7 @@ defmodule SoonReady.QuantifyNeeds.SurveyResponse.Encryption.Cipher do
   end
 
   @impl true
-  def decrypt(%{id: survey_response_id, plain_text: cipher_text}, opts) when is_binary(cipher_text) do
+  def decrypt(%{id: survey_response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
     case __MODULE__.get_key(survey_response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
@@ -104,7 +104,7 @@ defmodule SoonReady.QuantifyNeeds.SurveyResponse.Encryption.Cipher do
   end
 
   @impl true
-  def can_decrypt?(%{id: survey_response_id, plain_text: cipher_text}, opts) when is_binary(cipher_text) do
+  def can_decrypt?(%{id: survey_response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
     case __MODULE__.get_key(survey_response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
@@ -117,7 +117,8 @@ defmodule SoonReady.QuantifyNeeds.SurveyResponse.Encryption.Cipher do
     end
   end
 
-  def can_decrypt?(_value, _opts) do
+  def can_decrypt?(value, _opts) do
+    IO.inspect("can_decrypt?, #{inspect(value)}")
     false
   end
 end

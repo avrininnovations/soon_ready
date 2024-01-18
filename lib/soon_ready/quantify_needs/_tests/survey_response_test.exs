@@ -96,7 +96,7 @@ defmodule SoonReady.QuantifyNeeds.Tests.SurveyResponseTest do
             assert_receive_event(Application, SurveyResponseSubmitted,
               fn event -> event.id == survey_response_id end,
               fn event ->
-                {:ok, decrypted_participant} = SurveyResponse.decrypt_participant_details(event.participant)
+                decrypted_participant = SurveyResponse.decrypt_participant_details(event.id, event.participant)
 
                 assert event.survey_id == survey_id
                 assert decrypted_participant.nickname == @survey_response_details.participant.nickname

@@ -45,10 +45,10 @@ defmodule SoonReady.QuantifyNeeds.SurveyResponse do
     define :submit
   end
 
-  def decrypt_participant_details(%{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash}) do
-    with {:ok, nickname} <- Cipher.decrypt_text(nickname_hash),
-         {:ok, email} <- Cipher.decrypt_text(email_hash),
-         {:ok, phone_number} <- Cipher.decrypt_text(phone_number_hash)
+  def decrypt_participant_details(survey_response_id, %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash}) do
+    with {:ok, nickname} <- Cipher.decrypt_text(nickname_hash, for: survey_response_id),
+         {:ok, email} <- Cipher.decrypt_text(email_hash, for: survey_response_id),
+         {:ok, phone_number} <- Cipher.decrypt_text(phone_number_hash, for: survey_response_id)
     do
       %{nickname: nickname, email: email, phone_number: phone_number}
     else
