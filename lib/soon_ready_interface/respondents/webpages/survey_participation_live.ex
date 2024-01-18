@@ -353,19 +353,21 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     case AshPhoenix.Form.submit(validated_form) do
       {:ok, _view_model} ->
         params = Map.put(socket.assigns.params, "desired_outcome_rating_form", form_params)
-        with {:ok, command_params} <- normalize(params),
-              {:ok, command} <- SoonReady.SurveyParticipation.Commands.SubmitSurveyResponse.dispatch(command_params)
-        do
-          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
-        else
-          {:error, error} ->
-            Logger.error("DEBUG: #{inspect(error)}")
-            socket =
-              socket
-              |> assign(desired_outcome_rating_form: validated_form)
-              |> put_flash(:error, "Something went wrong. Please try again or contact support.")
-            {:noreply, socket}
-        end
+
+        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
+        # with {:ok, command_params} <- normalize(params),
+        #       {:ok, command} <- SoonReady.SurveyParticipation.Commands.SubmitSurveyResponse.dispatch(command_params)
+        # do
+        #   {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
+        # else
+        #   {:error, error} ->
+        #     Logger.error("DEBUG: #{inspect(error)}")
+        #     socket =
+        #       socket
+        #       |> assign(desired_outcome_rating_form: validated_form)
+        #       |> put_flash(:error, "Something went wrong. Please try again or contact support.")
+        #     {:noreply, socket}
+        # end
       {:error, form_with_error} ->
         {:noreply, assign(socket, desired_outcome_rating_form: form_with_error)}
     end
