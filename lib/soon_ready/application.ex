@@ -15,6 +15,7 @@ defmodule SoonReady.Application do
       consistency: Application.get_env(:soon_ready, :consistency, :eventual)
     ]
 
+  router SoonReady.QuantifyNeeds.Survey
   router SoonReady.Onboarding.Commands.Router
   router SoonReady.SurveyManagement.Commands.Router
 

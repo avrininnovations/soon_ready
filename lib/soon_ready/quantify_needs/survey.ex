@@ -12,7 +12,7 @@ defmodule SoonReady.QuantifyNeeds.Survey do
   alias SoonReady.QuantifyNeeds.Survey.DomainEvents.SurveyCreated
 
   attributes do
-    uuid_primary_key :survey_id
+    uuid_primary_key :id
     attribute :brand, :string, allow_nil?: false
     attribute :market, Market, allow_nil?: false
     attribute :job_steps, {:array, JobStep}, allow_nil?: false, constraints: [min_length: 1]
