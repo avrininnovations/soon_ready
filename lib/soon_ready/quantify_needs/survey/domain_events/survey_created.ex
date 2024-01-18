@@ -17,7 +17,7 @@ defmodule SoonReady.QuantifyNeeds.Survey.DomainEvents.SurveyCreated do
     attribute :screening_questions, {:array, ScreeningQuestion}
     attribute :demographic_questions, {:array, DemographicQuestion}
     attribute :context_questions, {:array, ContextQuestion}
-    attribute :event_version, :integer, default: 1
+    attribute :event_version, :integer, allow_nil?: false, default: 1
   end
 
   actions do

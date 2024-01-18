@@ -3,7 +3,7 @@ defmodule SoonReady.QuantifyNeeds.Survey.DomainEvents.SurveyPublished do
 
   attributes do
     attribute :id, :uuid, allow_nil?: false, primary_key?: true
-    attribute :event_version, :integer, default: 1
+    attribute :event_version, :integer, allow_nil?: false, default: 1
   end
 
   actions do
