@@ -8,8 +8,8 @@ defmodule SoonReady.QuantifyNeeds.Survey do
     DemographicQuestion,
     ContextQuestion
   }
-  alias SoonReady.QuantifyNeeds.Survey.Commands.CreateSurvey
-  alias SoonReady.QuantifyNeeds.Survey.DomainEvents.SurveyCreated
+  alias SoonReady.QuantifyNeeds.Survey.Commands.{CreateSurvey, PublishSurvey}
+  alias SoonReady.QuantifyNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
 
   attributes do
     uuid_primary_key :id
@@ -40,23 +40,33 @@ defmodule SoonReady.QuantifyNeeds.Survey do
       end
     end
 
-    # update :publish do
-    #   change fn changeset, context ->
-    #     Ash.Changeset.after_action(changeset, fn changeset, )
-    #   end
-    # end
+    update :publish do
+      change fn changeset, context ->
+        Ash.Changeset.after_action(changeset, fn changeset, result ->
+          case PublishSurvey.dispatch(%{id: result.id}) do
+            {:ok, _command} ->
+              {:ok, result}
+
+            {:error, error} ->
+              changeset = Ash.Changeset.add_error(changeset, error)
+              {:error, changeset}
+          end
+        end)
+      end
+    end
   end
 
   code_interface do
     define_for SoonReady.QuantifyNeeds.Survey.Api
     define :create
-    # define :publish
+    define :publish
   end
 
 
   # Command Handling
   use Commanded.Commands.Router
   dispatch CreateSurvey, to: __MODULE__, identity: :id
+  dispatch PublishSurvey, to: __MODULE__, identity: :id
 
   def execute(_aggregate_state, %CreateSurvey{} = command) do
     SurveyCreated.new(%{
@@ -67,6 +77,12 @@ defmodule SoonReady.QuantifyNeeds.Survey do
       screening_questions: command.screening_questions,
       demographic_questions: command.demographic_questions,
       context_questions: command.context_questions
+    })
+  end
+
+  def execute(_aggregate_state, %PublishSurvey{} = command) do
+    SurveyPublished.new(%{
+      id: command.id
     })
   end
 
