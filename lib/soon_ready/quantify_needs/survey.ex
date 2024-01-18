@@ -23,7 +23,7 @@ defmodule SoonReady.QuantifyNeeds.Survey do
 
   actions do
     create :create do
-      change fn changeset, context ->
+      change fn changeset, _context ->
         Ash.Changeset.after_action(changeset, fn changeset, result ->
           result
           |> Map.from_struct()

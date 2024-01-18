@@ -16,6 +16,8 @@ defmodule SoonReady.Application do
     ]
 
   router SoonReady.QuantifyNeeds.Survey
+  router SoonReady.QuantifyNeeds.SurveyResponse
+  
   router SoonReady.Onboarding.Commands.Router
   router SoonReady.SurveyManagement.Commands.Router
 
