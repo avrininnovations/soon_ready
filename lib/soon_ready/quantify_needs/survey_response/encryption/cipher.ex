@@ -1,5 +1,5 @@
 defmodule SoonReady.QuantifyNeeds.SurveyResponse.Encryption.Cipher do
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
   # TODO: Update to postgres
 
   require Logger
@@ -32,6 +32,11 @@ defmodule SoonReady.QuantifyNeeds.SurveyResponse.Encryption.Cipher do
     define :get
     define :read
     define :destroy
+  end
+
+  postgres do
+    repo SoonReady.Repo
+    table "quantify_needs__survey_response__encryption__ciphers"
   end
 
   def encrypt_text(plain_text, %{__struct__: __MODULE__, id: survey_response_id} = _cipher) when is_binary(plain_text) do
