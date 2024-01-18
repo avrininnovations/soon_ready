@@ -1,13 +1,12 @@
-defmodule SoonReady.SurveyManagement.Tests.UseCasesTest do
+defmodule SoonReady.SurveyManagement.Commands.Tests.PublishOdiSurveyTest do
   use SoonReady.DataCase
 
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.UseCases
+  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
   alias SoonReady.SurveyManagement.DomainEvents.OdiSurveyPublished
   alias SoonReady.SurveyManagement.ValueObjects.{
-    OdiSurveyData,
     Market,
     JobStep,
     ScreeningQuestion,
@@ -18,7 +17,7 @@ defmodule SoonReady.SurveyManagement.Tests.UseCasesTest do
   test "WHEN: An Avrin researcher tries to publish an ODI survey, THEN: An ODI survey is published" do
     # TODO: Test the fact that the actor is an Avrin researcher
 
-    odi_survey_data = %OdiSurveyData{
+    odi_survey_data = %{
       brand: "A Big Brand",
       market: %Market{
         job_executor: "Persons",
@@ -54,7 +53,7 @@ defmodule SoonReady.SurveyManagement.Tests.UseCasesTest do
       ]
     }
 
-    with {:ok, %{survey_id: survey_id} = _use_case_data} <- UseCases.publish_odi_survey(odi_survey_data) do
+    with {:ok, %{survey_id: survey_id} = _command} <- PublishOdiSurvey.dispatch(odi_survey_data) do
       assert_receive_event(Application, OdiSurveyPublished,
         fn event -> event.survey_id == survey_id end,
         fn event ->

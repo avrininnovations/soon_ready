@@ -1,6 +1,7 @@
 defmodule SoonReady.SurveyManagement.Commands.PublishOdiSurvey do
   use Ash.Resource, data_layer: :embedded
 
+  alias SoonReady.Application
   alias SoonReady.SurveyManagement.ValueObjects.{
     Market,
     JobStep,
@@ -21,11 +22,22 @@ defmodule SoonReady.SurveyManagement.Commands.PublishOdiSurvey do
 
   actions do
     create :new
+
+    create :dispatch do
+      change fn changeset, context ->
+        Ash.Changeset.after_action(changeset, fn changeset, command ->
+          with :ok <- Application.dispatch(command) do
+            {:ok, command}
+          end
+        end)
+      end
+    end
   end
 
   code_interface do
     define_for SoonReady.SurveyManagement.Setup.Api
     define :new
+    define :dispatch
   end
 
   def execute(command, _state) do

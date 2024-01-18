@@ -2,8 +2,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
-  alias SoonReady.SurveyManagement.UseCases
-  alias SoonReady.SurveyManagement.ValueObjects.OdiSurveyData
+  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
 
   alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.LandingPageTest, as: LandingPage
   alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.ScreeningQuestionsPageTest, as: ScreeningPage
@@ -53,9 +52,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   }
 
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn} do
-    with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
-          {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
-          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
+    with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
+          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{command.survey_id}"),
           _ <- LandingPage.submit_response(view),
           _ <- assert_patch(view),
           _ <- ScreeningPage.submit_response(view),
@@ -66,7 +64,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
       resulting_html = submit_response(view, @form_params)
 
       path = assert_patch(view)
-      assert path =~ ~p"/survey/participate/#{use_case_data.survey_id}/context"
+      assert path =~ ~p"/survey/participate/#{command.survey_id}/context"
       assert resulting_html =~ "Context"
       assert_query_params(path)
     else

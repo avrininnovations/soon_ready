@@ -2,8 +2,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
-  alias SoonReady.SurveyManagement.UseCases
-  alias SoonReady.SurveyManagement.ValueObjects.OdiSurveyData
+  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
 
   @survey_params %{
     brand: "A Big Brand",
@@ -47,10 +46,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
 
   describe "happy path" do
     test "GIVEN: Survey has been published, WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn} do
-      with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
-            {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data)
-      do
-        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}")
+      with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params) do
+        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{command.survey_id}")
 
         assert html =~ "Welcome to our Survey!"
       else
@@ -61,14 +58,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
 
     test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn} do
 
-      with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
-            {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
-            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}")
+      with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
+            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{command.survey_id}")
       do
         resulting_html = submit_response(view)
 
         path = assert_patch(view)
-        assert path =~ "/survey/participate/#{use_case_data.survey_id}/screening-questions"
+        assert path =~ "/survey/participate/#{command.survey_id}/screening-questions"
         assert resulting_html =~ "Screening Questions"
         assert_query_params(path)
       else

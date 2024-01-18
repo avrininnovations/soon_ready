@@ -1,8 +1,7 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.Tests.ActiveOdiSurveysTest do
   use SoonReady.DataCase
 
-  alias SoonReady.SurveyManagement.UseCases
-  alias SoonReady.SurveyManagement.ValueObjects.OdiSurveyData
+  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
   alias SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
 
   @survey_params %{
@@ -42,14 +41,9 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Tests.ActiveOdiSurveysTest d
   }
 
   test "GIVEN: An ODI survey was publised, THEN: The survey is active" do
-    {:ok, odi_survey_data} = OdiSurveyData.new(@survey_params)
-    {:ok, use_case_data} = UseCases.publish_odi_survey(odi_survey_data)
+    {:ok, command} = PublishOdiSurvey.dispatch(@survey_params)
 
-    # ActiveOdiSurveys.read()
-    # |> IO.inspect(label: "ActiveOdiSurveys.read()")
-
-    # IO.inspect(use_case_data, label: "use_case_data")
-    {:ok, survey} = ActiveOdiSurveys.get(use_case_data.survey_id)
-    assert survey.id == use_case_data.survey_id
+    {:ok, survey} = ActiveOdiSurveys.get(command.survey_id)
+    assert survey.id == command.survey_id
   end
 end

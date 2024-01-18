@@ -2,8 +2,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
-  alias SoonReady.SurveyManagement.UseCases
-  alias SoonReady.SurveyManagement.ValueObjects.OdiSurveyData
+  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
 
   alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.LandingPageTest, as: LandingPage
 
@@ -58,16 +57,15 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   }
 
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
-    with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
-          {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
-          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
+    with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
+          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{command.survey_id}"),
           _ <- LandingPage.submit_response(view),
           _ <- assert_patch(view)
     do
       resulting_html = submit_response(view, @correct_form_params)
 
       path = assert_patch(view)
-      assert path =~ ~p"/survey/participate/#{use_case_data.survey_id}/contact-details"
+      assert path =~ ~p"/survey/participate/#{command.survey_id}/contact-details"
       assert resulting_html =~ "Contact Details"
       assert_query_params(path)
     else
@@ -79,16 +77,15 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   end
 
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn} do
-    with {:ok, odi_survey_data} <- OdiSurveyData.new(@survey_params),
-          {:ok, use_case_data} <- UseCases.publish_odi_survey(odi_survey_data),
-          {:ok, view, _html} = live(conn, ~p"/survey/participate/#{use_case_data.survey_id}"),
+    with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
+          {:ok, view, _html} = live(conn, ~p"/survey/participate/#{command.survey_id}"),
           _ = LandingPage.submit_response(view),
           _ = assert_patch(view)
     do
       resulting_html = submit_response(view, @incorrect_form_params)
 
       path = assert_patch(view)
-      assert path =~ ~p"/survey/participate/#{use_case_data.survey_id}/thank-you"
+      assert path =~ ~p"/survey/participate/#{command.survey_id}/thank-you"
       assert resulting_html =~ "Thank You!"
     else
       {:error, error} ->
