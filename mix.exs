@@ -7,6 +7,7 @@ defmodule SoonReady.MixProject do
       version: "0.1.0",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
+      test_paths: ["lib"],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -38,7 +39,9 @@ defmodule SoonReady.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.20.1"},
+      # {:phoenix_live_view, "~> 0.20.1"},
+      # TODO: Update when PR is merged:
+      {:phoenix_live_view, git: "https://github.com/kingdomcoding/phoenix_live_view.git", branch: "fix-inputs-for", override: true},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.2"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
@@ -53,11 +56,13 @@ defmodule SoonReady.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
       {:ash, "~> 2.16"},
-      {:ash_phoenix, "~> 1.2"},
+      # TODO: Update when PR is merged:
+      {:ash_phoenix, git: "https://github.com/kingdomcoding/ash_phoenix.git"},
       {:ash_postgres, "~> 1.3"},
       {:commanded, "~> 1.4"},
       {:commanded_eventstore_adapter, "~> 1.4"},
       {:cloak, "~> 1.1"},
+      {:doggo, "~> 0.4"},
     ]
   end
 
@@ -74,7 +79,7 @@ defmodule SoonReady.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "event_store.setup": ["event_store.create", "event_store.init"],
       "event_store.reset": ["event_store.drop", "event_store.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "event_store.setup", "test", "event_store.drop"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]

@@ -13,14 +13,22 @@ config :soon_ready,
 
 config :soon_ready, event_stores: [SoonReady.EventStore]
 
-config :soon_ready, ash_apis: [SoonReady.Onboarding.Setup.Api]
+config :soon_ready, ash_apis: [
+  SoonReady.QuantifyingNeeds.Survey.Api,
+  SoonReady.QuantifyingNeeds.SurveyResponse.Api,
+
+  SoonReady.Onboarding.Setup.Api,
+
+  SoonReadyInterface.Researcher.Setup.Api,
+  SoonReadyInterface.Respondents.Setup.Api,
+]
 
 # Configures the endpoint
-config :soon_ready, SoonReadyWeb.Endpoint,
+config :soon_ready, SoonReadyInterface.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [html: SoonReadyWeb.Public.Web.ErrorHtml, json: SoonReadyWeb.Public.Json.ErrorJson],
+    formats: [html: SoonReadyInterface.Public.Webpages.ErrorHtml, json: SoonReadyInterface.Public.Json.ErrorJson],
     layout: false
   ],
   pubsub_server: SoonReady.PubSub,
@@ -64,6 +72,8 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :doggo, gettext: SoonReady.Gettext
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
