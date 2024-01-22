@@ -380,53 +380,18 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   end
 
   def normalize(params) do
-    params
-    |> IO.inspect()
-
-    normalized = %{
+    %{
       survey_id: params["survey_id"],
       participant: %{
         nickname: params["nickname_form"]["nickname"],
         email: params["contact_details_form"]["email"],
         phone_number: params["contact_details_form"]["phone_number"]
       },
-      screening_responses: Enum.map(params["screening_form"]["questions"], fn question ->
-        %{
-          prompt: question["prompt"],
-          response: question["response"]
-        }
-      end),
-      demographic_responses: Enum.map(params["demographics_form"]["questions"], fn question ->
-        %{
-          prompt: question["prompt"],
-          response: question["response"]
-        }
-      end),
-      context_responses: Enum.map(params["context_form"]["questions"], fn question ->
-        %{
-          prompt: question["prompt"],
-          response: question["response"]
-        }
-      end),
-      comparison_responses: %{
-        alternatives_used: params["comparison_form"]["alternatives_used"],
-        additional_resources_used: params["comparison_form"]["additional_resources_used"],
-        amount_spent_annually_in_naira: params["comparison_form"]["amount_spent_annually_in_naira"],
-        is_willing_to_pay_more: params["comparison_form"]["is_willing_to_pay_more"],
-        extra_amount_willing_to_pay_in_naira: params["comparison_form"]["extra_amount_willing_to_pay_in_naira"]
-      },
-      desired_outcome_ratings: Enum.map(params["desired_outcome_rating_form"]["job_steps"], fn job_step ->
-        %{
-          name: job_step["name"],
-          desired_outcomes: Enum.map(job_step["desired_outcomes"], fn desired_outcome ->
-            %{
-              name: desired_outcome["name"],
-              importance: desired_outcome["importance"],
-              satisfaction: desired_outcome["satisfaction"]
-            }
-          end)
-        }
-      end)
+      screening_responses: params["screening_form"],
+      demographic_responses: params["demographics_form"],
+      context_responses: params["context_form"],
+      comparison_responses: params["comparison_form"],
+      desired_outcome_ratings: params["desired_outcome_rating_form"]
     }
   end
 end
