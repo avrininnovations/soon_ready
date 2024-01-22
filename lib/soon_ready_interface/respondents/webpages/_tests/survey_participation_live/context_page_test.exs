@@ -58,8 +58,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   }
 
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn} do
-    with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
-          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{command.survey_id}"),
+    with {:ok, survey} <- SoonReady.QuantifyNeeds.Survey.create(@survey_params),
+          {:ok, _survey} <- SoonReady.QuantifyNeeds.Survey.publish(survey),
+          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
           _ <- LandingPage.submit_response(view),
           _ <- assert_patch(view),
           _ <- ScreeningPage.submit_response(view),
@@ -72,7 +73,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
       resulting_html = submit_response(view, @form_params)
 
       path = assert_patch(view)
-      assert path =~ ~p"/survey/participate/#{command.survey_id}/comparison"
+      assert path =~ ~p"/survey/participate/#{survey.id}/comparison"
       assert resulting_html =~ "Comparison"
       assert_query_params(path)
     else

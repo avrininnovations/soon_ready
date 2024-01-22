@@ -91,7 +91,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveys do
 
   def handle(%SurveyPublished{id: survey_id} = _event, _metadata) do
     # TODO: Refactor this not to need query?
-    with {:ok, odi_survey} <- __MODULE__.get(%{id: survey_id}),
+    with {:ok, odi_survey} <- __MODULE__.get(survey_id),
           {:ok, _odi_survey} <- __MODULE__.update(odi_survey, %{is_active: true})
     do
       :ok

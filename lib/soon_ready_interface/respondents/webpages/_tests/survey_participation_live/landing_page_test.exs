@@ -48,8 +48,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
 
   describe "happy path" do
     test "GIVEN: Survey has been published, WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn} do
-      with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params) do
-        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{command.survey_id}")
+      with {:ok, survey} <- SoonReady.QuantifyNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyNeeds.Survey.publish(survey)
+      do
+        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{survey.id}")
 
         assert html =~ "Welcome to our Survey!"
       else
@@ -60,13 +62,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
 
     test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn} do
 
-      with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
-            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{command.survey_id}")
+      with {:ok, survey} <- SoonReady.QuantifyNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyNeeds.Survey.publish(survey),
+            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey.id}")
       do
         resulting_html = submit_response(view)
 
         path = assert_patch(view)
-        assert path =~ "/survey/participate/#{command.survey_id}/screening-questions"
+        assert path =~ "/survey/participate/#{survey.id}/screening-questions"
         assert resulting_html =~ "Screening Questions"
         assert_query_params(path)
       else
