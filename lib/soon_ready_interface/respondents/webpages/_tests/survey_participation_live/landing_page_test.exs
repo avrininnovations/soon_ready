@@ -44,6 +44,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     nickname: "A Nickname"
   }
 
+  @expected_query_params %{"nickname" => "A Nickname"}
+
   describe "happy path" do
     test "GIVEN: Survey has been published, WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn} do
       with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params) do
@@ -85,7 +87,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
 
   def assert_query_params(path) do
     %{query: query} = URI.parse(path)
-    %{"nickname_form" => %{"nickname" => nickname}} = Plug.Conn.Query.decode(query)
-    assert nickname == @form_params[:nickname]
+    %{"nickname_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @expected_query_params
   end
 end

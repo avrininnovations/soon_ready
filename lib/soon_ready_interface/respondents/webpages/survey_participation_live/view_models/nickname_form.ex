@@ -4,4 +4,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewMo
   attributes do
     attribute :nickname, :string, allow_nil?: false
   end
+
+  def normalize(%{__struct__: __MODULE__, nickname: nickname}) do
+    %{"nickname" => nickname}
+  end
 end

@@ -48,6 +48,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     phone_number: "1234567890",
   }
 
+  @expected_query_params %{
+    "email" => "hello@example.com",
+    "phone_number" => "1234567890"
+  }
+
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn} do
     with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
           {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{command.survey_id}"),
@@ -79,8 +84,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
 
   def assert_query_params(path) do
     %{query: query} = URI.parse(path)
-    %{"contact_details_form" => %{"email" => email, "phone_number" => phone_number}} = Plug.Conn.Query.decode(query)
-    assert email == @form_params[:email]
-    assert phone_number == @form_params[:phone_number]
+    %{"contact_details_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @expected_query_params
   end
 end

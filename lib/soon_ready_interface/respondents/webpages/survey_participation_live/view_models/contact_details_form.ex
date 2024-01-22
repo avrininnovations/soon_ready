@@ -6,4 +6,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewMo
     attribute :email, :string, allow_nil?: false
     attribute :phone_number, :string, allow_nil?: false
   end
+
+  def normalize(%{__struct__: __MODULE__, email: email, phone_number: phone_number}) do
+    %{"email" => email, "phone_number" => phone_number}
+  end
 end

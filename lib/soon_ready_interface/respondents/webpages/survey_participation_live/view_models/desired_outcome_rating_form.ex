@@ -39,4 +39,24 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewMo
       args [:survey]
     end
   end
+
+  def normalize(%{__struct__: __MODULE__, job_steps: job_steps}) do
+    job_steps
+    |> Enum.with_index()
+    |> Enum.reduce(%{}, fn {job_step, index}, job_steps ->
+      Map.put(job_steps, "#{index}", %{
+        "name" => job_step.name,
+        "desired_outcomes" =>
+          job_step.desired_outcomes
+          |> Enum.with_index()
+          |> Enum.reduce(%{}, fn {desired_outcome, index}, desired_outcomes ->
+            Map.put(desired_outcomes, "#{index}", %{
+              "name" => desired_outcome.name,
+              "importance" => desired_outcome.importance,
+              "satisfaction" => desired_outcome.satisfaction
+            })
+          end)
+      })
+    end)
+  end
 end

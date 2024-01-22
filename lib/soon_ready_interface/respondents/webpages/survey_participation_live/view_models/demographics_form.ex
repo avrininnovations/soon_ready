@@ -35,4 +35,15 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewMo
       args [:survey]
     end
   end
+
+  def normalize(%{__struct__: __MODULE__, questions: questions}) do
+    questions
+    |> Enum.with_index()
+    |> Enum.reduce(%{}, fn {question, index}, questions ->
+      Map.put(questions, "#{index}", %{
+        "prompt" => question.prompt,
+        "response" => question.response
+      })
+    end)
+  end
 end

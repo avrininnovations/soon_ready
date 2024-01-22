@@ -279,8 +279,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def handle_event("submit-nickname", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.nickname_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "nickname_form", form_params)
+      {:ok, view_model} ->
+        normalized_data = NicknameForm.normalize(view_model)
+        params = Map.put(socket.assigns.params, "nickname_form", normalized_data)
         {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/screening-questions?#{params}")}
 
       {:error, form_with_error} ->
@@ -292,7 +293,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     case AshPhoenix.Form.submit(socket.assigns.screening_form, params: form_params) do
       {:ok, view_model} ->
         if view_model.all_responses_are_correct do
-          params = Map.put(socket.assigns.params, "screening_form", form_params)
+          normalized_data = ScreeningForm.normalize(view_model)
+          params = Map.put(socket.assigns.params, "screening_form", normalized_data)
           {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/contact-details?#{params}")}
         else
           {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
@@ -305,8 +307,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def handle_event("submit-contact-details", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.contact_details_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "contact_details_form", form_params)
+      {:ok, view_model} ->
+        normalized_data = ContactDetailsForm.normalize(view_model)
+        params = Map.put(socket.assigns.params, "contact_details_form", normalized_data)
         {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/demographics?#{params}")}
 
       {:error, form_with_error} ->
@@ -316,8 +319,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.demographics_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "demographics_form", form_params)
+      {:ok, view_model} ->
+        normalized_data = DemographicsForm.normalize(view_model)
+        params = Map.put(socket.assigns.params, "demographics_form", normalized_data)
         {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/context?#{params}")}
 
       {:error, form_with_error} ->
@@ -327,8 +331,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.context_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "context_form", form_params)
+      {:ok, view_model} ->
+        normalized_data = ContextForm.normalize(view_model)
+        params = Map.put(socket.assigns.params, "context_form", normalized_data)
         {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/comparison?#{params}")}
 
       {:error, form_with_error} ->
@@ -338,8 +343,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def handle_event("submit-comparison-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.comparison_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "comparison_form", form_params)
+      {:ok, view_model} ->
+        normalized_data = ComparisonForm.normalize(view_model)
+        params = Map.put(socket.assigns.params, "comparison_form", normalized_data)
         {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/desired-outcome-ratings?#{params}")}
 
       {:error, form_with_error} ->
@@ -351,25 +357,76 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     validated_form = AshPhoenix.Form.validate(socket.assigns.desired_outcome_rating_form, form_params)
 
     case AshPhoenix.Form.submit(validated_form) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "desired_outcome_rating_form", form_params)
+      {:ok, view_model} ->
+        normalized_data = DesiredOutcomeRatingForm.normalize(view_model)
+        params = Map.put(socket.assigns.params, "desired_outcome_rating_form", normalized_data)
+        normalized_params = normalize(params)
 
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
-        # with {:ok, command_params} <- normalize(params),
-        #       {:ok, command} <- SoonReady.SurveyParticipation.Commands.SubmitSurveyResponse.dispatch(command_params)
-        # do
-        #   {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
-        # else
-        #   {:error, error} ->
-        #     Logger.error("DEBUG: #{inspect(error)}")
-        #     socket =
-        #       socket
-        #       |> assign(desired_outcome_rating_form: validated_form)
-        #       |> put_flash(:error, "Something went wrong. Please try again or contact support.")
-        #     {:noreply, socket}
-        # end
+        case SoonReady.QuantifyNeeds.SurveyResponse.submit(normalized_params) do
+          {:ok, _aggregate} ->
+            {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
+          {:error, error} ->
+            Logger.error("DEBUG: #{inspect(error)}")
+            socket =
+              socket
+              |> assign(desired_outcome_rating_form: validated_form)
+              |> put_flash(:error, "Something went wrong. Please try again or contact support.")
+            {:noreply, socket}
+        end
+
       {:error, form_with_error} ->
         {:noreply, assign(socket, desired_outcome_rating_form: form_with_error)}
     end
+  end
+
+  def normalize(params) do
+    params
+    |> IO.inspect()
+
+    normalized = %{
+      survey_id: params["survey_id"],
+      participant: %{
+        nickname: params["nickname_form"]["nickname"],
+        email: params["contact_details_form"]["email"],
+        phone_number: params["contact_details_form"]["phone_number"]
+      },
+      screening_responses: Enum.map(params["screening_form"]["questions"], fn question ->
+        %{
+          prompt: question["prompt"],
+          response: question["response"]
+        }
+      end),
+      demographic_responses: Enum.map(params["demographics_form"]["questions"], fn question ->
+        %{
+          prompt: question["prompt"],
+          response: question["response"]
+        }
+      end),
+      context_responses: Enum.map(params["context_form"]["questions"], fn question ->
+        %{
+          prompt: question["prompt"],
+          response: question["response"]
+        }
+      end),
+      comparison_responses: %{
+        alternatives_used: params["comparison_form"]["alternatives_used"],
+        additional_resources_used: params["comparison_form"]["additional_resources_used"],
+        amount_spent_annually_in_naira: params["comparison_form"]["amount_spent_annually_in_naira"],
+        is_willing_to_pay_more: params["comparison_form"]["is_willing_to_pay_more"],
+        extra_amount_willing_to_pay_in_naira: params["comparison_form"]["extra_amount_willing_to_pay_in_naira"]
+      },
+      desired_outcome_ratings: Enum.map(params["desired_outcome_rating_form"]["job_steps"], fn job_step ->
+        %{
+          name: job_step["name"],
+          desired_outcomes: Enum.map(job_step["desired_outcomes"], fn desired_outcome ->
+            %{
+              name: desired_outcome["name"],
+              importance: desired_outcome["importance"],
+              satisfaction: desired_outcome["satisfaction"]
+            }
+          end)
+        }
+      end)
+    }
   end
 end

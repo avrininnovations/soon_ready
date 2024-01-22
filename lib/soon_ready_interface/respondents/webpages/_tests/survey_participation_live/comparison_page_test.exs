@@ -54,6 +54,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     extra_amount_willing_to_pay_in_naira: "1000",
   }
 
+  @expected_query_params %{
+    "0" => %{"prompt" => "What products, services or platforms have you used to do what persons do?", "response" => "Product 1, Service 2, Platform 3"},
+    "1" => %{"prompt" => "What additional things do you usually use/require when you're using any of the above?", "response" => "Thing 1, Thing 2"},
+    "2" => %{"prompt" => "In total, how much would you estimate that you spend annually to do what persons do?", "response" => "1000"},
+    "3" => %{"prompt" => "Would you be willing to pay more for a better solution?", "response" => "Yes"},
+    "4" => %{"prompt" => "If yes, how much extra would you be willing to pay annually to get the job done perfectly?", "response" => "1000"}
+  }
+
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn} do
     with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
           {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{command.survey_id}"),
@@ -91,18 +99,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
 
   def assert_query_params(path) do
     %{query: query} = URI.parse(path)
-    %{"comparison_form" => %{
-      "alternatives_used" => alternatives_used,
-      "additional_resources_used" => additional_resources_used,
-      "amount_spent_annually_in_naira" => amount_spent_annually_in_naira,
-      "is_willing_to_pay_more" => is_willing_to_pay_more,
-      "extra_amount_willing_to_pay_in_naira" => extra_amount_willing_to_pay_in_naira,
-    }} = Plug.Conn.Query.decode(query)
-
-    assert alternatives_used == @form_params[:alternatives_used]
-    assert additional_resources_used == @form_params[:additional_resources_used]
-    assert amount_spent_annually_in_naira == @form_params[:amount_spent_annually_in_naira]
-    assert is_willing_to_pay_more == @form_params[:is_willing_to_pay_more]
-    assert extra_amount_willing_to_pay_in_naira == @form_params[:extra_amount_willing_to_pay_in_naira]
+    %{"comparison_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @expected_query_params
   end
 end

@@ -56,6 +56,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     }
   }
 
+  @expected_query_params %{
+    "0" => %{"prompt" => "What is the answer to screening question 1?", "response" => "Option 1"},
+    "1" => %{"prompt" => "What is the answer to screening question 2?", "response" => "Option 1"}
+  }
+
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
     with {:ok, command} <- PublishOdiSurvey.dispatch(@survey_params),
           {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{command.survey_id}"),
@@ -102,9 +107,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     |> render_submit()
   end
 
-  def assert_query_params(path, params \\ @correct_form_params) do
+  def assert_query_params(path) do
     %{query: query} = URI.parse(path)
     %{"screening_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert SoonReady.Utils.is_equal_or_subset?(params, query_params)
+    assert query_params == @expected_query_params
   end
 end
