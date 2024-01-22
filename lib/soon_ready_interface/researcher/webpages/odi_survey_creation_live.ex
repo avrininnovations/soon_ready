@@ -16,7 +16,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     DemographicQuestionsForm,
     ContextQuestionsForm
   }
-  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
+  alias SoonReady.QuantifyNeeds.Survey
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
@@ -239,16 +239,15 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     case AshPhoenix.Form.submit(socket.assigns.context_questions_form, params: form_params) do
       {:ok, _view_model} ->
         params = Map.put(socket.assigns.params, "context_questions_form", form_params)
+        normalized_params = normalize(params)
 
-        with {:ok, odi_survey_data} <- normalize(params),
-              {:ok, _command} <- PublishOdiSurvey.dispatch(odi_survey_data)
-        do
-          socket =
-            socket
-            |> push_redirect(to: ~p"/")
-            |> put_flash(:info, "Survey created successfully!")
-          {:noreply, socket}
-        else
+        case Survey.create(normalized_params) do
+          {:ok, _aggregate} ->
+            socket =
+              socket
+              |> push_redirect(to: ~p"/")
+              |> put_flash(:info, "Survey created successfully!")
+            {:noreply, socket}
           {:error, error} ->
             socket =
               socket
@@ -305,36 +304,33 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   end
 
   defp normalize(params) do
-    normalized =
-      %{
-        brand: params["brand_name_form"]["brand_name"],
-        market: %{job_executor: params["market_definition_form"]["job_executor"],
-                  job_to_be_done: params["market_definition_form"]["job_to_be_done"]},
-        job_steps: Enum.map(params["desired_outcomes_form"]["job_steps"], fn {_index, job_step} ->
-          %{name: job_step["name"],
-            desired_outcomes: Enum.map(job_step["desired_outcomes"], fn {_index, desired_outcome} -> desired_outcome["value"] end)
-          }
-        end),
-        screening_questions: Enum.map(params["screening_questions_form"]["screening_questions"], fn {_index, screening_question} ->
-          %{prompt: screening_question["prompt"],
-            options: Enum.map(screening_question["options"], fn {_index, option} ->
-              %{value: option["value"],
-                is_correct: option["is_correct_option"]}
-            end)
-          }
-        end),
-        demographic_questions: Enum.map(params["demographic_questions_form"]["demographic_questions"], fn {_index, demographic_question} ->
-          %{prompt: demographic_question["prompt"],
-            options: Enum.map(demographic_question["options"], fn {_index, option} -> option["value"] end)
-          }
-        end),
-        context_questions: Enum.map(params["context_questions_form"]["context_questions"], fn {_index, context_question} ->
-          %{prompt: context_question["prompt"],
-            options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
-          }
-        end)
-      }
-
-    {:ok, normalized}
+    %{
+      brand: params["brand_name_form"]["brand_name"],
+      market: %{job_executor: params["market_definition_form"]["job_executor"],
+                job_to_be_done: params["market_definition_form"]["job_to_be_done"]},
+      job_steps: Enum.map(params["desired_outcomes_form"]["job_steps"], fn {_index, job_step} ->
+        %{name: job_step["name"],
+          desired_outcomes: Enum.map(job_step["desired_outcomes"], fn {_index, desired_outcome} -> desired_outcome["value"] end)
+        }
+      end),
+      screening_questions: Enum.map(params["screening_questions_form"]["screening_questions"], fn {_index, screening_question} ->
+        %{prompt: screening_question["prompt"],
+          options: Enum.map(screening_question["options"], fn {_index, option} ->
+            %{value: option["value"],
+              is_correct: option["is_correct_option"]}
+          end)
+        }
+      end),
+      demographic_questions: Enum.map(params["demographic_questions_form"]["demographic_questions"], fn {_index, demographic_question} ->
+        %{prompt: demographic_question["prompt"],
+          options: Enum.map(demographic_question["options"], fn {_index, option} -> option["value"] end)
+        }
+      end),
+      context_questions: Enum.map(params["context_questions_form"]["context_questions"], fn {_index, context_question} ->
+        %{prompt: context_question["prompt"],
+          options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
+        }
+      end)
+    }
   end
 end
