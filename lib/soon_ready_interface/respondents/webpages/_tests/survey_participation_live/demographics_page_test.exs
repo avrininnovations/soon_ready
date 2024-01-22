@@ -87,7 +87,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
     |> render_submit()
   end
 
-  def assert_query_params(path, params \\ @form_params) do
+  def assert_query_params(path) do
     %{query: query} = URI.parse(path)
     %{"demographics_form" => query_params} = Plug.Conn.Query.decode(query)
     assert query_params == @expected_query_params
