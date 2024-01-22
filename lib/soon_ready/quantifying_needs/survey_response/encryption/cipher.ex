@@ -122,7 +122,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
     end
   end
 
-  def can_decrypt?(value, _opts) do
+  def can_decrypt?(_value, _opts) do
     false
   end
 end

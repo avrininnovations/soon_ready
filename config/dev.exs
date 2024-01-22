@@ -67,7 +67,7 @@ config :soon_ready, SoonReadyInterface.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/soon_ready_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/soon_ready_interface/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 
