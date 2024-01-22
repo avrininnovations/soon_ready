@@ -166,12 +166,12 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:brand_name_form, AshPhoenix.Form.for_create(BrandNameForm, :create, api: SoonReadyInterface.Researcher.Setup.Api))
-      |> assign(:market_definition_form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, api: SoonReadyInterface.Researcher.Setup.Api))
-      |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
-      |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
-      |> assign(:demographic_questions_form, AshPhoenix.Form.for_create(DemographicQuestionsForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
-      |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
+      |> assign(:brand_name_form, AshPhoenix.Form.for_create(BrandNameForm, :create, api: SoonReadyInterface.Researcher.Api))
+      |> assign(:market_definition_form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, api: SoonReadyInterface.Researcher.Api))
+      |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
+      |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
+      |> assign(:demographic_questions_form, AshPhoenix.Form.for_create(DemographicQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
+      |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
 
     {:ok, socket}
   end

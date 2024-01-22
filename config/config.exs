@@ -19,7 +19,7 @@ config :soon_ready, ash_apis: [
 
   SoonReady.Onboarding.Setup.Api,
 
-  SoonReadyInterface.Researcher.Setup.Api,
+  SoonReadyInterface.Researcher.Api,
   SoonReadyInterface.Respondents.Setup.Api,
 ]
 
