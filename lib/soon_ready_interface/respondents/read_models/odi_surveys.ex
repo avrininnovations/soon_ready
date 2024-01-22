@@ -38,7 +38,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveys do
 
     read :get_active do
       get_by :id
-      # filter is_active == true
+      filter expr(is_active == true)
     end
   end
 
