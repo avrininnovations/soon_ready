@@ -15,11 +15,11 @@ defmodule SoonReady.Application do
       consistency: Application.get_env(:soon_ready, :consistency, :eventual)
     ]
 
-  router SoonReady.QuantifyNeeds.Survey
-  router SoonReady.QuantifyNeeds.SurveyResponse
+  router SoonReady.QuantifyingNeeds.Survey
+  router SoonReady.QuantifyingNeeds.SurveyResponse
 
   router SoonReady.Onboarding.Commands.Router
-  # router SoonReady.QuantifyNeeds.Survey.Commands.Router
+  # router SoonReady.QuantifyingNeeds.Survey.Commands.Router
 
   @impl true
   def start(_type, _args) do

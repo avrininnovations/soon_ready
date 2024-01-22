@@ -6,7 +6,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveys do
     name: "#{__MODULE__}",
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.QuantifyNeeds.Survey.ValueObjects.{
+  alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,
@@ -14,7 +14,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveys do
     ContextQuestion
   }
 
-  alias SoonReady.QuantifyNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
+  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
 
   attributes do
     attribute :id, :uuid, allow_nil?: false, primary_key?: true

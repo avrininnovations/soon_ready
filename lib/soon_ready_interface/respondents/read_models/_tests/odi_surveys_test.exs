@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.Tests.OdiSurveysTest do
   use SoonReady.DataCase
 
-  alias SoonReady.QuantifyNeeds.Survey
+  alias SoonReady.QuantifyingNeeds.Survey
   alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys
 
   @survey_params %{

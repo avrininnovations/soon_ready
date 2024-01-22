@@ -362,7 +362,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         params = Map.put(socket.assigns.params, "desired_outcome_rating_form", normalized_data)
         normalized_params = normalize(params)
 
-        case SoonReady.QuantifyNeeds.SurveyResponse.submit(normalized_params) do
+        case SoonReady.QuantifyingNeeds.SurveyResponse.submit(normalized_params) do
           {:ok, _aggregate} ->
             {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
           {:error, error} ->

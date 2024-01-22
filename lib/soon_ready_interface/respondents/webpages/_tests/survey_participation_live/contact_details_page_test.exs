@@ -52,8 +52,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   }
 
   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn} do
-    with {:ok, survey} <- SoonReady.QuantifyNeeds.Survey.create(@survey_params),
-          {:ok, _survey} <- SoonReady.QuantifyNeeds.Survey.publish(survey),
+    with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+          {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
           {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
           _ <- LandingPage.submit_response(view),
           _ <- assert_patch(view),

@@ -16,7 +16,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     DemographicQuestionsForm,
     ContextQuestionsForm
   }
-  alias SoonReady.QuantifyNeeds.Survey
+  alias SoonReady.QuantifyingNeeds.Survey
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""

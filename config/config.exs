@@ -14,11 +14,11 @@ config :soon_ready,
 config :soon_ready, event_stores: [SoonReady.EventStore]
 
 config :soon_ready, ash_apis: [
-  SoonReady.QuantifyNeeds.Survey.Api,
-  SoonReady.QuantifyNeeds.SurveyResponse.Api,
+  SoonReady.QuantifyingNeeds.Survey.Api,
+  SoonReady.QuantifyingNeeds.SurveyResponse.Api,
 
   SoonReady.Onboarding.Setup.Api,
-  SoonReady.QuantifyNeeds.Survey.Setup.Api,
+  SoonReady.QuantifyingNeeds.Survey.Setup.Api,
 
   SoonReadyInterface.Researcher.Setup.Api,
   SoonReadyInterface.Respondents.Setup.Api,
