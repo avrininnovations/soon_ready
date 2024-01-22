@@ -18,7 +18,6 @@ config :soon_ready, ash_apis: [
   SoonReady.QuantifyingNeeds.SurveyResponse.Api,
 
   SoonReady.Onboarding.Setup.Api,
-  SoonReady.QuantifyingNeeds.Survey.Setup.Api,
 
   SoonReadyInterface.Researcher.Setup.Api,
   SoonReadyInterface.Respondents.Setup.Api,

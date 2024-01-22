@@ -123,7 +123,6 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
   end
 
   def can_decrypt?(value, _opts) do
-    IO.inspect("can_decrypt?, #{inspect(value)}")
     false
   end
 end

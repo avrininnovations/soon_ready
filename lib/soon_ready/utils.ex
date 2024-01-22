@@ -1,4 +1,5 @@
 defmodule SoonReady.Utils do
+  # TODO: Can we make this unnecessary?
   def is_equal_or_subset?(investigated_value, comparison_value, nested \\ true)
   def is_equal_or_subset?(investigated_value, comparison_value, nested)
       when is_map(investigated_value) and is_map(comparison_value)
