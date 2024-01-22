@@ -3,5 +3,6 @@ defmodule SoonReadyInterface.Respondents.Setup.Api do
 
   resources do
     resource SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
+    resource SoonReadyInterface.Respondents.ReadModels.OdiSurveys
   end
 end

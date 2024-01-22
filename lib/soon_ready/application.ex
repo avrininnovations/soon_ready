@@ -19,7 +19,7 @@ defmodule SoonReady.Application do
   router SoonReady.QuantifyNeeds.SurveyResponse
 
   router SoonReady.Onboarding.Commands.Router
-  router SoonReady.QuantifyNeeds.Survey.Commands.Router
+  # router SoonReady.QuantifyNeeds.Survey.Commands.Router
 
   @impl true
   def start(_type, _args) do

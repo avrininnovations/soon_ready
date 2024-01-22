@@ -1,9 +1,7 @@
-defmodule SoonReady.QuantifyNeeds.Survey.DomainEvents.OdiSurveyPublished do
-  defstruct [:id]
-end
-
-defmodule SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys do
-  use Ash.Resource, data_layer: AshPostgres.DataLayer
+defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveys do
+  # TODO: Remove data layer
+  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+  # use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -18,7 +16,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys do
     ContextQuestion
   }
 
-  alias SoonReady.QuantifyNeeds.Survey.DomainEvents.OdiSurveyPublished
+  alias SoonReady.QuantifyNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
 
   attributes do
     attribute :id, :uuid, allow_nil?: false, primary_key?: true
@@ -28,13 +26,19 @@ defmodule SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys do
     attribute :screening_questions, {:array, ScreeningQuestion}
     attribute :demographic_questions, {:array, DemographicQuestion}
     attribute :context_questions, {:array, ContextQuestion}
+    attribute :is_active, :boolean, allow_nil?: false, default: false
   end
 
   actions do
-    defaults [:create, :read]
+    defaults [:create, :read, :update]
 
     read :get do
       get_by :id
+    end
+
+    read :get_active do
+      get_by :id
+      # filter is_active == true
     end
   end
 
@@ -48,16 +52,22 @@ defmodule SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys do
     define :get do
       args [:id]
     end
+
+    define :get_active do
+      args [:id]
+    end
+
+    define :update
   end
 
-  postgres do
-    repo SoonReady.Repo
-    table "respondents__read_models__active_odi_surveys"
-  end
+  # postgres do
+  #   repo SoonReady.Repo
+  #   table "respondents__read_models__odi_surveys"
+  # end
 
-  def handle(%OdiSurveyPublished{} = event, _metadata) do
+  def handle(%SurveyCreated{} = event, _metadata) do
     %{
-      survey_id: survey_id,
+      id: survey_id,
       brand: brand,
       market: market,
       job_steps: job_steps,
@@ -75,6 +85,15 @@ defmodule SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys do
       demographic_questions: demographic_questions,
       context_questions: context_questions
     }) do
+      :ok
+    end
+  end
+
+  def handle(%SurveyPublished{id: survey_id} = _event, _metadata) do
+    # TODO: Refactor this not to need query?
+    with {:ok, odi_survey} <- __MODULE__.get(%{id: survey_id}),
+          {:ok, _odi_survey} <- __MODULE__.update(odi_survey, %{is_active: true})
+    do
       :ok
     end
   end
