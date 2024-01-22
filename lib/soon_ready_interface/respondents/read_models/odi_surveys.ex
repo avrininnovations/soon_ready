@@ -1,7 +1,5 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveys do
-  # TODO: Remove data layer
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
-  # use Ash.Resource, data_layer: AshPostgres.DataLayer
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -60,10 +58,10 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveys do
     define :update
   end
 
-  # postgres do
-  #   repo SoonReady.Repo
-  #   table "respondents__read_models__odi_surveys"
-  # end
+  postgres do
+    repo SoonReady.Repo
+    table "respondents__read_models__odi_surveys"
+  end
 
   def handle(%SurveyCreated{} = event, _metadata) do
     %{

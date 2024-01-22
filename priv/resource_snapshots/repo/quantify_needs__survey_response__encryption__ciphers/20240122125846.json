@@ -7,8 +7,8 @@
       "source": "id",
       "references": null,
       "allow_nil?": false,
-      "primary_key?": true,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": true
     },
     {
       "default": "nil",
@@ -17,23 +17,23 @@
       "source": "cloak_key",
       "references": null,
       "allow_nil?": false,
-      "primary_key?": false,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": false
     }
   ],
   "table": "quantify_needs__survey_response__encryption__ciphers",
-  "hash": "EF84A2FD35BF394ED2E7E40AF35269A7B9F826CEAE5FC706AF02E6E88504A9CE",
+  "hash": "ADC1C362A7AD4EA8AEC9EDDA40E66306B9734D71CE78E9194887B75107F9F736",
   "schema": null,
   "repo": "Elixir.SoonReady.Repo",
   "identities": [],
-  "check_constraints": [],
-  "custom_indexes": [],
   "multitenancy": {
     "global": null,
-    "attribute": null,
-    "strategy": null
+    "strategy": null,
+    "attribute": null
   },
   "base_filter": null,
+  "check_constraints": [],
+  "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true
 }

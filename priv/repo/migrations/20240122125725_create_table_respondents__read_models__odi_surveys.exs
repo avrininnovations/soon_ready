@@ -1,4 +1,4 @@
-defmodule SoonReady.Repo.Migrations.CreateTableRespondentsReadModelsActiveOdiSurveys do
+defmodule SoonReady.Repo.Migrations.CreateTableRespondentsReadModelsOdiSurveys do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -8,7 +8,7 @@ defmodule SoonReady.Repo.Migrations.CreateTableRespondentsReadModelsActiveOdiSur
   use Ecto.Migration
 
   def up do
-    create table(:respondents__read_models__active_odi_surveys, primary_key: false) do
+    create table(:respondents__read_models__odi_surveys, primary_key: false) do
       add :id, :uuid, null: false, primary_key: true
       add :brand, :text
       add :market, :map
@@ -16,10 +16,11 @@ defmodule SoonReady.Repo.Migrations.CreateTableRespondentsReadModelsActiveOdiSur
       add :screening_questions, {:array, :map}
       add :demographic_questions, {:array, :map}
       add :context_questions, {:array, :map}
+      add :is_active, :boolean, null: false, default: false
     end
   end
 
   def down do
-    drop table(:respondents__read_models__active_odi_surveys)
+    drop table(:respondents__read_models__odi_surveys)
   end
 end

@@ -7,8 +7,8 @@
       "source": "id",
       "references": null,
       "allow_nil?": false,
-      "primary_key?": true,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": true
     },
     {
       "default": "nil",
@@ -17,8 +17,8 @@
       "source": "brand",
       "references": null,
       "allow_nil?": true,
-      "primary_key?": false,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": false
     },
     {
       "default": "nil",
@@ -27,8 +27,8 @@
       "source": "market",
       "references": null,
       "allow_nil?": true,
-      "primary_key?": false,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": false
     },
     {
       "default": "nil",
@@ -40,8 +40,8 @@
       "source": "job_steps",
       "references": null,
       "allow_nil?": true,
-      "primary_key?": false,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": false
     },
     {
       "default": "nil",
@@ -53,8 +53,8 @@
       "source": "screening_questions",
       "references": null,
       "allow_nil?": true,
-      "primary_key?": false,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": false
     },
     {
       "default": "nil",
@@ -66,8 +66,8 @@
       "source": "demographic_questions",
       "references": null,
       "allow_nil?": true,
-      "primary_key?": false,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": false
     },
     {
       "default": "nil",
@@ -79,23 +79,33 @@
       "source": "context_questions",
       "references": null,
       "allow_nil?": true,
-      "primary_key?": false,
-      "generated?": false
+      "generated?": false,
+      "primary_key?": false
+    },
+    {
+      "default": "false",
+      "size": null,
+      "type": "boolean",
+      "source": "is_active",
+      "references": null,
+      "allow_nil?": false,
+      "generated?": false,
+      "primary_key?": false
     }
   ],
-  "table": "respondents__read_models__active_odi_surveys",
-  "hash": "7744B6E8BFF7693B43734457CFBE4876ACA3E04907E69D7203640641AAAA41E2",
+  "table": "respondents__read_models__odi_surveys",
+  "hash": "901B59DAE7A40C88B737A797116BAD1DE7FEC97EFD8AF37F9FEBC5007B146058",
   "schema": null,
   "repo": "Elixir.SoonReady.Repo",
   "identities": [],
-  "check_constraints": [],
-  "custom_indexes": [],
   "multitenancy": {
     "global": null,
-    "attribute": null,
-    "strategy": null
+    "strategy": null,
+    "attribute": null
   },
   "base_filter": null,
+  "check_constraints": [],
+  "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true
 }
