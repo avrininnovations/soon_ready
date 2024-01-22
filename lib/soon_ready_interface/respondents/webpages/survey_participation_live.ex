@@ -12,7 +12,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ComparisonForm,
     DesiredOutcomeRatingForm
   }
-  alias SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
+  alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
@@ -205,7 +205,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
     # TODO: Make asyncronous
-    {:ok, survey} = ActiveOdiSurveys.get(survey_id)
+    {:ok, survey} = OdiSurveys.get_active(survey_id)
     {:ok, screening_form_view_model} = ScreeningForm.from_read_model(survey)
     {:ok, demographics_form_view_model} = DemographicsForm.from_read_model(survey)
     {:ok, context_form_view_model} = ContextForm.from_read_model(survey)

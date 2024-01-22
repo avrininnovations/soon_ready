@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.ScreeningForm do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys
+  alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys
   alias __MODULE__.{Question, Option}
 
   attributes do
@@ -26,7 +26,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewMo
     defaults [:create, :read, :update]
 
     create :from_read_model do
-      argument :survey, ActiveOdiSurveys, allow_nil?: false
+      argument :survey, OdiSurveys, allow_nil?: false
 
       change fn changeset, _context ->
         read_model = Ash.Changeset.get_argument(changeset, :survey)

@@ -9,7 +9,7 @@ defmodule SoonReadyInterface.Respondents.Setup.Supervisor do
   def init(_arg) do
     children = [
       # Event handlers
-      SoonReadyInterface.Respondents.ReadModels.ActiveOdiSurveys,
+      SoonReadyInterface.Respondents.ReadModels.OdiSurveys,
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
