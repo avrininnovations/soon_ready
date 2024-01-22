@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.ScreeningQuestion.Option do
+defmodule SoonReady.QuantifyNeeds.Survey.ValueObjects.ScreeningQuestion.Option do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

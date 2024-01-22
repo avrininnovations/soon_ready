@@ -1,8 +1,8 @@
-defmodule SoonReady.SurveyManagement.Commands.PublishOdiSurvey do
+defmodule SoonReady.QuantifyNeeds.Survey.Commands.PublishOdiSurvey do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.ValueObjects.{
+  alias SoonReady.QuantifyNeeds.Survey.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,
@@ -35,13 +35,13 @@ defmodule SoonReady.SurveyManagement.Commands.PublishOdiSurvey do
   end
 
   code_interface do
-    define_for SoonReady.SurveyManagement.Setup.Api
+    define_for SoonReady.QuantifyNeeds.Survey.Setup.Api
     define :new
     define :dispatch
   end
 
   def execute(command, _state) do
-    SoonReady.SurveyManagement.DomainEvents.OdiSurveyPublished.new(%{
+    SoonReady.QuantifyNeeds.Survey.DomainEvents.OdiSurveyPublished.new(%{
       survey_id: command.survey_id,
       brand: command.brand,
       market: command.market,

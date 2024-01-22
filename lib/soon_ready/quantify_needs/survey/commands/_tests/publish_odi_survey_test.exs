@@ -1,12 +1,12 @@
-defmodule SoonReady.SurveyManagement.Commands.Tests.PublishOdiSurveyTest do
+defmodule SoonReady.QuantifyNeeds.Survey.Commands.Tests.PublishOdiSurveyTest do
   use SoonReady.DataCase
 
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
-  alias SoonReady.SurveyManagement.DomainEvents.OdiSurveyPublished
-  alias SoonReady.SurveyManagement.ValueObjects.{
+  alias SoonReady.QuantifyNeeds.Survey.Commands.PublishOdiSurvey
+  alias SoonReady.QuantifyNeeds.Survey.DomainEvents.OdiSurveyPublished
+  alias SoonReady.QuantifyNeeds.Survey.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,

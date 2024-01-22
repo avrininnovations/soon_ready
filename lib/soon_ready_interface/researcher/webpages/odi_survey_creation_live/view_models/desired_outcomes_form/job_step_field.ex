@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.DesiredOutcomesForm.JobStepField do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReady.SurveyManagement.DomainDataTypes.JobStep
+  alias SoonReady.QuantifyNeeds.Survey.DomainDataTypes.JobStep
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.DesiredOutcomesForm.DesiredOutcomeField
 
   attributes do

@@ -2,7 +2,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
-  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
+  alias SoonReady.QuantifyNeeds.Survey.Commands.PublishOdiSurvey
 
   @survey_params %{
     brand: "A Big Brand",

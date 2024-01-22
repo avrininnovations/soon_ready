@@ -1,8 +1,8 @@
-defmodule SoonReady.SurveyManagement.Commands.Router do
+defmodule SoonReady.QuantifyNeeds.Survey.Commands.Router do
   use Ash.Resource, data_layer: :embedded
   use Commanded.Commands.Router
 
-  alias SoonReady.SurveyManagement.Commands.PublishOdiSurvey
+  alias SoonReady.QuantifyNeeds.Survey.Commands.PublishOdiSurvey
 
   attributes do
     attribute :survey_id, :uuid, allow_nil?: false

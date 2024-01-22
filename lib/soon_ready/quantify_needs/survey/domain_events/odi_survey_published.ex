@@ -1,7 +1,7 @@
-defmodule SoonReady.SurveyManagement.DomainEvents.OdiSurveyPublished do
+defmodule SoonReady.QuantifyNeeds.Survey.DomainEvents.OdiSurveyPublished do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.ValueObjects.{
+  alias SoonReady.QuantifyNeeds.Survey.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,
@@ -25,7 +25,7 @@ defmodule SoonReady.SurveyManagement.DomainEvents.OdiSurveyPublished do
   end
 
   code_interface do
-    define_for SoonReady.SurveyManagement.Setup.Api
+    define_for SoonReady.QuantifyNeeds.Survey.Setup.Api
     define :new
   end
 end

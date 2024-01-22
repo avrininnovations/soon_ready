@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.Setup.Registry do
+defmodule SoonReady.QuantifyNeeds.Survey.Setup.Registry do
   use Ash.Registry
 
   entries do
