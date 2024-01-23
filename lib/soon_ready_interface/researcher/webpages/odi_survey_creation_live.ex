@@ -2,12 +2,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   use SoonReadyInterface, :live_view
 
   require Logger
-  import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form, only: [
-    text_input: 1,
-    text_field: 1,
-    submit: 1,
-    checkbox: 1,
-  ]
 
   alias SoonReady.QuantifyingNeeds.Survey
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
