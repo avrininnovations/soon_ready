@@ -9,7 +9,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     checkbox: 1,
   ]
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.{
-    BrandNameForm,
+    # BrandNameForm,
     MarketDefinitionForm,
     DesiredOutcomesForm,
     ScreeningQuestionsForm,
@@ -18,17 +18,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   }
   alias SoonReady.QuantifyingNeeds.Survey
 
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPageForm
+
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
     <h2>Welcome to the ODI Survey Creator!</h2>
 
-    <.form :let={f} for={@brand_name_form} phx-submit="submit-brand-name">
-      <.text_input
-        field={f[:brand_name]}
-        placeholder="What's the brand name for this survey?"
-      />
-      <.submit>Start Your Adventure</.submit>
-    </.form>
+    <.live_component module={LandingPageForm} id="landing_page_form" />
     """
   end
 
@@ -166,7 +162,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:brand_name_form, AshPhoenix.Form.for_create(BrandNameForm, :create, api: SoonReadyInterface.Researcher.Api))
+      # |> assign(:brand_name_form, AshPhoenix.Form.for_create(BrandNameForm, :create, api: SoonReadyInterface.Researcher.Api))
       |> assign(:market_definition_form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, api: SoonReadyInterface.Researcher.Api))
       |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
       |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
@@ -178,6 +174,14 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   def handle_params(params, _url, socket) do
     {:noreply, assign(socket, params: params)}
+  end
+
+  def handle_info({:update_params, new_params}, socket) do
+    {:noreply, assign(socket, :params, new_params)}
+  end
+
+  def handle_info({:handle_submission, LandingPageForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-brand-name", %{"form" => form_params}, socket) do
