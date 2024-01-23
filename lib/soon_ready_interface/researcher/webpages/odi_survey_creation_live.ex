@@ -9,8 +9,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     checkbox: 1,
   ]
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.{
-    # ScreeningQuestionsForm,
-    DemographicQuestionsForm,
     ContextQuestionsForm
   }
   alias SoonReady.QuantifyingNeeds.Survey
@@ -20,6 +18,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     MarketDefinitionForm,
     DesiredOutcomesForm,
     ScreeningQuestionsForm,
+    DemographicQuestionsForm,
   }
 
   def render(%{live_action: :landing_page} = assigns) do
@@ -58,27 +57,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     ~H"""
     <h2>Demographic Questions</h2>
 
-    <.form :let={f} for={@demographic_questions_form} phx-submit="submit-demographic-questions">
-      <.inputs_for :let={ff} field={f[:demographic_questions]}>
-        <.text_field
-          field={ff[:prompt]}
-          label="Prompt"
-        />
-
-        <.inputs_for :let={fff} field={ff[:options]}>
-          <.text_input
-            field={fff[:value]}
-            placeholder="Option"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-demographic-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-demographic-question">Add demographic question</button>
+    <.live_component module={DemographicQuestionsForm} id="demographic_questions_form" />
     """
   end
 
@@ -113,7 +92,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:demographic_questions_form, AshPhoenix.Form.for_create(DemographicQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
       |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
 
     {:ok, socket}
@@ -144,15 +122,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{socket.assigns.params}")}
   end
 
-  def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.demographic_questions_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "demographic_questions_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, demographic_questions_form: form_with_error)}
-    end
+  def handle_info({:handle_submission, DemographicQuestionsForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
@@ -181,16 +152,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       {:error, form_with_error} ->
         {:noreply, assign(socket, context_questions_form: form_with_error)}
     end
-  end
-
-  def handle_event("add-demographic-question", _params, socket) do
-    demographic_questions_form = AshPhoenix.Form.add_form(socket.assigns.demographic_questions_form, :demographic_questions, validate?: socket.assigns.demographic_questions_form.errors || false)
-    {:noreply, assign(socket, demographic_questions_form: demographic_questions_form)}
-  end
-
-  def handle_event("add-demographic-question-option", %{"name" => name} = _params, socket) do
-    demographic_questions_form = AshPhoenix.Form.add_form(socket.assigns.demographic_questions_form, "#{name}[options]", validate?: socket.assigns.demographic_questions_form.errors || false)
-    {:noreply, assign(socket, demographic_questions_form: demographic_questions_form)}
   end
 
   def handle_event("add-context-question", _params, socket) do
