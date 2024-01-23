@@ -50,28 +50,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     ~H"""
     <h2>Screening Questions</h2>
 
-    <.form :let={f} for={@screening_questions_form} phx-submit="submit-screening-questions">
-      <.inputs_for :let={ff} field={f[:screening_questions]}>
-        <.text_field
-          field={ff[:prompt]}
-          label="Prompt"
-        />
-
-        <.inputs_for :let={fff} field={ff[:options]}>
-          <.checkbox field={fff[:is_correct_option]} />
-          <.text_input
-            field={fff[:value]}
-            placeholder="Option"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-screening-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-screening-question">Add screening question</button>
+    <.live_component module={ScreeningQuestionsForm} id="screening_questions_form" />
     """
   end
 
@@ -134,7 +113,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
       |> assign(:demographic_questions_form, AshPhoenix.Form.for_create(DemographicQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
       |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
 
@@ -162,15 +140,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{socket.assigns.params}")}
   end
 
-  def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.screening_questions_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "screening_questions_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, screening_questions_form: form_with_error)}
-    end
+  def handle_info({:handle_submission, ScreeningQuestionsForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
@@ -210,16 +181,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       {:error, form_with_error} ->
         {:noreply, assign(socket, context_questions_form: form_with_error)}
     end
-  end
-
-  def handle_event("add-screening-question", _params, socket) do
-    screening_questions_form = AshPhoenix.Form.add_form(socket.assigns.screening_questions_form, :screening_questions, validate?: socket.assigns.screening_questions_form.errors || false)
-    {:noreply, assign(socket, screening_questions_form: screening_questions_form)}
-  end
-
-  def handle_event("add-screening-question-option", %{"name" => name} = _params, socket) do
-    screening_questions_form = AshPhoenix.Form.add_form(socket.assigns.screening_questions_form, "#{name}[options]", validate?: socket.assigns.screening_questions_form.errors || false)
-    {:noreply, assign(socket, screening_questions_form: screening_questions_form)}
   end
 
   def handle_event("add-demographic-question", _params, socket) do

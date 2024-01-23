@@ -68,17 +68,4 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
   def handle_event("add-desired-outcome", %{"name" => name}, socket) do
     {:noreply, assign(socket, form: AshPhoenix.Form.add_form(socket.assigns.form, "#{name}[desired_outcomes]", validate?: socket.assigns.form.errors || false))}
   end
-
-
-
-  # def handle_event("add-job-step", _params, socket) do
-  #   desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, :job_steps, validate?: socket.assigns.desired_outcomes_form.errors || false)
-  #   {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
-  # end
-
-  # def handle_event("add-desired-outcome", %{"name" => name} = _params, socket) do
-  #   desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, "#{name}[desired_outcomes]", validate?: socket.assigns.desired_outcomes_form.errors || false)
-  #   {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
-  # end
-
 end
