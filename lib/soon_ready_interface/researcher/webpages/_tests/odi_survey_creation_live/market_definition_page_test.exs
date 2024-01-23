@@ -11,12 +11,12 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.MarketDefinitionPageTest do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
 
-      resulting_html = submit_form(view)
+      _resulting_html = submit_form(view)
 
       _market_definition_page_path = assert_patch(view)
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/desired-outcomes"
-      assert resulting_html =~ "Desired Outcomes"
+      assert has_element?(view, "h2", "Desired Outcomes")
       LandingPage.assert_query_params(path)
       assert_query_params(path)
     end

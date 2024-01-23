@@ -18,7 +18,7 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.LandingPageTest do
 
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/market-definition"
-      # assert resulting_html =~ "Market Definition"
+      assert has_element?(view, "h2", "Market Definition")
       assert_query_params(path)
     end
   end
