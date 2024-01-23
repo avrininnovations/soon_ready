@@ -14,7 +14,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPa
       <.form :let={f} for={@form} phx-submit="submit" phx-target={@myself}>
         <Doggo.input
           field={f[:brand_name]}
-          placeholder="What's the brand name for this survey?"
+          label="What's the brand name for this survey?"
         />
         <Doggo.button type="submit" name="submit">Start Your Adventure</Doggo.button>
       </.form>
@@ -35,7 +35,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPa
       {:ok, _view_model} ->
         send(self(), {:update_params, %{"landing_page_form" => form_params}})
         send(self(), {:handle_submission, __MODULE__})
-        # send(self(), {:submit_params, __MODULE__, %{"landing_page_form" => form_params}})
 
         {:noreply, socket}
 

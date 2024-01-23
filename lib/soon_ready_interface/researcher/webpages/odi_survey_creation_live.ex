@@ -9,10 +9,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     checkbox: 1,
   ]
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.{
-    # BrandNameForm,
-    # MarketDefinitionForm,
-    DesiredOutcomesForm,
-    ScreeningQuestionsForm,
+    # ScreeningQuestionsForm,
     DemographicQuestionsForm,
     ContextQuestionsForm
   }
@@ -21,6 +18,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
     LandingPageForm,
     MarketDefinitionForm,
+    DesiredOutcomesForm,
+    ScreeningQuestionsForm,
   }
 
   def render(%{live_action: :landing_page} = assigns) do
@@ -36,18 +35,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     <h2>Market Definition</h2>
 
     <.live_component module={MarketDefinitionForm} id="market_definition_form" />
-
-    <%!-- <.form :let={f} for={@market_definition_form} phx-submit="submit-market-definition">
-      <.text_field
-        field={f[:job_executor]}
-        label="Who is the job executor?"
-      />
-      <.text_field
-        field={f[:job_to_be_done]}
-        label="What is the job they're trying to get done?"
-      />
-      <.submit>Proceed</.submit>
-    </.form> --%>
     """
   end
 
@@ -55,27 +42,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     ~H"""
     <h2>Desired Outcomes</h2>
 
-    <.form :let={f} for={@desired_outcomes_form} phx-submit="submit-desired-outcomes">
-      <.inputs_for :let={ff} field={f[:job_steps]}>
-        <.text_field
-          field={ff[:name]}
-          label={"Job Step #{ff.index + 1}"}
-        />
-
-        <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
-          <.text_input
-            field={fff[:value]}
-            placeholder="Desired Outcome"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-desired-outcome" phx-value-name={"#{ff.name}"}>Add desired outcome</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-job-step">Add job step</button>
+    <.live_component module={DesiredOutcomesForm} id="desired_outcomes_form" />
     """
   end
 
@@ -167,9 +134,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      # |> assign(:brand_name_form, AshPhoenix.Form.for_create(BrandNameForm, :create, api: SoonReadyInterface.Researcher.Api))
-      |> assign(:market_definition_form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, api: SoonReadyInterface.Researcher.Api))
-      |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
       |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
       |> assign(:demographic_questions_form, AshPhoenix.Form.for_create(DemographicQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
       |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
@@ -194,37 +158,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{socket.assigns.params}")}
   end
 
-  def handle_event("submit-brand-name", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.brand_name_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "brand_name_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, brand_name_form: form_with_error)}
-    end
-  end
-
-  def handle_event("submit-market-definition", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.market_definition_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "market_definition_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, market_definition_form: form_with_error)}
-    end
-  end
-
-  def handle_event("submit-desired-outcomes", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.desired_outcomes_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "desired_outcomes_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, desired_outcomes_form: form_with_error)}
-    end
+  def handle_info({:handle_submission, DesiredOutcomesForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
@@ -275,16 +210,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       {:error, form_with_error} ->
         {:noreply, assign(socket, context_questions_form: form_with_error)}
     end
-  end
-
-  def handle_event("add-job-step", _params, socket) do
-    desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, :job_steps, validate?: socket.assigns.desired_outcomes_form.errors || false)
-    {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
-  end
-
-  def handle_event("add-desired-outcome", %{"name" => name} = _params, socket) do
-    desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, "#{name}[desired_outcomes]", validate?: socket.assigns.desired_outcomes_form.errors || false)
-    {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
   end
 
   def handle_event("add-screening-question", _params, socket) do
