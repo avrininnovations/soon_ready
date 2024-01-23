@@ -10,7 +10,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   ]
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.{
     # BrandNameForm,
-    MarketDefinitionForm,
+    # MarketDefinitionForm,
     DesiredOutcomesForm,
     ScreeningQuestionsForm,
     DemographicQuestionsForm,
@@ -18,7 +18,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   }
   alias SoonReady.QuantifyingNeeds.Survey
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPageForm
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
+    LandingPageForm,
+    MarketDefinitionForm,
+  }
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
@@ -32,7 +35,9 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     ~H"""
     <h2>Market Definition</h2>
 
-    <.form :let={f} for={@market_definition_form} phx-submit="submit-market-definition">
+    <.live_component module={MarketDefinitionForm} id="market_definition_form" />
+
+    <%!-- <.form :let={f} for={@market_definition_form} phx-submit="submit-market-definition">
       <.text_field
         field={f[:job_executor]}
         label="Who is the job executor?"
@@ -42,7 +47,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
         label="What is the job they're trying to get done?"
       />
       <.submit>Proceed</.submit>
-    </.form>
+    </.form> --%>
     """
   end
 
@@ -177,11 +182,16 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   end
 
   def handle_info({:update_params, new_params}, socket) do
-    {:noreply, assign(socket, :params, new_params)}
+    params = Map.merge(socket.assigns.params, new_params)
+    {:noreply, assign(socket, :params, params)}
   end
 
   def handle_info({:handle_submission, LandingPageForm}, socket) do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{socket.assigns.params}")}
+  end
+
+  def handle_info({:handle_submission, MarketDefinitionForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-brand-name", %{"form" => form_params}, socket) do
