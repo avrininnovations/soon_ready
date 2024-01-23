@@ -8,17 +8,15 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     submit: 1,
     checkbox: 1,
   ]
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.{
-    ContextQuestionsForm
-  }
-  alias SoonReady.QuantifyingNeeds.Survey
 
+  alias SoonReady.QuantifyingNeeds.Survey
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
     LandingPageForm,
     MarketDefinitionForm,
     DesiredOutcomesForm,
     ScreeningQuestionsForm,
     DemographicQuestionsForm,
+    ContextQuestionsForm
   }
 
   def render(%{live_action: :landing_page} = assigns) do
@@ -65,36 +63,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     ~H"""
     <h2>Context Questions</h2>
 
-    <.form :let={f} for={@context_questions_form} phx-submit="submit-context-questions">
-      <.inputs_for :let={ff} field={f[:context_questions]}>
-        <.text_field
-          field={ff[:prompt]}
-          label="Prompt"
-        />
-
-        <.inputs_for :let={fff} field={ff[:options]}>
-          <.text_input
-            field={fff[:value]}
-            placeholder="Option"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-context-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-context-question">Add context question</button>
+    <.live_component module={ContextQuestionsForm} id="context_questions_form" />
     """
-  end
-
-  def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
-
-    {:ok, socket}
   end
 
   def handle_params(params, _url, socket) do
@@ -126,47 +96,29 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{socket.assigns.params}")}
   end
 
-  def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.context_questions_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "context_questions_form", form_params)
-        normalized_params = normalize(params)
+  def handle_info({:handle_submission, ContextQuestionsForm}, socket) do
+    normalized_params = normalize(socket.assigns.params)
 
-        case Survey.create(normalized_params) do
-          {:ok, _aggregate} ->
-            socket =
-              socket
-              |> push_redirect(to: ~p"/")
-              |> put_flash(:info, "Survey created successfully!")
-            {:noreply, socket}
-          {:error, error} ->
-            socket =
-              socket
-              |> push_patch(to: ~p"/odi-survey/create/context-questions?#{params}")
-              |> put_flash(:error, "Survey creation failed. Please try again or contact support.")
+    case Survey.create(normalized_params) do
+      {:ok, _aggregate} ->
+        socket =
+          socket
+          |> push_redirect(to: ~p"/")
+          |> put_flash(:info, "Survey created successfully!")
+        {:noreply, socket}
+      {:error, error} ->
+        socket =
+          socket
+          |> put_flash(:error, "Survey creation failed. Please try again or contact support.")
 
-              Logger.error("Survey creation failed: #{inspect(error)}")
-            {:noreply, socket}
-        end
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, context_questions_form: form_with_error)}
+          Logger.error("Survey creation failed: #{inspect(error)}")
+        {:noreply, socket}
     end
-  end
-
-  def handle_event("add-context-question", _params, socket) do
-    context_questions_form = AshPhoenix.Form.add_form(socket.assigns.context_questions_form, :context_questions, validate?: socket.assigns.context_questions_form.errors || false)
-    {:noreply, assign(socket, context_questions_form: context_questions_form)}
-  end
-
-  def handle_event("add-context-question-option", %{"name" => name} = _params, socket) do
-    context_questions_form = AshPhoenix.Form.add_form(socket.assigns.context_questions_form, "#{name}[options]", validate?: socket.assigns.context_questions_form.errors || false)
-    {:noreply, assign(socket, context_questions_form: context_questions_form)}
   end
 
   defp normalize(params) do
     %{
-      brand: params["brand_name_form"]["brand_name"],
+      brand: params["landing_page_form"]["brand_name"],
       market: %{job_executor: params["market_definition_form"]["job_executor"],
                 job_to_be_done: params["market_definition_form"]["job_to_be_done"]},
       job_steps: Enum.map(params["desired_outcomes_form"]["job_steps"], fn {_index, job_step} ->
