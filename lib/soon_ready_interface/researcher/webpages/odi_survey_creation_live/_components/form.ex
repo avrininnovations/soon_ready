@@ -24,7 +24,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
         <p class="text-rose-900 dark:text-rose-400"><%= error %></p>
       <% end %>
     <% end %>
-    <% IO.inspect(@field.errors) %>
     """
   end
 
