@@ -69,9 +69,17 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   def render(%{live_action: :desired_outcomes} = assigns) do
     ~H"""
-    <h2>Desired Outcomes</h2>
-
-    <.live_component module={DesiredOutcomesForm} id="desired_outcomes_form" />
+    <section class="bg-white dark:bg-gray-900">
+      <div class="py-8 lg:py-16 px-4">
+          <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
+            Desired Outcomes
+          </h2>
+          <%!-- <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
+            Are you a researcher trying to create an ODI survey? This is where to get started!
+          </p> --%>
+          <.live_component module={DesiredOutcomesForm} id="desired_outcomes_form" />
+      </div>
+    </section>
     """
   end
 
