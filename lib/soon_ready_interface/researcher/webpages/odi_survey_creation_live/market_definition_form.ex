@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.MarketDefinitionForm do
   use SoonReadyInterface, :live_component
-
   use Ash.Resource, data_layer: :embedded
+  import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
 
   attributes do
     attribute :job_executor, :string, allow_nil?: false
@@ -11,17 +11,31 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.MarketDef
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
+    <%!-- <div>
       <.form :let={f} for={@form} phx-submit="submit" phx-target={@myself}>
-        <Doggo.input
+        <div class="w-full">
+          <.text_input
+            field={f[:brand_name]}
+            placeholder="What's the brand name for this survey?"
+            class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+          />
+        </div>
+        <button type="submit" name="submit" class="flex-none py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Start Your Adventure</button>
+      </.form>
+    </div> --%>
+    <div>
+      <.form :let={f} for={@form} phx-submit="submit" phx-target={@myself} class="flex flex-col gap-4">
+        <.text_field
           field={f[:job_executor]}
           label="Who is the job executor?"
+          class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
         />
-        <Doggo.input
+        <.text_field
           field={f[:job_to_be_done]}
           label="What is the job they're trying to get done?"
+          class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
         />
-        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
+        <button type="submit" name="submit" class="mt-4 py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed</button>
       </.form>
     </div>
     """
