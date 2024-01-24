@@ -13,11 +13,41 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     ContextQuestionsForm
   }
 
+  def layout(assigns) do
+    ~H"""
+    <main class="dark:text-white">
+      <.flash_group flash={@flash} />
+      <header>
+        <nav class="bg-white border-gray-200 px-4 lg:px-6 py-4 dark:bg-gray-800">
+          <div class="flex flex-wrap justify-center items-center mx-auto max-w-screen-xl">
+            <a href={~p"/"} class="flex items-center">
+              <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">😎 SoonReady</span>
+            </a>
+          </div>
+        </nav>
+      </header>
+      <%= @inner_content %>
+    </main>
+    """
+  end
+
+  def mount(_params, _session, socket) do
+    {:ok, socket, layout: {__MODULE__, :layout}}
+  end
+
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
-    <h2>Welcome to the ODI Survey Creator!</h2>
-
-    <.live_component module={LandingPageForm} id="landing_page_form" />
+    <section class="bg-white dark:bg-gray-900">
+      <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
+          <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
+            Welcome to the ODI Survey Creator!
+          </h2>
+          <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
+            Are you a researcher trying to create an ODI survey? This is where to get started!
+          </p>
+          <.live_component module={LandingPageForm} id="landing_page_form" />
+      </div>
+    </section>
     """
   end
 

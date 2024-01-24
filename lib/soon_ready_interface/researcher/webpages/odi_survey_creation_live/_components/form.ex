@@ -18,7 +18,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
 
   def text_input(assigns) do
     ~H"""
-    <%= text_input(@field.form, @field.field, Keyword.new(@rest)) %>
+    <%= text_input(@field.form, @field.field, [{:placeholder, @placeholder} | Keyword.new(@rest)]) %>
+    <%= if @field.errors != [] do %>
+      <%= for {error, _opts} <- @field.errors do %>
+        <p class="text-rose-900 dark:text-rose-400"><%= error %></p>
+      <% end %>
+    <% end %>
+    <% IO.inspect(@field.errors) %>
     """
   end
 
