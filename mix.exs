@@ -50,7 +50,7 @@ defmodule SoonReady.MixProject do
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.20"},
+      {:gettext, "~> 0.24"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
@@ -63,6 +63,9 @@ defmodule SoonReady.MixProject do
       {:commanded_eventstore_adapter, "~> 1.4"},
       {:cloak, "~> 1.1"},
       {:doggo, "~> 0.4"},
+      {:pyro, "~> 0.3.6"},
+      # Date/Time/Zone components & tooling
+      {:tzdata, "~> 1.1"},
     ]
   end
 
