@@ -11,7 +11,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPa
   def render(assigns) do
     ~H"""
     <div>
-      <.form :let={f} for={@form} phx-submit="submit" phx-target={@myself} class="flex gap-2">
+      <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex gap-2">
         <div class="w-full">
           <.text_input
             field={f[:brand_name]}
@@ -30,6 +30,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPa
     socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api))
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("validate", params, socket) do
+    form_params = Map.get(params, "form", %{})
+    validated_form = AshPhoenix.Form.validate(socket.assigns.form, form_params, errors: socket.assigns.form.errors || false)
+    {:noreply, assign(socket, form: validated_form)}
   end
 
   @impl true

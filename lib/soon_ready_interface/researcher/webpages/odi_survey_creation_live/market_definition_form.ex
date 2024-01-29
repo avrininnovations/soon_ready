@@ -11,20 +11,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.MarketDef
   @impl true
   def render(assigns) do
     ~H"""
-    <%!-- <div>
-      <.form :let={f} for={@form} phx-submit="submit" phx-target={@myself}>
-        <div class="w-full">
-          <.text_input
-            field={f[:brand_name]}
-            placeholder="What's the brand name for this survey?"
-            class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-          />
-        </div>
-        <button type="submit" name="submit" class="flex-none py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Start Your Adventure</button>
-      </.form>
-    </div> --%>
     <div>
-      <.form :let={f} for={@form} phx-submit="submit" phx-target={@myself} class="flex flex-col gap-4">
+      <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-4">
         <.text_field
           field={f[:job_executor]}
           label="Who is the job executor?"
@@ -46,6 +34,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.MarketDef
     socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api))
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("validate", params, socket) do
+    form_params = Map.get(params, "form", %{})
+    validated_form = AshPhoenix.Form.validate(socket.assigns.form, form_params, errors: socket.assigns.form.errors || false)
+    {:noreply, assign(socket, form: validated_form)}
   end
 
   @impl true
