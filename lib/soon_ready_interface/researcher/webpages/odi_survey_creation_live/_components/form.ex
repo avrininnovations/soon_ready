@@ -2,6 +2,18 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
   use Phoenix.Component
   import Phoenix.HTML.Form
 
+  attr :field, Phoenix.HTML.FormField, required: true
+
+  def errors(assigns) do
+    ~H"""
+    <%= if @field.errors != [] do %>
+      <%= for error <- @field.errors do %>
+        <p class="text-rose-900 dark:text-rose-400"><%= SoonReadyInterface.CoreComponents.translate_error(error) %></p>
+      <% end %>
+    <% end %>
+    """
+  end
+
   attr :label, :string, required: true
   attr :field, Phoenix.HTML.FormField, required: true
   attr :rest, :global
@@ -11,11 +23,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     <div>
       <p><%= @label %></p>
       <%= text_input(@field.form, @field.field, Keyword.new(@rest)) %>
-      <%= if @field.errors != [] do %>
-        <%= for {error, _opts} <- @field.errors do %>
-          <p class="text-rose-900 dark:text-rose-400"><%= error %></p>
-        <% end %>
-      <% end %>
+      <.errors field={@field} />
     </div>
     """
   end
@@ -28,11 +36,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     ~H"""
     <div>
       <%= text_input(@field.form, @field.field, [{:placeholder, @placeholder} | Keyword.new(@rest)]) %>
-      <%= if @field.errors != [] do %>
-        <%= for {error, _opts} <- @field.errors do %>
-          <p class="text-rose-900 dark:text-rose-400"><%= error %></p>
-        <% end %>
-      <% end %>
+      <.errors field={@field} />
     </div>
     """
   end

@@ -48,11 +48,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
                 <button class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm" name={ff.name} type="button" phx-click="add-desired-outcome" phx-target={@myself} phx-value-name={"#{ff.name}"}>
                   Add desired outcome
                 </button>
-                <%= if ff[:desired_outcomes].errors != [] do %>
-                  <%= for {error, _opts} <- ff[:desired_outcomes].errors do %>
-                    <p class="text-rose-900 dark:text-rose-400"><%= error %></p>
-                  <% end %>
-                <% end %>
+                <.errors field={ff[:desired_outcomes]} />
               </div>
             </div>
           </.inputs_for>
@@ -61,11 +57,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
             <button class="text-primary-600 hover:underline mb-auto p-4 lg:p-8 w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800" type="button" phx-click="add-job-step" phx-target={@myself}>
               Add job step
             </button>
-            <%= if f[:job_steps].errors != [] do %>
-              <%= for {error, _opts} <- f[:job_steps].errors do %>
-                <p class="text-rose-900 dark:text-rose-400"><%= error %></p>
-              <% end %>
-            <% end %>
+            <.errors field={f[:job_steps]} />
           </div>
         </div>
 
