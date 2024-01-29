@@ -13,7 +13,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
   def render(assigns) do
     ~H"""
     <div>
-      <.form :let={f} for={@form} phx-submit="submit" phx-target={@myself}>
+      <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself}>
         <div class="flex gap-4">
           <.inputs_for :let={ff} field={f[:job_steps]}>
             <div class="w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800">
@@ -34,7 +34,14 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
                     class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                   />
                 </.inputs_for>
-                <button class="text-primary-600 hover:underline" name={ff.name} type="button" phx-click="add-desired-outcome" phx-target={@myself} phx-value-name={"#{ff.name}"}>Add desired outcome</button>
+                <button class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm" name={ff.name} type="button" phx-click="add-desired-outcome" phx-target={@myself} phx-value-name={"#{ff.name}"}>
+                  Add desired outcome
+                </button>
+                <%= if ff[:desired_outcomes].errors != [] do %>
+                  <%= for {error, _opts} <- ff[:desired_outcomes].errors do %>
+                    <p class="text-rose-900 dark:text-rose-400"><%= error %></p>
+                  <% end %>
+                <% end %>
               </div>
             </div>
           </.inputs_for>
@@ -62,6 +69,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
     socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("validate", params, socket) do
+    form_params = Map.get(params, "form", %{})
+    validated_form = AshPhoenix.Form.validate(socket.assigns.form, form_params, errors: socket.assigns.form.errors || false)
+    {:noreply, assign(socket, form: validated_form)}
   end
 
   @impl true
