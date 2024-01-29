@@ -26,7 +26,9 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
           </div>
         </nav>
       </header>
-      <%= @inner_content %>
+      <section class="bg-white dark:bg-gray-900">
+        <%= @inner_content %>
+      </section>
     </main>
     """
   end
@@ -37,73 +39,96 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
-    <section class="bg-white dark:bg-gray-900">
-      <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
-          <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
-            Welcome to the ODI Survey Creator!
-          </h2>
-          <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
-            Are you a researcher trying to create an ODI survey? This is where to get started!
-          </p>
-          <.live_component module={LandingPageForm} id="landing_page_form" />
-      </div>
-    </section>
+    <.page>
+      <:title>
+        Welcome to the ODI Survey Creator!
+      </:title>
+      <:subtitle>
+        Are you a researcher trying to create an ODI survey? This is where to get started!
+      </:subtitle>
+
+      <.live_component module={LandingPageForm} id="landing_page_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :market_definition} = assigns) do
     ~H"""
-    <section class="bg-white dark:bg-gray-900">
-      <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
-          <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
-            Market Definition
-          </h2>
-          <%!-- <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
-            Are you a researcher trying to create an ODI survey? This is where to get started!
-          </p> --%>
-          <.live_component module={MarketDefinitionForm} id="market_definition_form" />
-      </div>
-    </section>
+    <.page>
+      <:title>
+        Market Definition
+      </:title>
+
+      <.live_component module={MarketDefinitionForm} id="market_definition_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :desired_outcomes} = assigns) do
     ~H"""
-    <section class="bg-white dark:bg-gray-900">
-      <div class="py-8 lg:py-16 px-4">
-          <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
-            Desired Outcomes
-          </h2>
-          <%!-- <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
-            Are you a researcher trying to create an ODI survey? This is where to get started!
-          </p> --%>
-          <.live_component module={DesiredOutcomesForm} id="desired_outcomes_form" />
-      </div>
-    </section>
+    <.page is_wide={true}>
+      <:title>
+        Desired Outcomes
+      </:title>
+
+      <.live_component module={DesiredOutcomesForm} id="desired_outcomes_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :screening_questions} = assigns) do
     ~H"""
-    <h2>Screening Questions</h2>
+    <.page is_wide={true}>
+      <:title>
+        Screening Questions
+      </:title>
 
-    <.live_component module={ScreeningQuestionsForm} id="screening_questions_form" />
+      <.live_component module={ScreeningQuestionsForm} id="screening_questions_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :demographic_questions} = assigns) do
     ~H"""
-    <h2>Demographic Questions</h2>
+    <.page is_wide={true}>
+      <:title>
+        Demographic Questions
+      </:title>
 
-    <.live_component module={DemographicQuestionsForm} id="demographic_questions_form" />
+      <.live_component module={DemographicQuestionsForm} id="demographic_questions_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :context_questions} = assigns) do
     ~H"""
-    <h2>Context Questions</h2>
+    <.page is_wide={true}>
+      <:title>
+        Context Questions
+      </:title>
 
-    <.live_component module={ContextQuestionsForm} id="context_questions_form" />
+      <.live_component module={ContextQuestionsForm} id="context_questions_form" />
+    </.page>
+    """
+  end
+
+  attr :is_wide, :boolean, default: false
+  slot :title, required: true
+  slot :subtitle
+  slot :inner_block, required: true
+  def page(assigns) do
+    ~H"""
+    <div class={["py-8 lg:py-16 px-4", unless @is_wide do " mx-auto max-w-screen-md" end]}>
+      <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
+        <%= render_slot(@title) %>
+      </h2>
+      <%= if @subtitle != [] do %>
+        <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
+          <%= render_slot(@subtitle) %>
+        </p>
+      <% end %>
+      <%= render_slot(@inner_block) %>
+    </div>
     """
   end
 
