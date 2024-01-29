@@ -56,4 +56,32 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     <button name="submit"><%= render_slot(@inner_block) %></button>
     """
   end
+
+  attr :rest, :global
+  def thrash_button(assigns) do
+    ~H"""
+    <button type="button" {@rest} class="text-primary-700 border border-primary-700 hover:bg-primary-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center dark:border-primary-500 dark:text-primary-500 dark:hover:text-white dark:focus:ring-primary-800 dark:hover:bg-primary-500">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+      </svg>
+      <span class="sr-only"><%= render_slot(@inner_block) %></span>
+    </button>
+    """
+  end
+
+  slot :header, required: true
+  slot :body, required: true
+  def card(assigns) do
+    ~H"""
+    <div class="w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800">
+      <div class="p-4 lg:p-8">
+        <%= render_slot(@header) %>
+      </div>
+      <hr>
+      <div class="p-4 lg:p-8 flex flex-col gap-2">
+        <%= render_slot(@body) %>
+      </div>
+    </div>
+    """
+  end
 end
