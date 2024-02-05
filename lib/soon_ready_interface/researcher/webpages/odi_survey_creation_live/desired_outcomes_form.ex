@@ -13,56 +13,48 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
   def render(assigns) do
     ~H"""
     <div>
-      <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself}>
-        <div class="flex gap-4">
-          <.inputs_for :let={ff} field={f[:job_steps]}>
-            <.card>
-              <:header>
-                <div class="flex justify-between my-2">
-                  <h3 class="text-lg font-semibold items-center">Job Step <%= ff.index + 1 %></h3>
-                  <.thrash_button phx-click="remove-job-step" phx-value-name={"#{ff.name}"} phx-target={@myself}>
-                    Remove Job Step
+      <.card_form :let={f} for={@form} phx-change="validate" phx-submit="submit" target={@myself}>
+        <.inputs_for :let={ff} field={f[:job_steps]}>
+          <.card>
+            <:header>
+              <div class="flex justify-between my-2">
+                <h3 class="text-lg font-semibold items-center">Job Step <%= ff.index + 1 %></h3>
+                <.thrash_button phx-click="remove-job-step" phx-value-name={"#{ff.name}"} phx-target={@myself}>
+                  Remove Job Step
+                </.thrash_button>
+              </div>
+
+              <.text_input
+                field={ff[:name]}
+                placeholder="Enter name"
+                class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+              />
+            </:header>
+            <:body>
+              <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
+                <div class="flex justify-between">
+                  <.text_input
+                    field={fff[:value]}
+                    placeholder="Desired Outcome"
+                    class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                  />
+                  <.thrash_button phx-click="remove-desired-outcome" phx-value-name={"#{fff.name}"} phx-target={@myself}>
+                    Remove Desired Outcome
                   </.thrash_button>
                 </div>
+              </.inputs_for>
 
-                <.text_input
-                  field={ff[:name]}
-                  placeholder="Enter name"
-                  class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                />
-              </:header>
-              <:body>
-                <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
-                  <div class="flex justify-between">
-                    <.text_input
-                      field={fff[:value]}
-                      placeholder="Desired Outcome"
-                      class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                    />
-                    <.thrash_button phx-click="remove-desired-outcome" phx-value-name={"#{fff.name}"} phx-target={@myself}>
-                      Remove Desired Outcome
-                    </.thrash_button>
-                  </div>
-                </.inputs_for>
+              <button class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm" name={ff.name} type="button" phx-click="add-desired-outcome" phx-target={@myself} phx-value-name={"#{ff.name}"}>
+                Add desired outcome
+              </button>
+              <.errors field={ff[:desired_outcomes]} />
+            </:body>
+          </.card>
+        </.inputs_for>
 
-                <button class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm" name={ff.name} type="button" phx-click="add-desired-outcome" phx-target={@myself} phx-value-name={"#{ff.name}"}>
-                  Add desired outcome
-                </button>
-                <.errors field={ff[:desired_outcomes]} />
-              </:body>
-            </.card>
-          </.inputs_for>
-
-          <div>
-            <button class="text-primary-600 hover:underline mb-auto p-4 lg:p-8 w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800" type="button" phx-click="add-job-step" phx-target={@myself}>
-              Add job step
-            </button>
-            <.errors field={f[:job_steps]} />
-          </div>
-        </div>
-
-        <button type="submit" name="submit" class="w-full mt-4 py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed</button>
-      </.form>
+        <:add_button action="add-job-step" form_field={:job_steps}> Add Job Step </:add_button>
+        <:submit>Proceed</:submit>
+      </.card_form>
     </div>
     """
   end
