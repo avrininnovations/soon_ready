@@ -70,7 +70,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
   end
 
   slot :title, required: true
-
+  slot :thrash_button, required: true
+  slot :text_input, required: true
   def card_header(assigns) do
     ~H"""
     <div class="flex justify-between my-2">
@@ -93,8 +94,36 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     """
   end
 
+  attr :rest, :global
+  slot :text_input, required: true
+  slot :thrash_button, required: true
+  def card_field(assigns) do
+    ~H"""
+    <div class="flex justify-between">
+      <%= for text_input <- @text_input do %>
+        <%= text_input(text_input.field.form, text_input.field.field, [
+          {:placeholder, text_input.placeholder},
+          {:class, "block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"}
+          | Keyword.new(@rest)])
+        %>
+      <% end %>
+
+      <%= for button <- @thrash_button do %>
+        <.thrash_button phx-click={button.click} phx-value-name={button.name} phx-target={button.target}>
+          <%= render_slot(button) %>
+        </.thrash_button>
+      <% end %>
+    </div>
+
+    <%= for text_input <- @text_input do %>
+      <.errors field={text_input.field} />
+    <% end %>
+    """
+  end
+
   slot :header, required: true
   slot :body, required: true
+  slot :add_button, required: true
   def card(assigns) do
     ~H"""
     <div class="w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800">
@@ -104,6 +133,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
       <hr>
       <div class="p-4 lg:p-8 flex flex-col gap-2">
         <%= render_slot(@body) %>
+
+        <%= for button <- @add_button do %>
+          <button name={button.name} phx-click={button.action} phx-target={button.target} phx-value-name={button.name} type="button" class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm">
+            <%= render_slot(button) %>
+          </button>
+          <.errors field={button.field} />
+        <% end %>
       </div>
     </div>
     """

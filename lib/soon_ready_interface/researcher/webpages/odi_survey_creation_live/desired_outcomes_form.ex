@@ -25,23 +25,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
             </:header>
             <:body>
               <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
-                <div class="flex justify-between">
-                  <.text_input
-                    field={fff[:value]}
-                    placeholder="Desired Outcome"
-                    class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                  />
-                  <.thrash_button phx-click="remove-desired-outcome" phx-value-name={"#{fff.name}"} phx-target={@myself}>
-                    Remove Desired Outcome
-                  </.thrash_button>
-                </div>
+                <.card_field>
+                  <:text_input field={fff[:value]} placeholder="Desired Outcome" />
+                  <:thrash_button click="remove-desired-outcome" name={"#{fff.name}"} target={@myself}>Remove Desired Outcome</:thrash_button>
+                </.card_field>
               </.inputs_for>
-
-              <button class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm" name={ff.name} type="button" phx-click="add-desired-outcome" phx-target={@myself} phx-value-name={"#{ff.name}"}>
-                Add desired outcome
-              </button>
-              <.errors field={ff[:desired_outcomes]} />
             </:body>
+            <:add_button name={ff.name} action="add-desired-outcome" target={@myself} field={ff[:desired_outcomes]}> Add Desired Outcome </:add_button>
           </.card>
         </.inputs_for>
 
