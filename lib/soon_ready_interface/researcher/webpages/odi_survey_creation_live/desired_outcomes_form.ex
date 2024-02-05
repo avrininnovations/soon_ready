@@ -17,18 +17,11 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
         <.inputs_for :let={ff} field={f[:job_steps]}>
           <.card>
             <:header>
-              <div class="flex justify-between my-2">
-                <h3 class="text-lg font-semibold items-center">Job Step <%= ff.index + 1 %></h3>
-                <.thrash_button phx-click="remove-job-step" phx-value-name={"#{ff.name}"} phx-target={@myself}>
-                  Remove Job Step
-                </.thrash_button>
-              </div>
-
-              <.text_input
-                field={ff[:name]}
-                placeholder="Enter name"
-                class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-              />
+              <.card_header>
+                <:title>Job Step <%= ff.index + 1 %></:title>
+                <:thrash_button click="remove-job-step" name={"#{ff.name}"} target={@myself}>Remove Job Step</:thrash_button>
+                <:text_input field={ff[:name]} placeholder="Enter name" />
+              </.card_header>
             </:header>
             <:body>
               <.inputs_for :let={fff} field={ff[:desired_outcomes]}>

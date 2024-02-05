@@ -69,6 +69,30 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     """
   end
 
+  slot :title, required: true
+
+  def card_header(assigns) do
+    ~H"""
+    <div class="flex justify-between my-2">
+      <h3 class="text-lg font-semibold items-center"><%= render_slot(@title) %></h3>
+
+      <%= for button <- @thrash_button do %>
+        <.thrash_button phx-click={button.click} phx-value-name={button.name} phx-target={button.target}>
+          <%= render_slot(button) %>
+        </.thrash_button>
+      <% end %>
+    </div>
+
+    <%= for text_input <- @text_input do %>
+      <.text_input
+        field={text_input.field}
+        placeholder={text_input.placeholder}
+        class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+      />
+    <% end %>
+    """
+  end
+
   slot :header, required: true
   slot :body, required: true
   def card(assigns) do
