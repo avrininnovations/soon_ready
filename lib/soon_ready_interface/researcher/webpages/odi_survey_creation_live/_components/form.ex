@@ -95,11 +95,15 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
   end
 
   attr :rest, :global
+  slot :checkbox
   slot :text_input, required: true
   slot :thrash_button, required: true
   def card_field(assigns) do
     ~H"""
     <div class="flex justify-between">
+      <%= for checkbox <- @checkbox do %>
+        <.checkbox field={checkbox.field} />
+      <% end %>
       <%= for text_input <- @text_input do %>
         <%= text_input(text_input.field.form, text_input.field.field, [
           {:placeholder, text_input.placeholder},
