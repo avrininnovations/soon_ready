@@ -56,22 +56,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :demographics} = assigns) do
     ~H"""
-    <div>
-      <h1>Demographics</h1>
+    <.page>
+      <:title>
+        Demographics
+      </:title>
 
-      <.form :let={f} for={@demographics_form} phx-submit="submit-demographic-questions">
-        <.inputs_for :let={ff} field={f[:questions]}>
-          <Doggo.input
-            field={ff[:response]}
-            type="radio-group"
-            label={ff.data.prompt}
-            options={Enum.map(ff.data.options, fn option -> {option, option} end)}
-          />
-        </.inputs_for>
-
-        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
-      </.form>
-    </div>
+      <.live_component module={DemographicsForm} survey={@survey} id="demographics_form" />
+    </.page>
     """
   end
 
@@ -280,18 +271,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/demographics?#{socket.assigns.params}")}
   end
 
-  def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.demographics_form, params: form_params) do
-      {:ok, view_model} ->
-        normalized_data = DemographicsForm.normalize(view_model)
-        params = Map.put(socket.assigns.params, "demographics_form", normalized_data)
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/context?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, demographics_form: form_with_error)}
-    end
+  def handle_info({:handle_submission, DemographicsForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/context?#{socket.assigns.params}")}
   end
-
+  
   def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.context_form, params: form_params) do
       {:ok, view_model} ->
