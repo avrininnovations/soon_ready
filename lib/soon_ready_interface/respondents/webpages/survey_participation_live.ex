@@ -1,5 +1,6 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   use SoonReadyInterface, :live_view
+  import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
 
   require Logger
 
@@ -16,7 +17,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
-    <%!-- <.page>
+    <.page>
       <:title>
         Welcome to our Survey!
       </:title>
@@ -24,19 +25,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         Buckle your belts! It'll be a great (and somewhat long) ride! 😎
       </:subtitle>
 
-      <.live_component module={LandingPageForm} id="landing_page_form" />
-    </.page> --%>
-    <div>
-      <h1>Welcome to our Survey!</h1>
-
-      <.form :let={f} for={@nickname_form} phx-submit="submit-nickname">
-        <Doggo.input
-          field={f[:nickname]}
-          placeholder="What's your nickname?"
-        />
-        <Doggo.button type="submit" name="submit">Start Your Adventure</Doggo.button>
-      </.form>
-    </div>
+      <.live_component module={NicknameForm} id="nickname_form" />
+    </.page>
     """
   end
 
@@ -287,16 +277,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:noreply, assign(socket, params: params)}
   end
 
-  def handle_event("submit-nickname", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.nickname_form, params: form_params) do
-      {:ok, view_model} ->
-        normalized_data = NicknameForm.normalize(view_model)
-        params = Map.put(socket.assigns.params, "nickname_form", normalized_data)
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/screening-questions?#{params}")}
+  def handle_info({:update_params, new_params}, socket) do
+    params = Map.merge(socket.assigns.params, new_params)
+    {:noreply, assign(socket, :params, params)}
+  end
 
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, nickname_form: form_with_error)}
-    end
+  def handle_info({:handle_submission, NicknameForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/screening-questions?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
