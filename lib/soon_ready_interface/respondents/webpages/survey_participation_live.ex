@@ -32,22 +32,25 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :screening_questions} = assigns) do
     ~H"""
-    <div>
-      <h1>Screening Questions</h1>
+    <.page>
+      <:title>
+        Screening Questions
+      </:title>
 
-      <.form :let={f} for={@screening_form} phx-submit="submit-screening-questions">
+      <.live_component module={ScreeningForm} survey={@survey} id="screening_form" />
+
+      <%!-- <.form :let={f} for={@screening_form} phx-submit="submit-screening-questions">
         <.inputs_for :let={ff} field={f[:questions]}>
-          <Doggo.input
+          <.radio_group
             field={ff[:response]}
-            type="radio-group"
             label={ff.data.prompt}
             options={Enum.map(ff.data.options, fn option -> {option.value, option.value} end)}
           />
         </.inputs_for>
 
         <Doggo.button type="submit" name="submit">Take your Next Step</Doggo.button>
-      </.form>
-    </div>
+      </.form> --%>
+    </.page>
     """
   end
 
@@ -214,6 +217,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     socket =
       socket
+      |> assign(:survey, survey)
       |> assign(:nickname_form, AshPhoenix.Form.for_create(NicknameForm, :create, api: SoonReadyInterface.Respondents.Setup.Api))
       |> assign(:screening_form, AshPhoenix.Form.for_update(screening_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
         questions: [
@@ -286,21 +290,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/screening-questions?#{socket.assigns.params}")}
   end
 
-  def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.screening_form, params: form_params) do
-      {:ok, view_model} ->
-        if view_model.all_responses_are_correct do
-          normalized_data = ScreeningForm.normalize(view_model)
-          params = Map.put(socket.assigns.params, "screening_form", normalized_data)
-          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/contact-details?#{params}")}
-        else
-          {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
-        end
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, screening_form: form_with_error)}
+  def handle_info({:handle_submission, ScreeningForm, all_responses_are_correct}, socket) do
+    if all_responses_are_correct do
+      {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/contact-details?#{socket.assigns.params}")}
+    else
+      {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
     end
-  end
+end
 
   def handle_event("submit-contact-details", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.contact_details_form, params: form_params) do
