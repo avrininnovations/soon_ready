@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   require Logger
 
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.{
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.{
     NicknameForm,
     ScreeningForm,
     ContactDetailsForm,
@@ -16,6 +16,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
+    <%!-- <.page>
+      <:title>
+        Welcome to our Survey!
+      </:title>
+      <:subtitle>
+        Buckle your belts! It'll be a great (and somewhat long) ride! 😎
+      </:subtitle>
+
+      <.live_component module={LandingPageForm} id="landing_page_form" />
+    </.page> --%>
     <div>
       <h1>Welcome to our Survey!</h1>
 

@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.DemographicsForm do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.DemographicsForm do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys

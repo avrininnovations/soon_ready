@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.DesiredOutcomeRatingForm.DesiredOutcome do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.DesiredOutcomeRatingForm.DesiredOutcome do
   use Ash.Resource, data_layer: :embedded
 
   attributes do

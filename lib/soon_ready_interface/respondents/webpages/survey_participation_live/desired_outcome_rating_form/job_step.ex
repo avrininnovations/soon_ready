@@ -1,7 +1,7 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.DesiredOutcomeRatingForm.JobStep do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.DesiredOutcomeRatingForm.JobStep do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.DesiredOutcomeRatingForm.DesiredOutcome
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.DesiredOutcomeRatingForm.DesiredOutcome
 
   attributes do
     attribute :name, :string, allow_nil?: false

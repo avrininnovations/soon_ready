@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.ComparisonForm do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ComparisonForm do
   use Ash.Resource, data_layer: :embedded
 
   attributes do

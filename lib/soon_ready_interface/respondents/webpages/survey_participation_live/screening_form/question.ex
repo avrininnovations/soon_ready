@@ -1,9 +1,11 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.ContextForm.Question do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ScreeningForm.Question do
   use Ash.Resource, data_layer: :embedded
+
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ScreeningForm.Option
 
   attributes do
     attribute :prompt, :string, allow_nil?: false
-    attribute :options, {:array, :string}, allow_nil?: false
+    attribute :options, {:array, Option}, allow_nil?: false
     # TODO: nil is always allowed. Resolve.
     attribute :response, :string, allow_nil?: true
   end

@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.NicknameForm do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.NicknameForm do
   use Ash.Resource, data_layer: :embedded
 
   attributes do

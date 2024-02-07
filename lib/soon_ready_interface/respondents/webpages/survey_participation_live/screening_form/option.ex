@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ViewModels.ScreeningForm.Option do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ScreeningForm.Option do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
