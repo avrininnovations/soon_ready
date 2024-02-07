@@ -38,18 +38,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       </:title>
 
       <.live_component module={ScreeningForm} survey={@survey} id="screening_form" />
-
-      <%!-- <.form :let={f} for={@screening_form} phx-submit="submit-screening-questions">
-        <.inputs_for :let={ff} field={f[:questions]}>
-          <.radio_group
-            field={ff[:response]}
-            label={ff.data.prompt}
-            options={Enum.map(ff.data.options, fn option -> {option.value, option.value} end)}
-          />
-        </.inputs_for>
-
-        <Doggo.button type="submit" name="submit">Take your Next Step</Doggo.button>
-      </.form> --%>
     </.page>
     """
   end
