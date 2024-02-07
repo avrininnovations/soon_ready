@@ -44,23 +44,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :contact_details} = assigns) do
     ~H"""
-    <div>
-      <h1>Contact Details</h1>
+    <.page>
+      <:title>
+        Contact Details
+      </:title>
 
-      <.form :let={f} for={@contact_details_form} phx-submit="submit-contact-details">
-        <Doggo.input
-          field={f[:email]}
-          type="email"
-          placeholder="Email"
-        />
-        <Doggo.input
-          field={f[:phone_number]}
-          type="tel"
-          placeholder="Phone Number"
-        />
-        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
-      </.form>
-    </div>
+      <.live_component module={ContactDetailsForm} survey={@survey} id="contact_details_form" />
+    </.page>
     """
   end
 
@@ -284,18 +274,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     else
       {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
     end
-end
+  end
 
-  def handle_event("submit-contact-details", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.contact_details_form, params: form_params) do
-      {:ok, view_model} ->
-        normalized_data = ContactDetailsForm.normalize(view_model)
-        params = Map.put(socket.assigns.params, "contact_details_form", normalized_data)
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/demographics?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, contact_details_form: form_with_error)}
-    end
+  def handle_info({:handle_submission, ContactDetailsForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/demographics?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
