@@ -78,15 +78,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Screen
 
   @impl true
   def update(assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api))
-
-    {:ok, screening_form_view_model} = __MODULE__.from_read_model(assigns.survey)
+    {:ok, view_model} = __MODULE__.from_read_model(assigns.survey)
 
     socket =
-      assign(socket, :form, AshPhoenix.Form.for_update(screening_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
+      assign(socket, :form, AshPhoenix.Form.for_update(view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
         questions: [
           type: :list,
-          data: screening_form_view_model.questions,
+          data: view_model.questions,
           update_action: :update,
           transform_params: fn form, params, _arg3 ->
             params
