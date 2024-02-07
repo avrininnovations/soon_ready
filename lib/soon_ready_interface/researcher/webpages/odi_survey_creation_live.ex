@@ -164,19 +164,22 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def handle_info({:handle_submission, ContextQuestionsForm}, socket) do
     normalized_params = normalize(socket.assigns.params)
 
-    case Survey.create(normalized_params) do
-      {:ok, _aggregate} ->
-        socket =
-          socket
-          |> push_redirect(to: ~p"/")
-          |> put_flash(:info, "Survey created successfully!")
-        {:noreply, socket}
+
+    with {:ok, survey} <- Survey.create(normalized_params),
+          {:ok, _survey} <- Survey.publish(survey)
+    do
+      socket =
+        socket
+        |> push_redirect(to: ~p"/")
+        |> put_flash(:info, "Survey published successfully!")
+      {:noreply, socket}
+    else
       {:error, error} ->
         socket =
           socket
-          |> put_flash(:error, "Survey creation failed. Please try again or contact support.")
+          |> put_flash(:error, "Survey publishing failed. Please try again or contact support.")
 
-          Logger.error("Survey creation failed: #{inspect(error)}")
+          Logger.error("Survey publishing failed: #{inspect(error)}")
         {:noreply, socket}
     end
   end
