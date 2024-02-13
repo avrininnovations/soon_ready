@@ -80,40 +80,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :comparison} = assigns) do
     ~H"""
-    <div>
-      <h1>Comparison</h1>
+    <.page>
+      <:title>
+        Comparison
+      </:title>
 
-      <.form :let={f} for={@comparison_form} phx-submit="submit-comparison-questions">
-        <Doggo.input
-          field={f[:alternatives_used]}
-          type="textarea"
-          label={"What products, services or platforms have you used to #{f.data.job_to_be_done}?"}
-        />
-        <Doggo.input
-          field={f[:additional_resources_used]}
-          type="textarea"
-          label="What additional things do you usually use/require when you're using any of the above?"
-        />
-        <Doggo.input
-          field={f[:amount_spent_annually_in_naira]}
-          type="number"
-          label={"In total, how much would you estimate that you spend annually to #{f.data.job_to_be_done}?"}
-        />
-        <Doggo.input
-          field={f[:is_willing_to_pay_more]}
-          type="radio-group"
-          label="Would you be willing to pay more for a better solution?"
-          options={[{"Yes", "Yes"}, {"No", "No"}]}
-        />
-        <Doggo.input
-          field={f[:extra_amount_willing_to_pay_in_naira]}
-          type="number"
-          label="If yes, how much extra would you be willing to pay annually to get the job done perfectly?"
-        />
-
-        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
-      </.form>
-    </div>
+      <.live_component module={ComparisonForm} survey={@survey} id="comparison_form" />
+    </.page>
     """
   end
 
@@ -269,17 +242,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   def handle_info({:handle_submission, ContextForm}, socket) do
     {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/comparison?#{socket.assigns.params}")}
   end
-  
-  def handle_event("submit-comparison-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.comparison_form, params: form_params) do
-      {:ok, view_model} ->
-        normalized_data = ComparisonForm.normalize(view_model)
-        params = Map.put(socket.assigns.params, "comparison_form", normalized_data)
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/desired-outcome-ratings?#{params}")}
 
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, comparison_form: form_with_error)}
-    end
+  def handle_info({:handle_submission, ComparisonForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/desired-outcome-ratings?#{socket.assigns.params}")}
   end
 
   def handle_event("submit-desired-outcome-ratings", %{"form" => form_params}, socket) do

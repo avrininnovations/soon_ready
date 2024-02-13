@@ -64,6 +64,34 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
   attr :field, Phoenix.HTML.FormField, required: true
   attr :rest, :global
 
+  def textarea(assigns) do
+    ~H"""
+    <div>
+      <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><%= @label %></p>
+      <%= textarea(@field.form, @field.field, Keyword.new(@rest)) %>
+      <.errors field={@field} />
+    </div>
+    """
+  end
+
+  attr :label, :string, required: true
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :rest, :global
+
+  def number_field(assigns) do
+    ~H"""
+    <div>
+      <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><%= @label %></p>
+      <%= number_input(@field.form, @field.field, Keyword.new(@rest)) %>
+      <.errors field={@field} />
+    </div>
+    """
+  end
+
+  attr :label, :string, required: true
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :rest, :global
+
   def text_field(assigns) do
     ~H"""
     <div>
