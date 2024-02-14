@@ -19,7 +19,7 @@ config :soon_ready, ash_apis: [
 
   SoonReady.Onboarding.Setup.Api,
 
-  SoonReadyInterface.Researcher.Setup.Api,
+  SoonReadyInterface.Researcher.Api,
   SoonReadyInterface.Respondents.Setup.Api,
 ]
 
@@ -74,6 +74,11 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :doggo, gettext: SoonReady.Gettext
+
+config :pyro, :overrides, [
+  SoonReady.Overrides
+]
+config :pyro, gettext: SoonReady.Gettext
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

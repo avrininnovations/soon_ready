@@ -42,13 +42,13 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.DesiredOutcomesPageTest do
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
 
-      resulting_html = submit_form(view)
+      _resulting_html = submit_form(view)
 
       _market_definition_page_path = assert_patch(view)
       _desired_outcomes_page_path = assert_patch(view)
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/screening-questions"
-      assert resulting_html =~ "Screening Questions"
+      assert has_element?(view, "h2", "Screening Questions")
       LandingPage.assert_query_params(path)
       MarketDefinitionPage.assert_query_params(path)
       assert_query_params(path)
@@ -57,29 +57,29 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.DesiredOutcomesPageTest do
 
   def add_two_job_steps(view) do
     view
-    |> element("button", "Add job step")
+    |> element("button", "Add Job Step")
     |> render_click()
 
     view
-    |> element("button", "Add job step")
+    |> element("button", "Add Job Step")
     |> render_click()
   end
 
   def add_two_desired_outcomes_each(view) do
     view
-    |> element(~s{button[name="form[job_steps][0]"]}, "Add desired outcome")
+    |> element(~s{button[name="form[job_steps][0]"]}, "Add Desired Outcome")
     |> render_click()
 
     view
-    |> element(~s{button[name="form[job_steps][0]"]}, "Add desired outcome")
+    |> element(~s{button[name="form[job_steps][0]"]}, "Add Desired Outcome")
     |> render_click()
 
     view
-    |> element(~s{button[name="form[job_steps][1]"]}, "Add desired outcome")
+    |> element(~s{button[name="form[job_steps][1]"]}, "Add Desired Outcome")
     |> render_click()
 
     view
-    |> element(~s{button[name="form[job_steps][1]"]}, "Add desired outcome")
+    |> element(~s{button[name="form[job_steps][1]"]}, "Add Desired Outcome")
     |> render_click()
   end
 

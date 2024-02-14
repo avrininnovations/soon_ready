@@ -57,14 +57,14 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.ScreeningQuestionsPageTest do
       add_two_screening_questions(view)
       add_two_options_each(view)
 
-      resulting_html = submit_form(view)
+      _resulting_html = submit_form(view)
 
       _market_definition_page_path = assert_patch(view)
       _desired_outcomes_page_path = assert_patch(view)
       _screening_questions_page_path = assert_patch(view)
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/demographic-questions"
-      assert resulting_html =~ "Demographic Questions"
+      assert has_element?(view, "h2", "Demographic Questions")
       LandingPage.assert_query_params(path)
       MarketDefinitionPage.assert_query_params(path)
       DesiredOutcomesPage.assert_query_params(path)

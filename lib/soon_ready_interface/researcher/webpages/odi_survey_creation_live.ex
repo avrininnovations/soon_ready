@@ -2,310 +2,191 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   use SoonReadyInterface, :live_view
 
   require Logger
-  import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form, only: [
-    text_input: 1,
-    text_field: 1,
-    submit: 1,
-    checkbox: 1,
-  ]
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ViewModels.{
-    BrandNameForm,
+
+  alias SoonReady.QuantifyingNeeds.Survey
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
+    LandingPageForm,
     MarketDefinitionForm,
     DesiredOutcomesForm,
     ScreeningQuestionsForm,
     DemographicQuestionsForm,
     ContextQuestionsForm
   }
-  alias SoonReady.QuantifyingNeeds.Survey
+
+  def layout(assigns) do
+    ~H"""
+    <main class="dark:text-white">
+      <.flash_group flash={@flash} />
+      <header>
+        <nav class="bg-white border-gray-200 px-4 lg:px-6 py-4 dark:bg-gray-800">
+          <div class="flex flex-wrap justify-center items-center mx-auto max-w-screen-xl">
+            <a href={~p"/"} class="flex items-center">
+              <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">😎 SoonReady</span>
+            </a>
+          </div>
+        </nav>
+      </header>
+      <section class="bg-white dark:bg-gray-900">
+        <%= @inner_content %>
+      </section>
+    </main>
+    """
+  end
+
+  def mount(_params, _session, socket) do
+    {:ok, socket, layout: {__MODULE__, :layout}}
+  end
 
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
-    <h2>Welcome to the ODI Survey Creator!</h2>
+    <.page>
+      <:title>
+        Welcome to the ODI Survey Creator!
+      </:title>
+      <:subtitle>
+        Are you a researcher trying to create an ODI survey? This is where to get started!
+      </:subtitle>
 
-    <.form :let={f} for={@brand_name_form} phx-submit="submit-brand-name">
-      <.text_input
-        field={f[:brand_name]}
-        placeholder="What's the brand name for this survey?"
-      />
-      <.submit>Start Your Adventure</.submit>
-    </.form>
+      <.live_component module={LandingPageForm} id="landing_page_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :market_definition} = assigns) do
     ~H"""
-    <h2>Market Definition</h2>
+    <.page>
+      <:title>
+        Market Definition
+      </:title>
 
-    <.form :let={f} for={@market_definition_form} phx-submit="submit-market-definition">
-      <.text_field
-        field={f[:job_executor]}
-        label="Who is the job executor?"
-      />
-      <.text_field
-        field={f[:job_to_be_done]}
-        label="What is the job they're trying to get done?"
-      />
-      <.submit>Proceed</.submit>
-    </.form>
+      <.live_component module={MarketDefinitionForm} id="market_definition_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :desired_outcomes} = assigns) do
     ~H"""
-    <h2>Desired Outcomes</h2>
+    <.page is_wide={true}>
+      <:title>
+        Desired Outcomes
+      </:title>
 
-    <.form :let={f} for={@desired_outcomes_form} phx-submit="submit-desired-outcomes">
-      <.inputs_for :let={ff} field={f[:job_steps]}>
-        <.text_field
-          field={ff[:name]}
-          label={"Job Step #{ff.index + 1}"}
-        />
-
-        <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
-          <.text_input
-            field={fff[:value]}
-            placeholder="Desired Outcome"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-desired-outcome" phx-value-name={"#{ff.name}"}>Add desired outcome</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-job-step">Add job step</button>
+      <.live_component module={DesiredOutcomesForm} id="desired_outcomes_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :screening_questions} = assigns) do
     ~H"""
-    <h2>Screening Questions</h2>
+    <.page is_wide={true}>
+      <:title>
+        Screening Questions
+      </:title>
 
-    <.form :let={f} for={@screening_questions_form} phx-submit="submit-screening-questions">
-      <.inputs_for :let={ff} field={f[:screening_questions]}>
-        <.text_field
-          field={ff[:prompt]}
-          label="Prompt"
-        />
-
-        <.inputs_for :let={fff} field={ff[:options]}>
-          <.checkbox field={fff[:is_correct_option]} />
-          <.text_input
-            field={fff[:value]}
-            placeholder="Option"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-screening-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-screening-question">Add screening question</button>
+      <.live_component module={ScreeningQuestionsForm} id="screening_questions_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :demographic_questions} = assigns) do
     ~H"""
-    <h2>Demographic Questions</h2>
+    <.page is_wide={true}>
+      <:title>
+        Demographic Questions
+      </:title>
 
-    <.form :let={f} for={@demographic_questions_form} phx-submit="submit-demographic-questions">
-      <.inputs_for :let={ff} field={f[:demographic_questions]}>
-        <.text_field
-          field={ff[:prompt]}
-          label="Prompt"
-        />
-
-        <.inputs_for :let={fff} field={ff[:options]}>
-          <.text_input
-            field={fff[:value]}
-            placeholder="Option"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-demographic-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-demographic-question">Add demographic question</button>
+      <.live_component module={DemographicQuestionsForm} id="demographic_questions_form" />
+    </.page>
     """
   end
 
   def render(%{live_action: :context_questions} = assigns) do
     ~H"""
-    <h2>Context Questions</h2>
+    <.page is_wide={true}>
+      <:title>
+        Context Questions
+      </:title>
 
-    <.form :let={f} for={@context_questions_form} phx-submit="submit-context-questions">
-      <.inputs_for :let={ff} field={f[:context_questions]}>
-        <.text_field
-          field={ff[:prompt]}
-          label="Prompt"
-        />
-
-        <.inputs_for :let={fff} field={ff[:options]}>
-          <.text_input
-            field={fff[:value]}
-            placeholder="Option"
-          />
-        </.inputs_for>
-
-        <button name={ff.name} phx-click="add-context-question-option" phx-value-name={"#{ff.name}"}>Add option</button>
-      </.inputs_for>
-
-      <.submit>Proceed</.submit>
-    </.form>
-
-    <button phx-click="add-context-question">Add context question</button>
+      <.live_component module={ContextQuestionsForm} id="context_questions_form" />
+    </.page>
     """
   end
 
-  def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:brand_name_form, AshPhoenix.Form.for_create(BrandNameForm, :create, api: SoonReadyInterface.Researcher.Setup.Api))
-      |> assign(:market_definition_form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, api: SoonReadyInterface.Researcher.Setup.Api))
-      |> assign(:desired_outcomes_form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
-      |> assign(:screening_questions_form, AshPhoenix.Form.for_create(ScreeningQuestionsForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
-      |> assign(:demographic_questions_form, AshPhoenix.Form.for_create(DemographicQuestionsForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
-      |> assign(:context_questions_form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, api: SoonReadyInterface.Researcher.Setup.Api, forms: [auto?: true]))
-
-    {:ok, socket}
+  attr :is_wide, :boolean, default: false
+  slot :title, required: true
+  slot :subtitle
+  slot :inner_block, required: true
+  def page(assigns) do
+    ~H"""
+    <div class={["py-8 lg:py-16 px-4", unless @is_wide do " mx-auto max-w-screen-md" end]}>
+      <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
+        <%= render_slot(@title) %>
+      </h2>
+      <%= if @subtitle != [] do %>
+        <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
+          <%= render_slot(@subtitle) %>
+        </p>
+      <% end %>
+      <%= render_slot(@inner_block) %>
+    </div>
+    """
   end
 
   def handle_params(params, _url, socket) do
     {:noreply, assign(socket, params: params)}
   end
 
-  def handle_event("submit-brand-name", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.brand_name_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "brand_name_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{params}")}
+  def handle_info({:update_params, new_params}, socket) do
+    params = Map.merge(socket.assigns.params, new_params)
+    {:noreply, assign(socket, :params, params)}
+  end
 
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, brand_name_form: form_with_error)}
+  def handle_info({:handle_submission, LandingPageForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{socket.assigns.params}")}
+  end
+
+  def handle_info({:handle_submission, MarketDefinitionForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{socket.assigns.params}")}
+  end
+
+  def handle_info({:handle_submission, DesiredOutcomesForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{socket.assigns.params}")}
+  end
+
+  def handle_info({:handle_submission, ScreeningQuestionsForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{socket.assigns.params}")}
+  end
+
+  def handle_info({:handle_submission, DemographicQuestionsForm}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{socket.assigns.params}")}
+  end
+
+  def handle_info({:handle_submission, ContextQuestionsForm}, socket) do
+    normalized_params = normalize(socket.assigns.params)
+
+
+    with {:ok, survey} <- Survey.create(normalized_params),
+          {:ok, _survey} <- Survey.publish(survey)
+    do
+      socket =
+        socket
+        |> push_redirect(to: ~p"/")
+        |> put_flash(:info, "Survey published successfully!")
+      {:noreply, socket}
+    else
+      {:error, error} ->
+        socket =
+          socket
+          |> put_flash(:error, "Survey publishing failed. Please try again or contact support.")
+
+          Logger.error("Survey publishing failed: #{inspect(error)}")
+        {:noreply, socket}
     end
-  end
-
-  def handle_event("submit-market-definition", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.market_definition_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "market_definition_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, market_definition_form: form_with_error)}
-    end
-  end
-
-  def handle_event("submit-desired-outcomes", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.desired_outcomes_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "desired_outcomes_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, desired_outcomes_form: form_with_error)}
-    end
-  end
-
-  def handle_event("submit-screening-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.screening_questions_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "screening_questions_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, screening_questions_form: form_with_error)}
-    end
-  end
-
-  def handle_event("submit-demographic-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.demographic_questions_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "demographic_questions_form", form_params)
-        {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{params}")}
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, demographic_questions_form: form_with_error)}
-    end
-  end
-
-  def handle_event("submit-context-questions", %{"form" => form_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.context_questions_form, params: form_params) do
-      {:ok, _view_model} ->
-        params = Map.put(socket.assigns.params, "context_questions_form", form_params)
-        normalized_params = normalize(params)
-
-        case Survey.create(normalized_params) do
-          {:ok, _aggregate} ->
-            socket =
-              socket
-              |> push_redirect(to: ~p"/")
-              |> put_flash(:info, "Survey created successfully!")
-            {:noreply, socket}
-          {:error, error} ->
-            socket =
-              socket
-              |> push_patch(to: ~p"/odi-survey/create/context-questions?#{params}")
-              |> put_flash(:error, "Survey creation failed. Please try again or contact support.")
-
-              Logger.error("Survey creation failed: #{inspect(error)}")
-            {:noreply, socket}
-        end
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, context_questions_form: form_with_error)}
-    end
-  end
-
-  def handle_event("add-job-step", _params, socket) do
-    desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, :job_steps, validate?: socket.assigns.desired_outcomes_form.errors || false)
-    {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
-  end
-
-  def handle_event("add-desired-outcome", %{"name" => name} = _params, socket) do
-    desired_outcomes_form = AshPhoenix.Form.add_form(socket.assigns.desired_outcomes_form, "#{name}[desired_outcomes]", validate?: socket.assigns.desired_outcomes_form.errors || false)
-    {:noreply, assign(socket, desired_outcomes_form: desired_outcomes_form)}
-  end
-
-  def handle_event("add-screening-question", _params, socket) do
-    screening_questions_form = AshPhoenix.Form.add_form(socket.assigns.screening_questions_form, :screening_questions, validate?: socket.assigns.screening_questions_form.errors || false)
-    {:noreply, assign(socket, screening_questions_form: screening_questions_form)}
-  end
-
-  def handle_event("add-screening-question-option", %{"name" => name} = _params, socket) do
-    screening_questions_form = AshPhoenix.Form.add_form(socket.assigns.screening_questions_form, "#{name}[options]", validate?: socket.assigns.screening_questions_form.errors || false)
-    {:noreply, assign(socket, screening_questions_form: screening_questions_form)}
-  end
-
-  def handle_event("add-demographic-question", _params, socket) do
-    demographic_questions_form = AshPhoenix.Form.add_form(socket.assigns.demographic_questions_form, :demographic_questions, validate?: socket.assigns.demographic_questions_form.errors || false)
-    {:noreply, assign(socket, demographic_questions_form: demographic_questions_form)}
-  end
-
-  def handle_event("add-demographic-question-option", %{"name" => name} = _params, socket) do
-    demographic_questions_form = AshPhoenix.Form.add_form(socket.assigns.demographic_questions_form, "#{name}[options]", validate?: socket.assigns.demographic_questions_form.errors || false)
-    {:noreply, assign(socket, demographic_questions_form: demographic_questions_form)}
-  end
-
-  def handle_event("add-context-question", _params, socket) do
-    context_questions_form = AshPhoenix.Form.add_form(socket.assigns.context_questions_form, :context_questions, validate?: socket.assigns.context_questions_form.errors || false)
-    {:noreply, assign(socket, context_questions_form: context_questions_form)}
-  end
-
-  def handle_event("add-context-question-option", %{"name" => name} = _params, socket) do
-    context_questions_form = AshPhoenix.Form.add_form(socket.assigns.context_questions_form, "#{name}[options]", validate?: socket.assigns.context_questions_form.errors || false)
-    {:noreply, assign(socket, context_questions_form: context_questions_form)}
   end
 
   defp normalize(params) do
     %{
-      brand: params["brand_name_form"]["brand_name"],
+      brand: params["landing_page_form"]["brand_name"],
       market: %{job_executor: params["market_definition_form"]["job_executor"],
                 job_to_be_done: params["market_definition_form"]["job_to_be_done"]},
       job_steps: Enum.map(params["desired_outcomes_form"]["job_steps"], fn {_index, job_step} ->

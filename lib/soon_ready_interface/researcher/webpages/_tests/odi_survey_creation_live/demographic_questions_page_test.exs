@@ -60,7 +60,7 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.DemographicQuestionsPageTest 
       add_two_demographic_questions(view)
       add_two_options_each(view)
 
-      resulting_html = submit_form(view)
+      _resulting_html = submit_form(view)
 
       _market_definition_page_path = assert_patch(view)
       _desired_outcomes_page_path = assert_patch(view)
@@ -68,7 +68,7 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.DemographicQuestionsPageTest 
       _demographic_questions_page_path = assert_patch(view)
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/context-questions"
-      assert resulting_html =~ "Context Questions"
+      assert has_element?(view, "h2", "Context Questions")
       LandingPage.assert_query_params(path)
       MarketDefinitionPage.assert_query_params(path)
       DesiredOutcomesPage.assert_query_params(path)
