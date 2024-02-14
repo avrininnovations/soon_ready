@@ -92,42 +92,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :desired_outcome_ratings} = assigns) do
     ~H"""
-    <div>
-      <h1>Desired Outcome Ratings</h1>
+    <.page is_wide={true}>
+      <:title>
+        Desired Outcome Ratings
+      </:title>
 
-      <.form :let={f} for={@desired_outcome_rating_form} phx-submit="submit-desired-outcome-ratings">
-        <.inputs_for :let={ff} field={f[:job_steps]}>
-          <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
-            <Doggo.input
-              field={fff[:importance]}
-              type="radio-group"
-              label={"When you #{ff.data.name}, how important is it to you to:"}
-              options={[
-                {"Not At All Important", "Not At All Important"},
-                {"Somewhat Important", "Somewhat Important"},
-                {"Important", "Important"},
-                {"Very Important", "Very Important"},
-                {"Extremely Important", "Extremely Important"},
-              ]}
-            />
-            <Doggo.input
-              field={fff[:satisfaction]}
-              type="radio-group"
-              label={"Given your current solutions, how are you with your ability to:"}
-              options={[
-                {"Not At All Satisfied", "Not At All Satisfied"},
-                {"Somewhat Satisfied", "Somewhat Satisfied"},
-                {"Satisfied", "Satisfied"},
-                {"Very Satisfied", "Very Satisfied"},
-                {"Extremely Satisfied", "Extremely Satisfied"},
-              ]}
-            />
-          </.inputs_for>
-        </.inputs_for>
-
-        <Doggo.button type="submit" name="submit">Proceed</Doggo.button>
-      </.form>
-    </div>
+      <.live_component module={DesiredOutcomeRatingForm} survey={@survey} id="desired_outcome_rating_form" />
+    </.page>
     """
   end
 
@@ -247,29 +218,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/desired-outcome-ratings?#{socket.assigns.params}")}
   end
 
-  def handle_event("submit-desired-outcome-ratings", %{"form" => form_params}, socket) do
-    validated_form = AshPhoenix.Form.validate(socket.assigns.desired_outcome_rating_form, form_params)
-
-    case AshPhoenix.Form.submit(validated_form) do
-      {:ok, view_model} ->
-        normalized_data = DesiredOutcomeRatingForm.normalize(view_model)
-        params = Map.put(socket.assigns.params, "desired_outcome_rating_form", normalized_data)
-        normalized_params = normalize(params)
-
-        case SoonReady.QuantifyingNeeds.SurveyResponse.submit(normalized_params) do
-          {:ok, _aggregate} ->
-            {:noreply, push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/thank-you")}
-          {:error, error} ->
-            Logger.error("DEBUG: #{inspect(error)}")
-            socket =
-              socket
-              |> assign(desired_outcome_rating_form: validated_form)
-              |> put_flash(:error, "Something went wrong. Please try again or contact support.")
-            {:noreply, socket}
-        end
-
-      {:error, form_with_error} ->
-        {:noreply, assign(socket, desired_outcome_rating_form: form_with_error)}
+  def handle_info({:handle_submission, DesiredOutcomeRatingForm}, socket) do
+    socket.assigns.params
+    |> normalize()
+    |> SoonReady.QuantifyingNeeds.SurveyResponse.submit()
+    |> case do
+      {:ok, _aggregate} ->
+        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
+      {:error, error} ->
+        Logger.error("DEBUG: #{inspect(error)}")
+        socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
+        {:noreply, socket}
     end
   end
 
