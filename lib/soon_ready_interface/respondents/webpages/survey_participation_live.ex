@@ -104,9 +104,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   def render(%{live_action: :thank_you} = assigns) do
     ~H"""
-    <div>
-      <h1>Thank You!</h1>
-    </div>
+    <.page>
+      <:title>
+        Thank You!
+      </:title>
+      <:subtitle>
+        We appreciate your input to our journey! 💯🚀
+      </:subtitle>
+    </.page>
     """
   end
 
@@ -224,7 +229,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     |> SoonReady.QuantifyingNeeds.SurveyResponse.submit()
     |> case do
       {:ok, _aggregate} ->
-        {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
+        socket =
+          socket
+          |> put_flash(:info, "Thank you for participating in our survey!")
+          |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")
+        {:noreply, socket}
       {:error, error} ->
         Logger.error("DEBUG: #{inspect(error)}")
         socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
