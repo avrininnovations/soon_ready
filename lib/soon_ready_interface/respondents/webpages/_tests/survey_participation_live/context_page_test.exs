@@ -68,11 +68,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
           _ <- DemographicsPage.submit_response(view),
           _ <- assert_patch(view)
     do
-      resulting_html = submit_response(view, @form_params)
+      _resulting_html = submit_response(view, @form_params)
 
       path = assert_patch(view)
       assert path =~ ~p"/survey/participate/#{survey.id}/comparison"
-      assert resulting_html =~ "Comparison"
+      assert has_element?(view, "h2", "Comparison")
       assert_query_params(path)
     else
       {:error, error} ->

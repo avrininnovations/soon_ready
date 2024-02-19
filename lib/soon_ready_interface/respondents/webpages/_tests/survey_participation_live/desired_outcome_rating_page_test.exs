@@ -79,11 +79,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
           _ <- ComparisonPage.submit_response(view),
           _ <- assert_patch(view)
     do
-      resulting_html = submit_response(view, @form_params)
+      _resulting_html = submit_response(view, @form_params)
 
       path = assert_patch(view)
       assert path =~ ~p"/survey/participate/#{survey.id}/thank-you"
-      assert resulting_html =~ "Thank You!"
+      assert has_element?(view, "h2", "Thank You!")
     else
       {:error, error} ->
         flunk("Error: #{inspect(error)}")

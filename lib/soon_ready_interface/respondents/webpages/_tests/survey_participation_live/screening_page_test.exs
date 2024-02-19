@@ -66,11 +66,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
           _ <- LandingPage.submit_response(view),
           _ <- assert_patch(view)
     do
-      resulting_html = submit_response(view, @correct_form_params)
+      _resulting_html = submit_response(view, @correct_form_params)
 
       path = assert_patch(view)
       assert path =~ ~p"/survey/participate/#{survey.id}/contact-details"
-      assert resulting_html =~ "Contact Details"
+      assert has_element?(view, "h2", "Contact Details")
       assert_query_params(path)
     else
       {:error, error} ->
@@ -87,11 +87,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
           _ = LandingPage.submit_response(view),
           _ = assert_patch(view)
     do
-      resulting_html = submit_response(view, @incorrect_form_params)
+      _resulting_html = submit_response(view, @incorrect_form_params)
 
       path = assert_patch(view)
       assert path =~ ~p"/survey/participate/#{survey.id}/thank-you"
-      assert resulting_html =~ "Thank You!"
+      assert has_element?(view, "h2", "Thank You!")
     else
       {:error, error} ->
         flunk("Error: #{inspect(error)}")
