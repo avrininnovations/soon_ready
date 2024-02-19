@@ -64,11 +64,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey.id}")
       do
-        resulting_html = submit_response(view)
+        _resulting_html = submit_response(view)
 
         path = assert_patch(view)
         assert path =~ "/survey/participate/#{survey.id}/screening-questions"
-        assert resulting_html =~ "Screening Questions"
+        assert has_element?(view, "h2", "Screening Questions")
         assert_query_params(path)
       else
         {:error, error} ->

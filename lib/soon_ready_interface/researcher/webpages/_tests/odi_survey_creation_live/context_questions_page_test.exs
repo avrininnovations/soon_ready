@@ -71,7 +71,7 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.ContextQuestionsPageTest do
       _resulting_html = submit_form(view)
 
       flash = assert_redirect(view, ~p"/")
-      assert flash == %{"info" => "Survey created successfully!"}
+      assert flash == %{"info" => "Survey published successfully!"}
     end
   end
 
