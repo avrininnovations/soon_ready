@@ -6,16 +6,20 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Screen
   attributes do
     attribute :prompt, :string, allow_nil?: false
     attribute :options, {:array, Option}, allow_nil?: false
-    # TODO: nil is always allowed. Resolve.
     attribute :response, :string, allow_nil?: true
   end
 
   actions do
-    defaults [:read, :update, :destroy]
+    defaults [:read, :destroy]
 
     create :create do
       primary? true
-      allow_nil_input [:response]
+    end
+
+    update :update do
+      primary? true
+
+      validate present(:response)
     end
   end
 
