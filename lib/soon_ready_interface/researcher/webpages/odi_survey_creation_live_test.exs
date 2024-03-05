@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.OdiSurveyCreationLive.ContextQuestionsPageTest do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
@@ -8,7 +8,7 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.ContextQuestionsPageTest do
   alias SoonReadyInterface.OdiSurveyCreationLive.ScreeningQuestionsPageTest, as: ScreeningQuestionsPage
   alias SoonReadyInterface.OdiSurveyCreationLive.DemographicQuestionsPageTest, as: DemographicQuestionsPage
 
-  describe "happy path" do
+  describe "Context Questions" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
@@ -44,7 +44,7 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.ContextQuestionsPageTest do
       DemographicQuestionsPage.submit_form(view)
       add_two_context_questions(view)
 
-      _resulting_html = add_two_options_each(view)
+      _resulting_html = add_two_options_each_to_context_questions(view)
 
       assert has_element?(view, ~s{input[name="form[context_questions][0][options][0][value]"]})
       assert has_element?(view, ~s{input[name="form[context_questions][0][options][1][value]"]})
@@ -66,47 +66,47 @@ defmodule SoonReadyInterface.OdiSurveyCreationLive.ContextQuestionsPageTest do
       DemographicQuestionsPage.add_two_options_each(view)
       DemographicQuestionsPage.submit_form(view)
       add_two_context_questions(view)
-      add_two_options_each(view)
+      add_two_options_each_to_context_questions(view)
 
-      _resulting_html = submit_form(view)
+      _resulting_html = submit_context_questions_form(view)
 
       flash = assert_redirect(view, ~p"/")
       assert flash == %{"info" => "Survey published successfully!"}
     end
-  end
 
-  def add_two_context_questions(view) do
-    view
-    |> element("button", "Add context question")
-    |> render_click()
+    def add_two_context_questions(view) do
+      view
+      |> element("button", "Add context question")
+      |> render_click()
 
-    view
-    |> element("button", "Add context question")
-    |> render_click()
-  end
+      view
+      |> element("button", "Add context question")
+      |> render_click()
+    end
 
-  def add_two_options_each(view) do
-    view
-    |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
-    |> render_click()
+    def add_two_options_each_to_context_questions(view) do
+      view
+      |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
+      |> render_click()
 
-    view
-    |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
-    |> render_click()
+      view
+      |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
+      |> render_click()
 
-    view
-    |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
-    |> render_click()
+      view
+      |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
+      |> render_click()
 
-    view
-    |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
-    |> render_click()
-  end
+      view
+      |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
+      |> render_click()
+    end
 
-  def submit_form(view) do
-    view
-    |> form("form", form: %{context_questions: %{"0" => %{"prompt" => "Context Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Context Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
+    def submit_context_questions_form(view) do
+      view
+      |> form("form", form: %{context_questions: %{"0" => %{"prompt" => "Context Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Context Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
+      |> put_submitter("button[name=submit]")
+      |> render_submit()
+    end
   end
 end
