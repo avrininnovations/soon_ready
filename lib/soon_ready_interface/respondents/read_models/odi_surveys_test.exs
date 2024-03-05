@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.ReadModels.Tests.OdiSurveysTest do
+defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveysTest do
   use SoonReady.DataCase
 
   alias SoonReady.QuantifyingNeeds.Survey

@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.HomepageTest do
+defmodule SoonReadyInterface.HomepageLiveTest do
   use SoonReadyInterface.ConnCase
 
   test "GET /", %{conn: conn} do
