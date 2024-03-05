@@ -1,12 +1,12 @@
-defmodule SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.ComparisonPageTest do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ComparisonPageTest do
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
-  alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.LandingPageTest, as: LandingPage
-  alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.ScreeningQuestionsPageTest, as: ScreeningPage
-  alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.ContactDetailsPageTest, as: ContactDetailsPage
-  alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.DemographicsPageTest, as: DemographicsPage
-  alias SoonReadyInterface.Respondents.Webpages.Tests.SurveyParticipationLive.ContextPageTest, as: ContextPage
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.LandingPageTest, as: LandingPage
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ScreeningQuestionsPageTest, as: ScreeningPage
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ContactDetailsPageTest, as: ContactDetailsPage
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.DemographicsPageTest, as: DemographicsPage
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ContextPageTest, as: ContextPage
 
   @survey_params %{
     brand: "A Big Brand",
