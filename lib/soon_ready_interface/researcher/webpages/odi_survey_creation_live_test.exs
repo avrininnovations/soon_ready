@@ -5,12 +5,46 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   alias SoonReadyInterface.OdiSurveyCreationLive.LandingPageTest, as: LandingPage
   alias SoonReadyInterface.OdiSurveyCreationLive.MarketDefinitionPageTest, as: MarketDefinitionPage
 
+  describe "Landing Page" do
+    @landing_page_query_params %{"brand_name" => "Big Brand Co"}
+
+    test "WHEN: Researcher tries to visit the survey creation url, THEN: The landing page is displayed", %{conn: conn} do
+      {:ok, _view, html} = live(conn, ~p"/odi-survey/create")
+
+      assert html =~ "Welcome to the ODI Survey Creator!"
+    end
+
+    test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher tries to submit a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+
+      _resulting_html = submit_landing_page_form(view)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/odi-survey/create/market-definition"
+      assert has_element?(view, "h2", "Market Definition")
+      assert_landing_page_query_params(path)
+    end
+
+    def submit_landing_page_form(view) do
+      view
+      |> form("form", form: @landing_page_query_params)
+      |> put_submitter("button[name=submit]")
+      |> render_submit()
+    end
+
+    def assert_landing_page_query_params(path) do
+      %{query: query} = URI.parse(path)
+      %{"landing_page_form" => query_params} = Plug.Conn.Query.decode(query)
+      assert query_params == @landing_page_query_params
+    end
+  end
+
   describe "Market Definition" do
     @market_definition_query_params %{job_executor: "Person", job_to_be_done: "Do what persons do"}
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
 
       _resulting_html = submit_market_definition_form(view)
 
@@ -18,7 +52,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/desired-outcomes"
       assert has_element?(view, "h2", "Desired Outcomes")
-      LandingPage.assert_query_params(path)
+      assert_landing_page_query_params(path)
       assert_market_definition_page_query_params(path)
     end
 
@@ -45,7 +79,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
 
       resulting_html = add_two_job_steps(view)
@@ -58,7 +92,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two job steps have been added, WHEN: Researcher tries to add two desired outcomes each to both job steps, THEN: Two desired outcome fields are added to the first job step", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
 
@@ -72,7 +106,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two desired outcome fields each have been added to two job steps, WHEN: Researcher tries to submit the desired outceoms, THEN: The screening question page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -84,7 +118,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/screening-questions"
       assert has_element?(view, "h2", "Screening Questions")
-      LandingPage.assert_query_params(path)
+      assert_landing_page_query_params(path)
       assert_market_definition_page_query_params(path)
       assert_desired_outcomes_page_query_params(path)
     end
@@ -136,7 +170,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -150,7 +184,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -174,7 +208,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two options each have been added to two screening questions, WHEN: Researcher tries to submit the screening questions, THEN: The demographic questions page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -190,9 +224,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/demographic-questions"
       assert has_element?(view, "h2", "Demographic Questions")
-      add_two_job_steps(view)
-      add_two_desired_outcomes_each(view)
-      submit_desired_outcomes_form(view)
       assert_screening_questions_page_query_params(path)
     end
 
@@ -257,7 +288,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two demographic questions, THEN: Two demographic question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -274,7 +305,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two demographic questions have been added, WHEN: Researcher tries to add two options each to the demographic questions, THEN: Two options field each are added to the demographic questions", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -294,7 +325,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two options each have been added to two demographic questions, WHEN: Researcher tries to submit the demographic questions, THEN: The context questions page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -314,7 +345,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       path = assert_patch(view)
       assert path =~ ~p"/odi-survey/create/context-questions"
       assert has_element?(view, "h2", "Context Questions")
-      LandingPage.assert_query_params(path)
+      assert_landing_page_query_params(path)
       assert_market_definition_page_query_params(path)
       assert_desired_outcomes_page_query_params(path)
       assert_screening_questions_page_query_params(path)
@@ -366,7 +397,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   describe "Context Questions" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -386,7 +417,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two context questions have been added, WHEN: Researcher tries to add two options each to the context questions, THEN: Two options field each are added to the context questions", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -409,7 +440,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
     test "GIVEN: Two options each have been added to two context questions, WHEN: Researcher tries to submit the context questions, THEN: The context questions page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-      LandingPage.submit_form(view)
+      submit_landing_page_form(view)
       submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
@@ -424,6 +455,12 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       add_two_options_each_to_context_questions(view)
 
       _resulting_html = submit_context_questions_form(view)
+
+      _market_definition_page_path = assert_patch(view)
+      _desired_outcomes_page_path = assert_patch(view)
+      _screening_questions_page_path = assert_patch(view)
+      _demographic_questions_page_path = assert_patch(view)
+      _context_questions_page_path = assert_patch(view)
 
       flash = assert_redirect(view, ~p"/")
       assert flash == %{"info" => "Survey published successfully!"}
