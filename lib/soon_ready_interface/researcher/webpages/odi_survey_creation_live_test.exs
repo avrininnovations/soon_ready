@@ -4,15 +4,49 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
   alias SoonReadyInterface.OdiSurveyCreationLive.LandingPageTest, as: LandingPage
   alias SoonReadyInterface.OdiSurveyCreationLive.MarketDefinitionPageTest, as: MarketDefinitionPage
-  alias SoonReadyInterface.OdiSurveyCreationLive.DesiredOutcomesPageTest, as: DesiredOutcomesPage
 
-  describe "happy path" do
+  describe "Market Definition" do
+    @market_definition_query_params %{job_executor: "Person", job_to_be_done: "Do what persons do"}
+
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      LandingPage.submit_form(view)
+
+      _resulting_html = submit_market_definition_form(view)
+
+      _market_definition_page_path = assert_patch(view)
+      path = assert_patch(view)
+      assert path =~ ~p"/odi-survey/create/desired-outcomes"
+      assert has_element?(view, "h2", "Desired Outcomes")
+      LandingPage.assert_query_params(path)
+      assert_market_definition_page_query_params(path)
+    end
+
+    def submit_market_definition_form(view) do
+      view
+      |> form("form", form: @market_definition_query_params)
+      |> put_submitter("button[name=submit]")
+      |> render_submit()
+    end
+
+    def assert_market_definition_page_query_params(path) do
+      %{query: query} = URI.parse(path)
+      %{"market_definition_form" => %{
+        "job_executor" => job_executor,
+        "job_to_be_done" => job_to_be_done
+      }} = Plug.Conn.Query.decode(query)
+      assert job_executor == @market_definition_query_params[:job_executor]
+      assert job_to_be_done == @market_definition_query_params[:job_to_be_done]
+    end
+  end
+
+  describe "Desired Outcomes" do
     @desired_outcome_query_params %{"job_steps" => %{"0" => %{"name" => "Job Step 1", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}, "1" => %{"name" => "Job Step 2", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}}}
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
 
       resulting_html = add_two_job_steps(view)
 
@@ -25,7 +59,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two job steps have been added, WHEN: Researcher tries to add two desired outcomes each to both job steps, THEN: Two desired outcome fields are added to the first job step", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
 
       _resulting_html = add_two_desired_outcomes_each(view)
@@ -39,7 +73,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two desired outcome fields each have been added to two job steps, WHEN: Researcher tries to submit the desired outceoms, THEN: The screening question page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
 
@@ -51,7 +85,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       assert path =~ ~p"/odi-survey/create/screening-questions"
       assert has_element?(view, "h2", "Screening Questions")
       LandingPage.assert_query_params(path)
-      MarketDefinitionPage.assert_query_params(path)
+      assert_market_definition_page_query_params(path)
       assert_desired_outcomes_page_query_params(path)
     end
 
@@ -103,7 +137,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -117,7 +151,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -141,7 +175,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two options each have been added to two screening questions, WHEN: Researcher tries to submit the screening questions, THEN: The demographic questions page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -224,7 +258,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two demographic questions, THEN: Two demographic question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -241,7 +275,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two demographic questions have been added, WHEN: Researcher tries to add two options each to the demographic questions, THEN: Two options field each are added to the demographic questions", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -261,7 +295,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two options each have been added to two demographic questions, WHEN: Researcher tries to submit the demographic questions, THEN: The context questions page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -281,7 +315,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       assert path =~ ~p"/odi-survey/create/context-questions"
       assert has_element?(view, "h2", "Context Questions")
       LandingPage.assert_query_params(path)
-      MarketDefinitionPage.assert_query_params(path)
+      assert_market_definition_page_query_params(path)
       assert_desired_outcomes_page_query_params(path)
       assert_screening_questions_page_query_params(path)
       assert_demographic_questions_page_query_params(path)
@@ -333,7 +367,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -353,7 +387,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two context questions have been added, WHEN: Researcher tries to add two options each to the context questions, THEN: Two options field each are added to the context questions", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
@@ -376,7 +410,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     test "GIVEN: Two options each have been added to two context questions, WHEN: Researcher tries to submit the context questions, THEN: The context questions page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       LandingPage.submit_form(view)
-      MarketDefinitionPage.submit_form(view)
+      submit_market_definition_form(view)
       add_two_job_steps(view)
       add_two_desired_outcomes_each(view)
       submit_desired_outcomes_form(view)
