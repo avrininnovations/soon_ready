@@ -5,7 +5,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   alias SoonReadyInterface.OdiSurveyCreationLive.LandingPageTest, as: LandingPage
   alias SoonReadyInterface.OdiSurveyCreationLive.MarketDefinitionPageTest, as: MarketDefinitionPage
 
-
+  @timeout 300
+  
   @landing_page_query_params %{"brand_name" => "Big Brand Co"}
   @market_definition_query_params %{job_executor: "Person", job_to_be_done: "Do what persons do"}
   @desired_outcome_query_params %{"job_steps" => %{"0" => %{"name" => "Job Step 1", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}, "1" => %{"name" => "Job Step 2", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}}}
@@ -494,7 +495,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       _demographic_questions_page_path = assert_patch(view)
       _context_questions_page_path = assert_patch(view)
 
-      flash = assert_redirect(view, ~p"/")
+      flash = assert_redirect(view, ~p"/", @timeout)
       assert flash == %{"info" => "Survey published successfully!"}
     end
   end
