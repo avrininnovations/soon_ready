@@ -4,7 +4,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.DomainEvents.SurveyResponseS
   alias SoonReady.QuantifyingNeeds.SurveyResponse.ValueObjects.{HashedParticipant, Response, JobStep}
 
   attributes do
-    attribute :id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :response_id, :uuid, allow_nil?: false, primary_key?: true
     attribute :survey_id, :uuid
     attribute :participant, HashedParticipant
     attribute :screening_responses, {:array, Response}

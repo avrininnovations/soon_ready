@@ -6,7 +6,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
   @behaviour Cloak.Cipher
 
   attributes do
-    attribute :id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :response_id, :uuid, allow_nil?: false, primary_key?: true
     attribute :cloak_key, :string, allow_nil?: false
   end
 
@@ -22,7 +22,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
     end
 
     read :get do
-      get_by [:id]
+      get_by [:response_id]
     end
   end
 
@@ -39,8 +39,8 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
     table "quantifying_needs__survey_response__encryption__ciphers"
   end
 
-  def encrypt_text(plain_text, %{__struct__: __MODULE__, id: survey_response_id} = _cipher) when is_binary(plain_text) do
-    with :error <- SoonReady.Vault.encrypt(%{id: survey_response_id, plain_text: plain_text}, __MODULE__) do
+  def encrypt_text(plain_text, %{__struct__: __MODULE__, response_id: survey_response_id} = _cipher) when is_binary(plain_text) do
+    with :error <- SoonReady.Vault.encrypt(%{response_id: survey_response_id, plain_text: plain_text}, __MODULE__) do
       Logger.warning("Encryption failed")
       {:error, :encryption_failed}
     end
@@ -56,20 +56,20 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
   end
 
   def decrypt_text(cipher_text, for: survey_response_id) do
-    with :error <- SoonReady.Vault.decrypt(%{id: survey_response_id, cipher_text: cipher_text}) do
+    with :error <- SoonReady.Vault.decrypt(%{response_id: survey_response_id, cipher_text: cipher_text}) do
       Logger.warning("Decryption failed")
       {:error, :decryption_failed}
     end
   end
 
   def get_key(survey_response_id) do
-    with {:ok, %{__struct__: __MODULE__, cloak_key: cloak_key}} <- __MODULE__.get(%{id: survey_response_id}) do
+    with {:ok, %{__struct__: __MODULE__, cloak_key: cloak_key}} <- __MODULE__.get(%{response_id: survey_response_id}) do
       {:ok, Base.decode64!(cloak_key)}
     end
   end
 
   @impl true
-  def encrypt(%{id: survey_response_id, plain_text: plain_text}, opts) when is_binary(plain_text) do
+  def encrypt(%{response_id: survey_response_id, plain_text: plain_text}, opts) when is_binary(plain_text) do
     case __MODULE__.get_key(survey_response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
@@ -89,7 +89,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
   end
 
   @impl true
-  def decrypt(%{id: survey_response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
+  def decrypt(%{response_id: survey_response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
     case __MODULE__.get_key(survey_response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
@@ -109,7 +109,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
   end
 
   @impl true
-  def can_decrypt?(%{id: survey_response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
+  def can_decrypt?(%{response_id: survey_response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
     case __MODULE__.get_key(survey_response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)

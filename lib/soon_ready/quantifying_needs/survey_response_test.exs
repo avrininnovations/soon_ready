@@ -84,7 +84,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponseTest do
   describe "Happy Path" do
     test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted" do
       with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details),
-            {:ok, ^survey} <- Survey.publish_survey(%{survey_id: survey_id})
+            {:ok, %{survey_id: ^survey_id}} <- Survey.publish_survey(%{survey_id: survey_id})
       do
         # TODO: Test the fact that the actor is a participant
 
@@ -92,11 +92,12 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponseTest do
         |> Map.put(:survey_id, survey_id)
         |> SurveyResponse.submit_response()
         |> case do
-          {:ok, %{id: survey_response_id} = _aggregate} ->
+          {:ok, %{response_id: survey_response_id} = _aggregate} ->
             assert_receive_event(Application, SurveyResponseSubmitted,
-              fn event -> event.id == survey_response_id end,
+              fn event -> event.response_id == survey_response_id end,
               fn event ->
-                decrypted_participant = SurveyResponse.decrypt_participant_details(event.id, event.participant)
+                IO.inspect(event)
+                decrypted_participant = SurveyResponse.decrypt_participant_details(event.response_id, event.participant)
 
                 assert event.survey_id == survey_id
                 assert decrypted_participant.nickname == @survey_response_details.participant.nickname
@@ -112,6 +113,9 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponseTest do
           {:error, error} ->
             flunk("Expected survey response to be submitted but got: #{inspect(error)}")
         end
+      else
+        {:error, error} ->
+          flunk("Expected survey to be created and published but got: #{inspect(error)}")
       end
     end
   end

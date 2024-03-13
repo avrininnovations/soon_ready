@@ -5,7 +5,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Commands.SubmitSurveyRespons
   alias SoonReady.QuantifyingNeeds.SurveyResponse.ValueObjects.{Participant, Response, JobStep}
 
   attributes do
-    attribute :id, :uuid, allow_nil?: false, primary_key?: true
+    uuid_primary_key :response_id
     attribute :survey_id, :uuid, allow_nil?: false
     attribute :participant, Participant, allow_nil?: false
     attribute :screening_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
