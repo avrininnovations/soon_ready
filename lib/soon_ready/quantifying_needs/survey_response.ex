@@ -1,67 +1,16 @@
 defmodule SoonReady.QuantifyingNeeds.SurveyResponse do
-  use Ash.Resource, data_layer: :embedded
+  use Ash.Api
+  use Commanded.Commands.Router
 
-  require Logger
-  alias SoonReady.QuantifyingNeeds.SurveyResponse.ValueObjects.{Participant, Response, JobStep}
   alias SoonReady.QuantifyingNeeds.SurveyResponse.Commands.SubmitSurveyResponse
   alias SoonReady.QuantifyingNeeds.SurveyResponse.DomainEvents.SurveyResponseSubmitted
   alias SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher
 
-  attributes do
-    uuid_primary_key :id
-    attribute :survey_id, :uuid, allow_nil?: false
-    attribute :participant, Participant, allow_nil?: false
-    attribute :screening_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
-    attribute :demographic_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
-    attribute :context_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
-    attribute :comparison_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
-    attribute :desired_outcome_ratings, {:array, JobStep}, allow_nil?: false, constraints: [min_length: 1]
-  end
-
-  actions do
-    create :submit do
-      # TODO: Validate that the survey is published
-
-      change fn changeset, _context ->
-        Ash.Changeset.after_action(changeset, fn changeset, result ->
-          result
-          |> Map.from_struct()
-          |> SubmitSurveyResponse.dispatch()
-          |> case do
-            {:ok, _command} ->
-              {:ok, result}
-
-            {:error, error} ->
-              changeset = Ash.Changeset.add_error(changeset, error)
-              {:error, changeset}
-          end
-        end)
-      end
-    end
-  end
-
-  code_interface do
-    define_for SoonReady.QuantifyingNeeds.SurveyResponse.Api
-    define :submit
-  end
-
-  def decrypt_participant_details(survey_response_id, %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash}) do
-    with {:ok, nickname} <- Cipher.decrypt_text(nickname_hash, for: survey_response_id),
-         {:ok, email} <- Cipher.decrypt_text(email_hash, for: survey_response_id),
-         {:ok, phone_number} <- Cipher.decrypt_text(phone_number_hash, for: survey_response_id)
-    do
-      %{nickname: nickname, email: email, phone_number: phone_number}
-    else
-      {:error, error} ->
-        Logger.warning("Decryption failed, #{inspect(error)}")
-        {:error, error}
-    end
-  end
-
-
-  # Command Handling
-  use Commanded.Commands.Router
   dispatch SubmitSurveyResponse, to: __MODULE__, identity: :id
+
+  defstruct [:id]
+
+  defdelegate submit_response(params), to: SubmitSurveyResponse, as: :dispatch
 
   def execute(_aggregate_state, %SubmitSurveyResponse{id: survey_response_id} = command) do
     with {:ok, cipher} <- Cipher.initialize(%{id: survey_response_id}) do

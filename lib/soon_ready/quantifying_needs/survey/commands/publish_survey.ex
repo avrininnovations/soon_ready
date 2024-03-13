@@ -20,7 +20,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey.Commands.PublishSurvey do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey.Api
+    define_for SoonReady.QuantifyingNeeds.Survey
     define :dispatch
   end
 end

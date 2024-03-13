@@ -47,7 +47,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
     test "WHEN: A researcher tries to create a survey, THEN: A survey is created" do
       # TODO: Test the fact that the actor is an Avrin researcher
 
-      case Survey.create(@survey_details) do
+      case Survey.create_survey(@survey_details) do
         {:ok, %{id: survey_id} = _aggregate} ->
           assert_receive_event(Application, SurveyCreated,
             fn event -> event.id == survey_id end,
@@ -68,8 +68,8 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
     test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published" do
       # TODO: Test the fact that the actor is an Avrin researcher
 
-      with {:ok, %{id: survey_id} = survey} <- Survey.create(@survey_details) do
-        case Survey.publish(survey) do
+      with {:ok, %{id: survey_id} = survey} <- Survey.create_survey(@survey_details) do
+        case Survey.publish_survey(%{id: survey_id}) do
           {:ok, %{id: ^survey_id}} ->
             assert_receive_event(Application, SurveyPublished,
               fn event -> event.id == survey_id end,

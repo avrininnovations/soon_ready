@@ -14,8 +14,8 @@ config :soon_ready,
 config :soon_ready, event_stores: [SoonReady.EventStore]
 
 config :soon_ready, ash_apis: [
-  SoonReady.QuantifyingNeeds.Survey.Api,
-  SoonReady.QuantifyingNeeds.SurveyResponse.Api,
+  SoonReady.QuantifyingNeeds.Survey,
+  SoonReady.QuantifyingNeeds.SurveyResponse,
 
   SoonReady.Onboarding.Setup.Api,
 

@@ -11,7 +11,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyPublished do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey.Api
+    define_for SoonReady.QuantifyingNeeds.Survey
     define :new
   end
 end

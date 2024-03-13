@@ -20,7 +20,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.DomainEvents.SurveyResponseS
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.SurveyResponse.Api
+    define_for SoonReady.QuantifyingNeeds.SurveyResponse
     define :new
   end
 end

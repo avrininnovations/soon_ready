@@ -28,7 +28,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Commands.SubmitSurveyRespons
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.SurveyResponse.Api
+    define_for SoonReady.QuantifyingNeeds.SurveyResponse
     define :dispatch
   end
 end
