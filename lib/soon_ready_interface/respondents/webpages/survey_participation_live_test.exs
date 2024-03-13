@@ -2,9 +2,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.LandingPageTest, as: LandingPage
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ScreeningQuestionsPageTest, as: ScreeningPage
-
   @survey_params %{
     brand: "A Big Brand",
     market: %{
@@ -127,6 +124,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     "1" => %{"prompt" => "What is the answer to screening question 2?", "response" => "Option 1"}
   }
 
+  @nickname_form_params %{
+    nickname: "A Nickname"
+  }
+
+  @landing_page_query_params %{"nickname" => "A Nickname"}
+
   def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
     view
     |> form("form", form: params)
@@ -199,12 +202,59 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     assert query_params == @screening_page_query_params
   end
 
+  def submit_nickname_form_response(view, params \\ @nickname_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def assert_landing_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"nickname_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @landing_page_query_params
+  end
+
+  describe "Landing Page" do
+    test "GIVEN: Survey has been published, WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn} do
+      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey)
+      do
+        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{survey.id}")
+
+        assert html =~ "Welcome to our Survey!"
+      else
+        {:error, error} ->
+          flunk("Error publishing survey: #{inspect(error)}")
+      end
+    end
+
+    test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn} do
+      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
+            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey.id}")
+      do
+        _resulting_html = submit_nickname_form_response(view)
+
+        path = assert_patch(view)
+        assert path =~ ~p"/survey/participate/#{survey.id}/screening-questions"
+        assert has_element?(view, "h2", "Screening Questions")
+        assert_landing_page_query_params(path)
+      else
+        {:error, error} ->
+          flunk("Error: #{inspect(error)}")
+        _ ->
+          flunk("An unexpected error occurred")
+      end
+    end
+  end
+
   describe "Screening Questions Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
-            _ <- LandingPage.submit_response(view),
+            _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view)
       do
         _resulting_html = submit_screening_form_response(view, @correct_screening_form_params)
@@ -225,7 +275,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey.id}"),
-            _ = LandingPage.submit_response(view),
+            _ = submit_nickname_form_response(view),
             _ = assert_patch(view)
       do
         _resulting_html = submit_screening_form_response(view, @incorrect_screening_form_params)
@@ -247,7 +297,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
-            _ <- LandingPage.submit_response(view),
+            _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
             _ <- assert_patch(view)
@@ -272,7 +322,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
-            _ <- LandingPage.submit_response(view),
+            _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
             _ <- assert_patch(view),
@@ -299,7 +349,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
-            _ <- LandingPage.submit_response(view),
+            _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
             _ <- assert_patch(view),
@@ -328,7 +378,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
-            _ <- LandingPage.submit_response(view),
+            _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
             _ <- assert_patch(view),
@@ -359,7 +409,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
-            _ <- LandingPage.submit_response(view),
+            _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
             _ <- assert_patch(view),
