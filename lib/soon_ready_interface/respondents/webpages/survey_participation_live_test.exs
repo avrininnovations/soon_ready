@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.DesiredOutcomeRatingPageTest do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   use SoonReadyInterface.ConnCase
   import Phoenix.LiveViewTest
 
@@ -45,7 +45,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Desire
     ]
   }
 
-  @form_params %{
+  @desired_outcome_form_params %{
     "job_steps" => %{
       "0" => %{
         "desired_outcomes" => %{
@@ -62,40 +62,42 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Desire
     }
   }
 
-  test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn} do
-    with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-          {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-          {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
-          _ <- LandingPage.submit_response(view),
-          _ <- assert_patch(view),
-          _ <- ScreeningPage.submit_response(view),
-          _ <- assert_patch(view),
-          _ <- ContactDetailsPage.submit_response(view),
-          _ <- assert_patch(view),
-          _ <- DemographicsPage.submit_response(view),
-          _ <- assert_patch(view),
-          _ <- ContextPage.submit_response(view),
-          _ <- assert_patch(view),
-          _ <- ComparisonPage.submit_response(view),
-          _ <- assert_patch(view)
-    do
-      _resulting_html = submit_response(view, @form_params)
-
-      path = assert_patch(view)
-      assert path =~ ~p"/survey/participate/#{survey.id}/thank-you"
-      assert has_element?(view, "h2", "Thank You!")
-    else
-      {:error, error} ->
-        flunk("Error: #{inspect(error)}")
-      _ ->
-        flunk("An unexpected error occurred")
-    end
-  end
-
-  def submit_response(view, params \\ @form_params) do
+  def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
     view
     |> form("form", form: params)
     |> put_submitter("button[name=submit]")
     |> render_submit()
+  end
+
+  describe "Desired Outcome Rating" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn} do
+      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+            _ <- LandingPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ScreeningPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ContactDetailsPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- DemographicsPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ContextPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ComparisonPage.submit_response(view),
+            _ <- assert_patch(view)
+      do
+        _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
+
+        path = assert_patch(view)
+        assert path =~ ~p"/survey/participate/#{survey.id}/thank-you"
+        assert has_element?(view, "h2", "Thank You!")
+      else
+        {:error, error} ->
+          flunk("Error: #{inspect(error)}")
+        _ ->
+          flunk("An unexpected error occurred")
+      end
+    end
   end
 end
