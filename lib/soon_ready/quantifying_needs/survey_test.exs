@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Tests.SurveyTest do
+defmodule SoonReady.QuantifyingNeeds.SurveyTest do
   use SoonReady.DataCase
 
   import Commanded.Assertions.EventAssertions
