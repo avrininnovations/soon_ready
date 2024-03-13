@@ -6,8 +6,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ScreeningQuestionsPageTest, as: ScreeningPage
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ContactDetailsPageTest, as: ContactDetailsPage
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.DemographicsPageTest, as: DemographicsPage
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ContextPageTest, as: ContextPage
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.ComparisonPageTest, as: ComparisonPage
 
   @survey_params %{
     brand: "A Big Brand",
@@ -78,6 +76,18 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     "4" => %{"prompt" => "If yes, how much extra would you be willing to pay annually to get the job done perfectly?", "response" => "1000"}
   }
 
+  @context_form_params %{
+    "questions" => %{
+      "0" => %{"response" => "Option 1"},
+      "1" => %{"response" => "Option 1"}
+    }
+  }
+
+  @context_page_query_params %{
+    "0" => %{"prompt" => "What is the answer to context question 1?", "response" => "Option 1"},
+    "1" => %{"prompt" => "What is the answer to context question 2?", "response" => "Option 1"}
+  }
+
   def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
     view
     |> form("form", form: params)
@@ -98,6 +108,48 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     assert query_params == @comparison_page_query_params
   end
 
+  def submit_context_form_response(view, params \\ @context_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def assert_context_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"context_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @context_page_query_params
+  end
+
+  describe "Context Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn} do
+      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+            _ <- LandingPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ScreeningPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ContactDetailsPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- DemographicsPage.submit_response(view),
+            _ <- assert_patch(view)
+      do
+        _resulting_html = submit_context_form_response(view, @context_form_params)
+
+        path = assert_patch(view)
+        assert path =~ ~p"/survey/participate/#{survey.id}/comparison"
+        assert has_element?(view, "h2", "Comparison")
+        assert_context_page_query_params(path)
+      else
+        {:error, error} ->
+          flunk("Error: #{inspect(error)}")
+        _ ->
+          flunk("An unexpected error occurred")
+      end
+    end
+  end
+
   describe "Comparison Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn} do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
@@ -111,7 +163,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- DemographicsPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- ContextPage.submit_response(view),
+            _ <- submit_context_form_response(view),
             _ <- assert_patch(view)
       do
         _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
@@ -142,7 +194,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- DemographicsPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- ContextPage.submit_response(view),
+            _ <- submit_context_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_comparison_form_response(view),
             _ <- assert_patch(view)
