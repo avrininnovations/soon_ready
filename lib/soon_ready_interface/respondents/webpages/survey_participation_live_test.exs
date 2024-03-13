@@ -88,6 +88,19 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     "1" => %{"prompt" => "What is the answer to context question 2?", "response" => "Option 1"}
   }
 
+  @demographics_form_params %{
+    "questions" => %{
+      "0" => %{"response" => "Option 1"},
+      "1" => %{"response" => "Option 1"}
+    }
+  }
+
+  @demographics_page_query_params %{
+    "0" => %{"prompt" => "What is the answer to demographic question 1?", "response" => "Option 1"},
+    "1" => %{"prompt" => "What is the answer to demographic question 2?", "response" => "Option 1"}
+  }
+
+
   def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
     view
     |> form("form", form: params)
@@ -121,6 +134,46 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     assert query_params == @context_page_query_params
   end
 
+  def submit_demographics_form_response(view, params \\ @demographics_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def assert_demographics_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"demographics_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @demographics_page_query_params
+  end
+
+  describe "Demographics Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn} do
+      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+            _ <- LandingPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ScreeningPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ContactDetailsPage.submit_response(view),
+            _ <- assert_patch(view)
+      do
+        _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
+
+        path = assert_patch(view)
+        assert path =~ ~p"/survey/participate/#{survey.id}/context"
+        assert has_element?(view, "h2", "Context")
+        assert_demographics_page_query_params(path)
+      else
+        {:error, error} ->
+          flunk("Error: #{inspect(error)}")
+        _ ->
+          flunk("An unexpected error occurred")
+      end
+    end
+  end
+
   describe "Context Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn} do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
@@ -132,7 +185,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ContactDetailsPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- DemographicsPage.submit_response(view),
+            _ <- submit_demographics_form_response(view),
             _ <- assert_patch(view)
       do
         _resulting_html = submit_context_form_response(view, @context_form_params)
@@ -161,7 +214,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ContactDetailsPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- DemographicsPage.submit_response(view),
+            _ <- submit_demographics_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_context_form_response(view),
             _ <- assert_patch(view)
@@ -192,7 +245,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ContactDetailsPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- DemographicsPage.submit_response(view),
+            _ <- submit_demographics_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_context_form_response(view),
             _ <- assert_patch(view),
