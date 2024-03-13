@@ -100,6 +100,15 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     "1" => %{"prompt" => "What is the answer to demographic question 2?", "response" => "Option 1"}
   }
 
+  @contact_details_form_params %{
+    email: "hello@example.com",
+    phone_number: "1234567890",
+  }
+
+  @contact_details_page_query_params %{
+    "email" => "hello@example.com",
+    "phone_number" => "1234567890"
+  }
 
   def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
     view
@@ -147,6 +156,44 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     assert query_params == @demographics_page_query_params
   end
 
+  def submit_contact_details_form_response(view, params \\ @contact_details_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def assert_contact_details_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"contact_details_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @contact_details_page_query_params
+  end
+
+  describe "Contact Details Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn} do
+      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+            _ <- LandingPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ScreeningPage.submit_response(view),
+            _ <- assert_patch(view)
+      do
+        _resulting_html = submit_contact_details_form_response(view)
+
+        path = assert_patch(view)
+        assert path =~ ~p"/survey/participate/#{survey.id}/demographics"
+        assert has_element?(view, "h2", "Demographics")
+        assert_contact_details_page_query_params(path)
+      else
+        {:error, error} ->
+          flunk("Error: #{inspect(error)}")
+        _ ->
+          flunk("An unexpected error occurred")
+      end
+    end
+  end
+
   describe "Demographics Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn} do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
@@ -156,7 +203,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ScreeningPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- ContactDetailsPage.submit_response(view),
+            _ <- submit_contact_details_form_response(view),
             _ <- assert_patch(view)
       do
         _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
@@ -183,7 +230,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ScreeningPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- ContactDetailsPage.submit_response(view),
+            _ <- submit_contact_details_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_demographics_form_response(view),
             _ <- assert_patch(view)
@@ -212,7 +259,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ScreeningPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- ContactDetailsPage.submit_response(view),
+            _ <- submit_contact_details_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_demographics_form_response(view),
             _ <- assert_patch(view),
@@ -243,7 +290,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ScreeningPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- ContactDetailsPage.submit_response(view),
+            _ <- submit_contact_details_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_demographics_form_response(view),
             _ <- assert_patch(view),
