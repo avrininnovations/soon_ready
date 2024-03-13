@@ -62,6 +62,22 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     }
   }
 
+  @comparison_form_params %{
+    alternatives_used: "Product 1, Service 2, Platform 3",
+    additional_resources_used: "Thing 1, Thing 2",
+    amount_spent_annually_in_naira: "1000",
+    is_willing_to_pay_more: "Yes",
+    extra_amount_willing_to_pay_in_naira: "1000",
+  }
+
+  @comparison_page_query_params %{
+    "0" => %{"prompt" => "What products, services or platforms have you used to do what persons do?", "response" => "Product 1, Service 2, Platform 3"},
+    "1" => %{"prompt" => "What additional things do you usually use/require when you're using any of the above?", "response" => "Thing 1, Thing 2"},
+    "2" => %{"prompt" => "In total, how much would you estimate that you spend annually to do what persons do?", "response" => "1000"},
+    "3" => %{"prompt" => "Would you be willing to pay more for a better solution?", "response" => "Yes"},
+    "4" => %{"prompt" => "If yes, how much extra would you be willing to pay annually to get the job done perfectly?", "response" => "1000"}
+  }
+
   def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
     view
     |> form("form", form: params)
@@ -69,7 +85,51 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     |> render_submit()
   end
 
-  describe "Desired Outcome Rating" do
+  def submit_comparison_form_response(view, params \\ @comparison_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def assert_comparison_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"comparison_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @comparison_page_query_params
+  end
+
+  describe "Comparison Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn} do
+      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+            _ <- LandingPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ScreeningPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ContactDetailsPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- DemographicsPage.submit_response(view),
+            _ <- assert_patch(view),
+            _ <- ContextPage.submit_response(view),
+            _ <- assert_patch(view)
+      do
+        _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
+
+        path = assert_patch(view)
+        assert path =~ ~p"/survey/participate/#{survey.id}/desired-outcome-ratings"
+        assert has_element?(view, "h2", "Desired Outcome Ratings")
+        assert_comparison_page_query_params(path)
+      else
+        {:error, error} ->
+          flunk("Error: #{inspect(error)}")
+        _ ->
+          flunk("An unexpected error occurred")
+      end
+    end
+  end
+
+  describe "Desired Outcome Rating Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn} do
       with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
             {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
@@ -84,7 +144,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
             _ <- assert_patch(view),
             _ <- ContextPage.submit_response(view),
             _ <- assert_patch(view),
-            _ <- ComparisonPage.submit_response(view),
+            _ <- submit_comparison_form_response(view),
             _ <- assert_patch(view)
       do
         _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
