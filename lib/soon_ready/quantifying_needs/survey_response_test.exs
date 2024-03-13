@@ -83,8 +83,8 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponseTest do
 
   describe "Happy Path" do
     test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted" do
-      with {:ok, %{id: survey_id} = survey} <- Survey.create_survey(@survey_details),
-            {:ok, ^survey} <- Survey.publish_survey(%{id: survey_id})
+      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details),
+            {:ok, ^survey} <- Survey.publish_survey(%{survey_id: survey_id})
       do
         # TODO: Test the fact that the actor is a participant
 

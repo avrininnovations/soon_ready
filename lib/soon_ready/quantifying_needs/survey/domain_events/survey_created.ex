@@ -10,7 +10,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyCreated do
   }
 
   attributes do
-    attribute :id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :survey_id, :uuid, allow_nil?: false, primary_key?: true
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}

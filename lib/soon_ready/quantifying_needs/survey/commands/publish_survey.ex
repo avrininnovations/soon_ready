@@ -4,7 +4,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey.Commands.PublishSurvey do
   alias SoonReady.Application
 
   attributes do
-    attribute :id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
   end
 
   actions do

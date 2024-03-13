@@ -48,9 +48,9 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
       # TODO: Test the fact that the actor is an Avrin researcher
 
       case Survey.create_survey(@survey_details) do
-        {:ok, %{id: survey_id} = _aggregate} ->
+        {:ok, %{survey_id: survey_id} = _aggregate} ->
           assert_receive_event(Application, SurveyCreated,
-            fn event -> event.id == survey_id end,
+            fn event -> event.survey_id == survey_id end,
             fn event ->
               assert SoonReady.Utils.is_equal_or_subset?(event.brand, @survey_details.brand)
               assert SoonReady.Utils.is_equal_or_subset?(event.market, @survey_details.market)
@@ -68,11 +68,11 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
     test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published" do
       # TODO: Test the fact that the actor is an Avrin researcher
 
-      with {:ok, %{id: survey_id} = survey} <- Survey.create_survey(@survey_details) do
-        case Survey.publish_survey(%{id: survey_id}) do
-          {:ok, %{id: ^survey_id}} ->
+      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details) do
+        case Survey.publish_survey(%{survey_id: survey_id}) do
+          {:ok, %{survey_id: ^survey_id}} ->
             assert_receive_event(Application, SurveyPublished,
-              fn event -> event.id == survey_id end,
+              fn event -> event.survey_id == survey_id end,
               fn _event ->:ok end
             )
           {:error, error} ->

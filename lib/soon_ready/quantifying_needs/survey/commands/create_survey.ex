@@ -11,7 +11,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey.Commands.CreateSurvey do
   }
 
   attributes do
-    uuid_primary_key :id
+    uuid_primary_key :survey_id
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
