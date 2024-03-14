@@ -2,7 +2,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Commands.SubmitSurveyRespons
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.QuantifyingNeeds.SurveyResponse.ValueObjects.{Participant, Response, JobStep}
+  alias SoonReady.QuantifyingNeeds.SurveyResponse.ValueObjects.{Participant, Response, JobStepRating}
 
   attributes do
     uuid_primary_key :response_id
@@ -12,7 +12,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Commands.SubmitSurveyRespons
     attribute :demographic_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
     attribute :context_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
     attribute :comparison_responses, {:array, Response}, allow_nil?: false, constraints: [min_length: 1]
-    attribute :desired_outcome_ratings, {:array, JobStep}, allow_nil?: false, constraints: [min_length: 1]
+    attribute :desired_outcome_ratings, {:array, JobStepRating}, allow_nil?: false, constraints: [min_length: 1]
   end
 
   actions do
