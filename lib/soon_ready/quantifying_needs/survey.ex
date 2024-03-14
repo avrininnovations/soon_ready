@@ -5,12 +5,12 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
   alias SoonReady.QuantifyingNeeds.Survey.Commands.{CreateSurvey, PublishSurvey}
   alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
 
-  alias SoonReady.QuantifyingNeeds.SurveyResponse.Commands.SubmitSurveyResponse
-  alias SoonReady.QuantifyingNeeds.SurveyResponse.DomainEvents.SurveyResponseSubmitted
-  alias SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher
+  alias SoonReady.QuantifyingNeeds.Survey.Commands.SubmitSurveyResponse
+  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted
+  alias SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher
 
   resources do
-    resource SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher
+    resource SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher
   end
 
   dispatch CreateSurvey, to: __MODULE__, identity: :survey_id

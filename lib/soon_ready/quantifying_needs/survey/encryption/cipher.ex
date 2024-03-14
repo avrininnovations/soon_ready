@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
+defmodule SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher do
   use Ash.Resource, data_layer: AshPostgres.DataLayer
   # TODO: Update to postgres
 

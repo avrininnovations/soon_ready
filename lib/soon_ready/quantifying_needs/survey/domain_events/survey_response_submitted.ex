@@ -1,7 +1,7 @@
-defmodule SoonReady.QuantifyingNeeds.SurveyResponse.DomainEvents.SurveyResponseSubmitted do
+defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.QuantifyingNeeds.SurveyResponse.ValueObjects.{HashedParticipant, Response, JobStepRating}
+  alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{HashedParticipant, Response, JobStepRating}
 
   attributes do
     attribute :response_id, :uuid, allow_nil?: false, primary_key?: true
@@ -20,7 +20,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.DomainEvents.SurveyResponseS
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.SurveyResponse
+    define_for SoonReady.QuantifyingNeeds.Survey
     define :new
   end
 end
