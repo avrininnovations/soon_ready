@@ -27,7 +27,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyResponse.Encryption.Cipher do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.SurveyResponse
+    define_for SoonReady.QuantifyingNeeds.Survey
     define :initialize
     define :get
     define :read

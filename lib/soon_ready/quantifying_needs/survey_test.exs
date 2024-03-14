@@ -6,7 +6,6 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
   alias SoonReady.Application
   alias SoonReady.QuantifyingNeeds.Survey
   alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
-  alias SoonReady.QuantifyingNeeds.SurveyResponse
   alias SoonReady.QuantifyingNeeds.SurveyResponse.DomainEvents.SurveyResponseSubmitted
 
 
@@ -131,13 +130,13 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
         @survey_response_details
         |> Map.put(:survey_id, survey_id)
-        |> SurveyResponse.submit_response()
+        |> Survey.submit_response()
         |> case do
           {:ok, %{response_id: survey_response_id} = _aggregate} ->
             assert_receive_event(Application, SurveyResponseSubmitted,
               fn event -> event.response_id == survey_response_id end,
               fn event ->
-                decrypted_participant = SurveyResponse.decrypt_participant_details(event.response_id, event.participant)
+                decrypted_participant = Survey.decrypt_participant_details(event.response_id, event.participant)
 
                 assert event.survey_id == survey_id
                 assert decrypted_participant.nickname == @survey_response_details.participant.nickname
