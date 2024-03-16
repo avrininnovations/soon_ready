@@ -217,10 +217,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
   describe "Landing Page" do
     test "GIVEN: Survey has been published, WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey)
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id})
       do
-        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{survey.id}")
+        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{survey_id}")
 
         assert html =~ "Welcome to our Survey!"
       else
@@ -230,14 +230,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     end
 
     test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey.id}")
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
       do
         _resulting_html = submit_nickname_form_response(view)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/screening-questions"
+        assert path =~ ~p"/survey/participate/#{survey_id}/screening-questions"
         assert has_element?(view, "h2", "Screening Questions")
         assert_landing_page_query_params(path)
       else
@@ -251,16 +251,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
   describe "Screening Questions Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view)
       do
         _resulting_html = submit_screening_form_response(view, @correct_screening_form_params)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/contact-details"
+        assert path =~ ~p"/survey/participate/#{survey_id}/contact-details"
         assert has_element?(view, "h2", "Contact Details")
         assert_screening_page_query_params(path)
       else
@@ -272,16 +272,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     end
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey.id}"),
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}"),
             _ = submit_nickname_form_response(view),
             _ = assert_patch(view)
       do
         _resulting_html = submit_screening_form_response(view, @incorrect_screening_form_params)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/thank-you"
+        assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
         assert has_element?(view, "h2", "Thank You!")
       else
         {:error, error} ->
@@ -294,9 +294,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
   describe "Contact Details Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
@@ -305,7 +305,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
         _resulting_html = submit_contact_details_form_response(view)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/demographics"
+        assert path =~ ~p"/survey/participate/#{survey_id}/demographics"
         assert has_element?(view, "h2", "Demographics")
         assert_contact_details_page_query_params(path)
       else
@@ -319,9 +319,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
   describe "Demographics Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
@@ -332,7 +332,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
         _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/context"
+        assert path =~ ~p"/survey/participate/#{survey_id}/context"
         assert has_element?(view, "h2", "Context")
         assert_demographics_page_query_params(path)
       else
@@ -346,9 +346,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
   describe "Context Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
@@ -361,7 +361,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
         _resulting_html = submit_context_form_response(view, @context_form_params)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/comparison"
+        assert path =~ ~p"/survey/participate/#{survey_id}/comparison"
         assert has_element?(view, "h2", "Comparison")
         assert_context_page_query_params(path)
       else
@@ -375,9 +375,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
   describe "Comparison Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
@@ -392,7 +392,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
         _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/desired-outcome-ratings"
+        assert path =~ ~p"/survey/participate/#{survey_id}/desired-outcome-ratings"
         assert has_element?(view, "h2", "Desired Outcome Ratings")
         assert_comparison_page_query_params(path)
       else
@@ -406,9 +406,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
   describe "Desired Outcome Rating Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn} do
-      with {:ok, survey} <- SoonReady.QuantifyingNeeds.Survey.create(@survey_params),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish(survey),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey.id}"),
+      with {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params),
+            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
             _ <- submit_screening_form_response(view),
@@ -425,7 +425,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
         _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
 
         path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey.id}/thank-you"
+        assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
         assert has_element?(view, "h2", "Thank You!")
       else
         {:error, error} ->

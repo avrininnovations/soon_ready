@@ -41,11 +41,11 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveysTest do
   }
 
   test "GIVEN: An ODI survey was publised, THEN: The survey is active" do
-    with {:ok, survey} <- Survey.create(@survey_params),
-          {:ok, _survey} <- Survey.publish(survey)
+    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(@survey_params),
+          {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do
-      {:ok, survey} = OdiSurveys.get_active(survey.id)
-      assert survey.id == survey.id
+      {:ok, survey} = OdiSurveys.get_active(survey_id)
+      assert survey.id == survey_id
     end
   end
 end
