@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Setup.Supervisor do
+defmodule SoonReady.QuantifyingNeeds.Supervisor do
   use Supervisor
 
   def start_link(arg) do
@@ -9,7 +9,7 @@ defmodule SoonReadyInterface.Respondents.Setup.Supervisor do
   def init(_arg) do
     children = [
       # Event handlers
-      SoonReadyInterface.Respondents.ReadModels.OdiSurveys,
+      SoonReady.QuantifyingNeeds.RespondentData,
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

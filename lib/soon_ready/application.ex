@@ -39,7 +39,7 @@ defmodule SoonReady.Application do
       # Commanded
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
-      SoonReadyInterface.Respondents.Setup.Supervisor,
+      SoonReady.QuantifyingNeeds.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

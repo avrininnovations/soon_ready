@@ -3,7 +3,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Screen
   use Ash.Resource, data_layer: :embedded
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
 
-  alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys
   alias __MODULE__.{Question, Option}
 
   attributes do
@@ -28,7 +27,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Screen
     defaults [:create, :read, :update]
 
     create :from_read_model do
-      argument :survey, OdiSurveys, allow_nil?: false
+      argument :survey, :map, allow_nil?: false
 
       change fn changeset, _context ->
         read_model = Ash.Changeset.get_argument(changeset, :survey)

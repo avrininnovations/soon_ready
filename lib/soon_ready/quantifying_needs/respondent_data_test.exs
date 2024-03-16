@@ -1,8 +1,8 @@
-defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveysTest do
+defmodule SoonReady.QuantifyingNeeds.RespondentDataTest do
   use SoonReady.DataCase
 
   alias SoonReady.QuantifyingNeeds.Survey
-  alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys
+  alias SoonReady.QuantifyingNeeds.RespondentData
 
   @survey_params %{
     brand: "A Big Brand",
@@ -44,7 +44,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveysTest do
     with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(@survey_params),
           {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do
-      {:ok, survey} = OdiSurveys.get_active(survey_id)
+      {:ok, survey} = RespondentData.get_survey(survey_id)
       assert survey.id == survey_id
     end
   end
