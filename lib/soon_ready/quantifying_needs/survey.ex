@@ -3,10 +3,10 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
   use Commanded.Commands.Router
 
   alias SoonReady.QuantifyingNeeds.Survey.Commands.{CreateSurvey, PublishSurvey}
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
+  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
 
   alias SoonReady.QuantifyingNeeds.Survey.Commands.SubmitSurveyResponse
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted
+  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmittedV1
   alias SoonReady.QuantifyingNeeds.Cipher
   alias SoonReady.QuantifyingNeeds.Survey.Encryption.ResponseCloakKeys
 
@@ -39,7 +39,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
   end
 
   def execute(_aggregate_state, %CreateSurvey{} = command) do
-    SurveyCreated.new(%{
+    SurveyCreatedV1.new(%{
       survey_id: command.survey_id,
       brand: command.brand,
       market: command.market,
@@ -51,7 +51,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
   end
 
   def execute(_aggregate_state, %PublishSurvey{} = command) do
-    SurveyPublished.new(%{
+    SurveyPublishedV1.new(%{
       survey_id: command.survey_id
     })
   end
@@ -62,7 +62,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
             {:ok, email_hash} <- Cipher.encrypt_response_data(command.participant.email, cloak_keys),
             {:ok, phone_number_hash} <- Cipher.encrypt_response_data(command.participant.phone_number, cloak_keys)
       do
-        SurveyResponseSubmitted.new(%{
+        SurveyResponseSubmittedV1.new(%{
           response_id: command.response_id,
           survey_id: command.survey_id,
           participant: %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash},

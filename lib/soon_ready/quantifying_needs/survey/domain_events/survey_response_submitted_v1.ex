@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted do
+defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmittedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{HashedParticipant, Response, JobStepRating}
@@ -12,7 +12,6 @@ defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted
     attribute :context_responses, {:array, Response}
     attribute :comparison_responses, {:array, Response}
     attribute :desired_outcome_ratings, {:array, JobStepRating}
-    attribute :event_version, :integer, allow_nil?: false, default: 1
   end
 
   actions do

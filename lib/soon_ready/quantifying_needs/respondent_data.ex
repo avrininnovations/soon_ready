@@ -6,7 +6,7 @@ defmodule SoonReady.QuantifyingNeeds.RespondentData do
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
   alias SoonReady.QuantifyingNeeds.RespondentData.Survey
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
+  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
 
   resources do
     resource SoonReady.QuantifyingNeeds.RespondentData.Survey
@@ -14,7 +14,7 @@ defmodule SoonReady.QuantifyingNeeds.RespondentData do
 
   defdelegate get_survey(id), to: Survey, as: :get_active
 
-  def handle(%SurveyCreated{} = event, _metadata) do
+  def handle(%SurveyCreatedV1{} = event, _metadata) do
     %{
       survey_id: survey_id,
       brand: brand,
@@ -38,7 +38,7 @@ defmodule SoonReady.QuantifyingNeeds.RespondentData do
     end
   end
 
-  def handle(%SurveyPublished{survey_id: survey_id} = _event, _metadata) do
+  def handle(%SurveyPublishedV1{survey_id: survey_id} = _event, _metadata) do
     # TODO: Refactor this not to need query?
     with {:ok, odi_survey} <- Survey.get(survey_id),
           {:ok, _odi_survey} <- Survey.update(odi_survey, %{is_active: true})

@@ -5,8 +5,8 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   alias SoonReady.Application
   alias SoonReady.QuantifyingNeeds.Survey
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreated, SurveyPublished}
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted
+  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmittedV1
 
 
   @survey_details %{
@@ -88,7 +88,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
       case Survey.create_survey(@survey_details) do
         {:ok, %{survey_id: survey_id} = _aggregate} ->
-          assert_receive_event(Application, SurveyCreated,
+          assert_receive_event(Application, SurveyCreatedV1,
             fn event -> event.survey_id == survey_id end,
             fn event ->
               assert SoonReady.Utils.is_equal_or_subset?(event.brand, @survey_details.brand)
@@ -110,7 +110,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
       with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details) do
         case Survey.publish_survey(%{survey_id: survey_id}) do
           {:ok, %{survey_id: ^survey_id}} ->
-            assert_receive_event(Application, SurveyPublished,
+            assert_receive_event(Application, SurveyPublishedV1,
               fn event -> event.survey_id == survey_id end,
               fn _event ->:ok end
             )
@@ -133,7 +133,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
         |> Survey.submit_response()
         |> case do
           {:ok, %{response_id: response_id} = _aggregate} ->
-            assert_receive_event(Application, SurveyResponseSubmitted,
+            assert_receive_event(Application, SurveyResponseSubmittedV1,
               fn event -> event.response_id == response_id end,
               fn event ->
                 decrypted_participant = Survey.decrypt_participant_details(event.response_id, event.participant)
