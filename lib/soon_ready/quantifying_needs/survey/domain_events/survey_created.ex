@@ -17,6 +17,12 @@ defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyCreated do
     attribute :screening_questions, {:array, ScreeningQuestion}
     attribute :demographic_questions, {:array, DemographicQuestion}
     attribute :context_questions, {:array, ContextQuestion}
+
+    # TODO: Work on versioning events. Is this the version better expressed in the module name
+    # Considerations:
+    #   Can I have the old shape of the events preserved?
+    #   How does the elixir type system affect protocols since upcasting
+    #   is done in protocols and the struct shape will change?
     attribute :event_version, :integer, allow_nil?: false, default: 1
   end
 
