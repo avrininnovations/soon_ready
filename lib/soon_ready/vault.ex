@@ -12,9 +12,9 @@ defmodule SoonReady.Vault do
           SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher,
           tag: "Onboarding",
         }},
-        {SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher, {
-          SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher,
-          tag: "#{SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher}"
+        {SoonReady.QuantifyingNeeds.Cipher, {
+          SoonReady.QuantifyingNeeds.Cipher,
+          tag: "#{SoonReady.QuantifyingNeeds.Cipher}"
         }}
       ])
 

@@ -7,10 +7,11 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
 
   alias SoonReady.QuantifyingNeeds.Survey.Commands.SubmitSurveyResponse
   alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted
-  alias SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher
+  alias SoonReady.QuantifyingNeeds.Cipher
+  alias SoonReady.QuantifyingNeeds.Survey.Encryption.ResponseCloakKeys
 
   resources do
-    resource SoonReady.QuantifyingNeeds.Survey.Encryption.Cipher
+    resource ResponseCloakKeys
   end
 
   dispatch CreateSurvey, to: __MODULE__, identity: :survey_id
@@ -24,10 +25,10 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
   defdelegate publish_survey(params), to: PublishSurvey, as: :dispatch
   defdelegate submit_response(params), to: SubmitSurveyResponse, as: :dispatch
 
-  def decrypt_participant_details(survey_response_id, %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash}) do
-    with {:ok, nickname} <- Cipher.decrypt_text(nickname_hash, for: survey_response_id),
-         {:ok, email} <- Cipher.decrypt_text(email_hash, for: survey_response_id),
-         {:ok, phone_number} <- Cipher.decrypt_text(phone_number_hash, for: survey_response_id)
+  def decrypt_participant_details(response_id, %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash}) do
+    with {:ok, nickname} <- Cipher.decrypt_response_data(nickname_hash, for: response_id),
+         {:ok, email} <- Cipher.decrypt_response_data(email_hash, for: response_id),
+         {:ok, phone_number} <- Cipher.decrypt_response_data(phone_number_hash, for: response_id)
     do
       %{nickname: nickname, email: email, phone_number: phone_number}
     else
@@ -55,11 +56,11 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
     })
   end
 
-  def execute(_aggregate_state, %SubmitSurveyResponse{response_id: survey_response_id} = command) do
-    with {:ok, cipher} <- Cipher.initialize(%{response_id: survey_response_id}) do
-      with {:ok, nickname_hash} <- Cipher.encrypt_text(command.participant.nickname, cipher),
-            {:ok, email_hash} <- Cipher.encrypt_text(command.participant.email, cipher),
-            {:ok, phone_number_hash} <- Cipher.encrypt_text(command.participant.phone_number, cipher)
+  def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id} = command) do
+    with {:ok, cloak_keys} <- ResponseCloakKeys.initialize(%{response_id: response_id}) do
+      with {:ok, nickname_hash} <- Cipher.encrypt_response_data(command.participant.nickname, cloak_keys),
+            {:ok, email_hash} <- Cipher.encrypt_response_data(command.participant.email, cloak_keys),
+            {:ok, phone_number_hash} <- Cipher.encrypt_response_data(command.participant.phone_number, cloak_keys)
       do
         SurveyResponseSubmitted.new(%{
           response_id: command.response_id,
@@ -74,7 +75,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
       else
         {:error, error} ->
           Logger.warning("Encryption failed, #{inspect(error)}")
-          Cipher.destroy!(cipher)
+          ResponseCloakKeys.destroy!(cloak_keys)
           {:error, error}
       end
     end

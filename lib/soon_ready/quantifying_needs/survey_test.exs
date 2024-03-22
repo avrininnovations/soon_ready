@@ -132,9 +132,9 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
         |> Map.put(:survey_id, survey_id)
         |> Survey.submit_response()
         |> case do
-          {:ok, %{response_id: survey_response_id} = _aggregate} ->
+          {:ok, %{response_id: response_id} = _aggregate} ->
             assert_receive_event(Application, SurveyResponseSubmitted,
-              fn event -> event.response_id == survey_response_id end,
+              fn event -> event.response_id == response_id end,
               fn event ->
                 decrypted_participant = Survey.decrypt_participant_details(event.response_id, event.participant)
 
