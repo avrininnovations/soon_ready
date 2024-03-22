@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.RespondentData.Survey do
+defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{
@@ -34,7 +34,7 @@ defmodule SoonReady.QuantifyingNeeds.RespondentData.Survey do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.RespondentData
+    define_for SoonReadyInterface.Respondents.Setup.Api
 
     define :create
 

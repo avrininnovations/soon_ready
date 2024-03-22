@@ -9,7 +9,7 @@ defmodule SoonReady.QuantifyingNeeds.Supervisor do
   def init(_arg) do
     children = [
       # Event handlers
-      SoonReady.QuantifyingNeeds.RespondentData,
+      SoonReadyInterface.Respondents.ReadModels.EventHandler,
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

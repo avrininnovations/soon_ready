@@ -1,8 +1,9 @@
-defmodule SoonReady.QuantifyingNeeds.RespondentDataTest do
+defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
   use SoonReady.DataCase
 
   alias SoonReady.QuantifyingNeeds.Survey
-  alias SoonReady.QuantifyingNeeds.RespondentData
+  alias SoonReadyInterface.Respondents.ReadModels.EventHandler
+  alias SoonReadyInterface.Respondents.ReadModels.Survey, as: SurveyReadModel
 
   @survey_params %{
     brand: "A Big Brand",
@@ -44,8 +45,11 @@ defmodule SoonReady.QuantifyingNeeds.RespondentDataTest do
     with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(@survey_params),
           {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do
-      {:ok, survey} = RespondentData.get_survey(survey_id)
+      {:ok, survey} = SurveyReadModel.get_active(survey_id)
       assert survey.id == survey_id
+    else
+      {:error, error} ->
+        flunk("Expected survey to be created and published but got: #{inspect(error)}")
     end
   end
 end

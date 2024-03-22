@@ -1,18 +1,11 @@
-defmodule SoonReady.QuantifyingNeeds.RespondentData do
-  use Ash.Api
+defmodule SoonReadyInterface.Respondents.ReadModels.EventHandler do
   use Commanded.Event.Handler,
     application: SoonReady.Application,
     name: "#{__MODULE__}",
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.QuantifyingNeeds.RespondentData.Survey
+  alias SoonReadyInterface.Respondents.ReadModels.Survey
   alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
-
-  resources do
-    resource SoonReady.QuantifyingNeeds.RespondentData.Survey
-  end
-
-  defdelegate get_survey(id), to: Survey, as: :get_active
 
   def handle(%SurveyCreatedV1{} = event, _metadata) do
     %{
