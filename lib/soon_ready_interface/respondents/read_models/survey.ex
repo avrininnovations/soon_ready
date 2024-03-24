@@ -54,6 +54,6 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   # TODO: Check all postgres names for issues
   postgres do
     repo SoonReady.Repo
-    table "respondents__read_models__odi_surveys"
+    table "respondents__read_models__survey"
   end
 end
