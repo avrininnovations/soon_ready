@@ -1,4 +1,8 @@
 defmodule SoonReady.QuantifyingNeeds.Survey.ValueObjects.ScreeningQuestion do
+  # TODO: Replace value objects with fragments?
+  # and let every command/event have its own child/embed resource?
+  # Events especially as it might make obvious when changes happen
+  
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias __MODULE__.Option
