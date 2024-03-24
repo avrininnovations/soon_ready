@@ -16,7 +16,6 @@ defmodule SoonReady.Application do
     ]
 
   router SoonReady.QuantifyingNeeds.Survey
-  router SoonReady.QuantifyingNeeds.SurveyResponse
 
   router SoonReady.Onboarding.Commands.Router
 
@@ -40,7 +39,7 @@ defmodule SoonReady.Application do
       # Commanded
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
-      SoonReadyInterface.Respondents.Setup.Supervisor,
+      SoonReady.QuantifyingNeeds.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

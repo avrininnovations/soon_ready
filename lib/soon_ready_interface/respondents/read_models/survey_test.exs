@@ -1,8 +1,9 @@
-defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveysTest do
+defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
   use SoonReady.DataCase
 
   alias SoonReady.QuantifyingNeeds.Survey
-  alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys
+  alias SoonReadyInterface.Respondents.ReadModels.EventHandler
+  alias SoonReadyInterface.Respondents.ReadModels.Survey, as: SurveyReadModel
 
   @survey_params %{
     brand: "A Big Brand",
@@ -41,11 +42,14 @@ defmodule SoonReadyInterface.Respondents.ReadModels.OdiSurveysTest do
   }
 
   test "GIVEN: An ODI survey was publised, THEN: The survey is active" do
-    with {:ok, survey} <- Survey.create(@survey_params),
-          {:ok, _survey} <- Survey.publish(survey)
+    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(@survey_params),
+          {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do
-      {:ok, survey} = OdiSurveys.get_active(survey.id)
-      assert survey.id == survey.id
+      {:ok, survey} = SurveyReadModel.get_active(survey_id)
+      assert survey.id == survey_id
+    else
+      {:error, error} ->
+        flunk("Expected survey to be created and published but got: #{inspect(error)}")
     end
   end
 end

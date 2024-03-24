@@ -11,7 +11,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey.Commands.CreateSurvey do
   }
 
   attributes do
-    attribute :id, :uuid, primary_key?: true, allow_nil?: false
+    uuid_primary_key :survey_id
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
@@ -33,7 +33,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey.Commands.CreateSurvey do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey.Api
+    define_for SoonReady.QuantifyingNeeds.Survey
     define :dispatch
   end
 end

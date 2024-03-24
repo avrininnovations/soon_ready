@@ -165,8 +165,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     normalized_params = normalize(socket.assigns.params)
 
 
-    with {:ok, survey} <- Survey.create(normalized_params),
-          {:ok, _survey} <- Survey.publish(survey)
+    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(normalized_params),
+          {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do
       socket =
         socket

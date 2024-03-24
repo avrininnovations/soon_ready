@@ -4,7 +4,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Desire
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Layout
 
-  alias SoonReadyInterface.Respondents.ReadModels.OdiSurveys
   alias __MODULE__.{JobStep, DesiredOutcome}
 
   attributes do
@@ -15,7 +14,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Desire
     defaults [:create, :read, :update]
 
     create :from_read_model do
-      argument :survey, OdiSurveys, allow_nil?: false
+      argument :survey, :map, allow_nil?: false
 
       change fn changeset, _context ->
         read_model = Ash.Changeset.get_argument(changeset, :survey)
