@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.DomainEvents.SurveyResponseSubmittedV1 do
+defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias SoonReady.QuantifyingNeeds.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}

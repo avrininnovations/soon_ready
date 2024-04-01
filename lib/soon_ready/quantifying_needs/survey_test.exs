@@ -5,8 +5,8 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   alias SoonReady.Application
   alias SoonReady.QuantifyingNeeds.Survey
-  alias SoonReady.QuantifyingNeeds.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
-  alias SoonReady.QuantifyingNeeds.DomainEvents.SurveyResponseSubmittedV1
+  alias SoonReady.QuantifyingNeeds.Events.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1
 
 
   @survey_details %{

@@ -3,10 +3,10 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
   use Commanded.Commands.Router
 
   alias SoonReady.QuantifyingNeeds.Commands.{CreateSurvey, PublishSurvey}
-  alias SoonReady.QuantifyingNeeds.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.QuantifyingNeeds.Events.{SurveyCreatedV1, SurveyPublishedV1}
 
   alias SoonReady.QuantifyingNeeds.Commands.SubmitSurveyResponse
-  alias SoonReady.QuantifyingNeeds.DomainEvents.SurveyResponseSubmittedV1
+  alias SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1
   alias SoonReady.QuantifyingNeeds.Cipher
   alias SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys
 
