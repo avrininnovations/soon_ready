@@ -1,9 +1,9 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmittedV1 do
+defmodule SoonReady.QuantifyingNeeds.DomainEvents.SurveyResponseSubmittedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
+  alias SoonReady.QuantifyingNeeds.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
   alias SoonReady.QuantifyingNeeds.Cipher
-  alias SoonReady.QuantifyingNeeds.Survey.Encryption.ResponseCloakKeys
+  alias SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys
 
 
   attributes do

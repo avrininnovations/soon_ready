@@ -1,8 +1,8 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.Commands.CreateSurvey do
+defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{
+  alias SoonReady.QuantifyingNeeds.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,

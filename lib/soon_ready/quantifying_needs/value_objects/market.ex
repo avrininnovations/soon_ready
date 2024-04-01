@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.ValueObjects.Market do
+defmodule SoonReady.QuantifyingNeeds.ValueObjects.Market do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

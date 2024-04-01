@@ -1,8 +1,8 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.Commands.SubmitSurveyResponse do
+defmodule SoonReady.QuantifyingNeeds.Commands.SubmitSurveyResponse do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{Participant, QuestionResponse, JobStepRating}
+  alias SoonReady.QuantifyingNeeds.ValueObjects.{Participant, QuestionResponse, JobStepRating}
 
   attributes do
     uuid_primary_key :response_id

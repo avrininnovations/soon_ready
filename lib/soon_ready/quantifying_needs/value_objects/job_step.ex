@@ -1,7 +1,7 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.ValueObjects.JobStep do
+defmodule SoonReady.QuantifyingNeeds.ValueObjects.JobStep do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.QuantifyingNeeds.Survey.DomainDataTypes.{JobStatement, OutcomeStatement}
+  alias SoonReady.QuantifyingNeeds.DomainDataTypes.{JobStatement, OutcomeStatement}
 
   attributes do
     attribute :name, JobStatement, allow_nil?: false

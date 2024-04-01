@@ -1,7 +1,7 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.ValueObjects.JobStepRating do
+defmodule SoonReady.QuantifyingNeeds.ValueObjects.JobStepRating do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.DesiredOutcomeRating
+  alias SoonReady.QuantifyingNeeds.ValueObjects.DesiredOutcomeRating
 
   # TODO: Should value objects have constraints and allow nils?
   attributes do

@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   use Ash.Resource, data_layer: AshPostgres.DataLayer
 
-  alias SoonReady.QuantifyingNeeds.Survey.ValueObjects.{
+  alias SoonReady.QuantifyingNeeds.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,

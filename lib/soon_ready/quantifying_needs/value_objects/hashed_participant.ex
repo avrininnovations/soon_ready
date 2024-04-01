@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.ValueObjects.HashedParticipant do
+defmodule SoonReady.QuantifyingNeeds.ValueObjects.HashedParticipant do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   # TODO: Should value objects have constraints and allow nils?

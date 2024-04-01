@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyPublishedV1 do
+defmodule SoonReady.QuantifyingNeeds.DomainEvents.SurveyPublishedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

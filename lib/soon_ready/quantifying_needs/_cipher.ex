@@ -2,7 +2,7 @@ defmodule SoonReady.QuantifyingNeeds.Cipher do
   require Logger
   @behaviour Cloak.Cipher
 
-  alias SoonReady.QuantifyingNeeds.Survey.Encryption.ResponseCloakKeys
+  alias SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys
 
   def encrypt_response_data(plain_text, %{__struct__: ResponseCloakKeys, response_id: response_id} = _cipher) when is_binary(plain_text) do
     with :error <- SoonReady.Vault.encrypt(%{module: ResponseCloakKeys, response_id: response_id, plain_text: plain_text}, SoonReady.QuantifyingNeeds.Cipher) do

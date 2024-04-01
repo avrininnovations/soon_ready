@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.Encryption.ResponseCloakKeys do
+defmodule SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys do
   use Ash.Resource, data_layer: AshPostgres.DataLayer
   # TODO: Update to postgres
 

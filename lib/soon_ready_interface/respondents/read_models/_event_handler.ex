@@ -5,7 +5,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.EventHandler do
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
   alias SoonReadyInterface.Respondents.ReadModels.Survey
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.QuantifyingNeeds.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
 
   def handle(%SurveyCreatedV1{} = event, _metadata) do
     %{

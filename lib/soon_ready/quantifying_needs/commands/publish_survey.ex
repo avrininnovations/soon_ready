@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Survey.Commands.PublishSurvey do
+defmodule SoonReady.QuantifyingNeeds.Commands.PublishSurvey do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
