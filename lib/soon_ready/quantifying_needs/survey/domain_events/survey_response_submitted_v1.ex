@@ -17,6 +17,21 @@ defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted
     attribute :desired_outcome_ratings, {:array, JobStepRating}
   end
 
+  calculations do
+    calculate :participant, Participant, fn record, _arg2 ->
+      with {:ok, nickname} <- Cipher.decrypt_response_data(record.hashed_participant.nickname_hash, for: record.response_id),
+          {:ok, email} <- Cipher.decrypt_response_data(record.hashed_participant.email_hash, for: record.response_id),
+          {:ok, phone_number} <- Cipher.decrypt_response_data(record.hashed_participant.phone_number_hash, for: record.response_id)
+      do
+        Participant.create( %{nickname: nickname, email: email, phone_number: phone_number})
+      else
+        {:error, error} ->
+          Logger.warning("Decryption failed, #{inspect(error)}")
+          {:error, error}
+      end
+    end
+  end
+
   actions do
     create :new do
       argument :participant, Participant
@@ -40,10 +55,15 @@ defmodule SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmitted
         end
       end
     end
+
+    create :decrypt do
+      change load(:participant)
+    end
   end
 
   code_interface do
     define_for SoonReady.QuantifyingNeeds.Survey
     define :new
+    define :decrypt
   end
 end

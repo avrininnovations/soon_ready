@@ -25,19 +25,6 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
   defdelegate publish_survey(params), to: PublishSurvey, as: :dispatch
   defdelegate submit_response(params), to: SubmitSurveyResponse, as: :dispatch
 
-  def decrypt_participant_details(response_id, %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash}) do
-    with {:ok, nickname} <- Cipher.decrypt_response_data(nickname_hash, for: response_id),
-         {:ok, email} <- Cipher.decrypt_response_data(email_hash, for: response_id),
-         {:ok, phone_number} <- Cipher.decrypt_response_data(phone_number_hash, for: response_id)
-    do
-      %{nickname: nickname, email: email, phone_number: phone_number}
-    else
-      {:error, error} ->
-        Logger.warning("Decryption failed, #{inspect(error)}")
-        {:error, error}
-    end
-  end
-
   def execute(_aggregate_state, %CreateSurvey{} = command) do
     SurveyCreatedV1.new(%{
       survey_id: command.survey_id,

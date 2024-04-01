@@ -136,17 +136,20 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
             assert_receive_event(Application, SurveyResponseSubmittedV1,
               fn event -> event.response_id == response_id end,
               fn event ->
-                decrypted_participant = Survey.decrypt_participant_details(event.response_id, event.hashed_participant)
+                event =
+                  event
+                  |> Map.from_struct()
+                  |> SurveyResponseSubmittedV1.decrypt!()
 
                 assert event.survey_id == survey_id
-                assert decrypted_participant.nickname == @survey_response_details.participant.nickname
-                assert decrypted_participant.email == @survey_response_details.participant.email
-                assert decrypted_participant.phone_number == @survey_response_details.participant.phone_number
-                assert SoonReady.Utils.is_equal_or_subset?(event.screening_responses, @survey_response_details.screening_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.demographic_responses, @survey_response_details.demographic_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.context_responses, @survey_response_details.context_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.comparison_responses, @survey_response_details.comparison_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.desired_outcome_ratings, @survey_response_details.desired_outcome_ratings)
+                assert event.participant.nickname == @survey_response_details.participant.nickname
+                assert event.participant.email == @survey_response_details.participant.email
+                assert event.participant.phone_number == @survey_response_details.participant.phone_number
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.screening_responses, event.screening_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.demographic_responses, event.demographic_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.context_responses, event.context_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.comparison_responses, event.comparison_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.desired_outcome_ratings, event.desired_outcome_ratings)
               end
             )
           {:error, error} ->

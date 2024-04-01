@@ -8,4 +8,13 @@ defmodule SoonReady.QuantifyingNeeds.Survey.ValueObjects.Participant do
     attribute :email, :string, allow_nil?: false
     attribute :phone_number, :string, allow_nil?: false
   end
+
+  actions do
+    defaults [:create, :read]
+  end
+
+  code_interface do
+    define_for SoonReady.QuantifyingNeeds.Survey
+    define :create
+  end
 end
