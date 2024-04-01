@@ -23,6 +23,16 @@ defmodule SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys do
     read :get do
       get_by [:response_id]
     end
+
+    action :get_cloak_key, :string do
+      argument :response_id, :uuid, allow_nil?: false
+
+      run fn input, _context ->
+        with {:ok, %{__struct__: __MODULE__, cloak_key: cloak_key}} <- __MODULE__.get(%{response_id: input.arguments.response_id}) do
+          {:ok, Base.decode64!(cloak_key)}
+        end
+      end
+    end
   end
 
   code_interface do
@@ -31,17 +41,12 @@ defmodule SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys do
     define :get
     define :read
     define :destroy
+    define :get_cloak_key, args: [:response_id]
   end
 
   # TODO: Update table name
   postgres do
     repo SoonReady.Repo
     table "quantifying_needs__survey_response__encryption__ciphers"
-  end
-
-  def get_key(response_id) do
-    with {:ok, %{__struct__: __MODULE__, cloak_key: cloak_key}} <- __MODULE__.get(%{response_id: response_id}) do
-      {:ok, Base.decode64!(cloak_key)}
-    end
   end
 end

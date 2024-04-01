@@ -29,7 +29,7 @@ defmodule SoonReady.QuantifyingNeeds.Cipher do
 
   @impl true
   def encrypt(%{module: ResponseCloakKeys, response_id: response_id, plain_text: plain_text}, opts) when is_binary(plain_text) do
-    case ResponseCloakKeys.get_key(response_id) do
+    case ResponseCloakKeys.get_cloak_key(response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
 
@@ -49,7 +49,7 @@ defmodule SoonReady.QuantifyingNeeds.Cipher do
 
   @impl true
   def decrypt(%{module: ResponseCloakKeys, response_id: response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
-    case ResponseCloakKeys.get_key(response_id) do
+    case ResponseCloakKeys.get_cloak_key(response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
 
@@ -69,7 +69,7 @@ defmodule SoonReady.QuantifyingNeeds.Cipher do
 
   @impl true
   def can_decrypt?(%{module: ResponseCloakKeys, response_id: response_id, cipher_text: cipher_text}, opts) when is_binary(cipher_text) do
-    case ResponseCloakKeys.get_key(response_id) do
+    case ResponseCloakKeys.get_cloak_key(response_id) do
       {:ok, key} ->
         opts = put_in(opts[:key], key)
 
