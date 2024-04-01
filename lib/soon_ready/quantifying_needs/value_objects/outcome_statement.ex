@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.DomainDataTypes.OutcomeStatement do
+defmodule SoonReady.QuantifyingNeeds.ValueObjects.OutcomeStatement do
   # TODO: Add check to ensure match with the ODI desired outcome name pattern
   use Ash.Type.NewType, subtype_of: :string
 end
