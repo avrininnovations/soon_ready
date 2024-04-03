@@ -22,6 +22,8 @@ config :soon_ready, ash_apis: [
   SoonReadyInterface.Respondents.Setup.Api,
 ]
 
+config :soon_ready, cloak_key: "oZNBo0qMCrFTtTWKv/R/KD7bNmkDPVgEQW0nRjWMn4g="
+
 # Configures the endpoint
 config :soon_ready, SoonReadyInterface.Endpoint,
   url: [host: "localhost"],

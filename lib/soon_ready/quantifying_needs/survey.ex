@@ -7,7 +7,6 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
 
   alias SoonReady.QuantifyingNeeds.Commands.SubmitSurveyResponse
   alias SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1
-  alias SoonReady.QuantifyingNeeds.Cipher
   alias SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys
 
   resources do

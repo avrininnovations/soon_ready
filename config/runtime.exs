@@ -22,6 +22,18 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
+  cloak_key =
+    System.get_env("CLOAK_KEY") ||
+      raise """
+      environment variable CLOAK_KEY is missing.
+      An example can be generated with:
+        32
+        |> :crypto.strong_rand_bytes()
+        |> Base.encode64()
+      """
+
+  config :soon_ready, cloak_key: cloak_key
+
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """

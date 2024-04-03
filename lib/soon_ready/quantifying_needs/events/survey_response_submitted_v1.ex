@@ -72,7 +72,7 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
       nil ->
         {:ok, nil}
       plain_text when is_binary(plain_text) ->
-        with :error <- SoonReady.Vault.encrypt(%{key: key, plain_text: plain_text}, SoonReady.QuantifyingNeeds.Cipher) do
+        with :error <- SoonReady.Vault.encrypt(%{key: key, plain_text: plain_text}) do
           {:error, :vault_encyption_error}
         end
       _ ->
