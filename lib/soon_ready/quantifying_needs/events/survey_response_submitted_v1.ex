@@ -1,8 +1,9 @@
 defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
+  require Logger
+
   alias SoonReady.QuantifyingNeeds.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
-  alias SoonReady.QuantifyingNeeds.Cipher
   alias SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys
 
 
@@ -18,12 +19,11 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
   end
 
   calculations do
-    calculate :participant, Participant, fn record, _arg2 ->
-      with {:ok, nickname} <- Cipher.decrypt_response_data(record.hashed_participant.nickname_hash, for: record.response_id),
-          {:ok, email} <- Cipher.decrypt_response_data(record.hashed_participant.email_hash, for: record.response_id),
-          {:ok, phone_number} <- Cipher.decrypt_response_data(record.hashed_participant.phone_number_hash, for: record.response_id)
+    calculate :participant, Participant, fn record, _context ->
+      with {:ok, %{decoded_cloak_key: key}} <- ResponseCloakKeys.get(record.response_id),
+          {:ok, participant} <- decrypt_participant(record.hashed_participant, key)
       do
-        Participant.create( %{nickname: nickname, email: email, phone_number: phone_number})
+        {:ok, participant}
       else
         {:error, error} ->
           Logger.warning("Decryption failed, #{inspect(error)}")
@@ -40,22 +40,22 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
         response_id = Ash.Changeset.get_attribute(changeset, :response_id)
         participant = Ash.Changeset.get_argument(changeset, :participant)
 
-        with {:ok, cloak_keys} <- ResponseCloakKeys.initialize(%{response_id: response_id}) do
-          with {:ok, nickname_hash} <- Cipher.encrypt_response_data(participant.nickname, cloak_keys),
-                {:ok, email_hash} <- Cipher.encrypt_response_data(participant.email, cloak_keys),
-                {:ok, phone_number_hash} <- Cipher.encrypt_response_data(participant.phone_number, cloak_keys)
-          do
-            Ash.Changeset.change_attribute(changeset, :hashed_participant, %{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash})
+        with {:ok, %{decoded_cloak_key: key} = response_cloak_keys} <- ResponseCloakKeys.initialize(%{response_id: response_id}) do
+          with {:ok, hashed_participant} <- encrypt_participant(participant, key) do
+            Ash.Changeset.change_attribute(changeset, :hashed_participant, hashed_participant)
           else
             {:error, error} ->
               Logger.warning("Encryption failed, #{inspect(error)}")
-              ResponseCloakKeys.destroy!(cloak_keys)
+              ResponseCloakKeys.destroy!(response_cloak_keys)
               {:error, error}
           end
         end
       end
     end
 
+    # hydrate?
+    # decrypt participant details?
+    # participant vs participant details?
     create :decrypt do
       change load(:participant)
     end
@@ -65,5 +65,45 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
     define_for SoonReady.QuantifyingNeeds.Survey
     define :new
     define :decrypt
+  end
+
+  def encrypt_participant(participant, key) do
+    encrypt_value = fn
+      nil ->
+        {:ok, nil}
+      plain_text when is_binary(plain_text) ->
+        with :error <- SoonReady.Vault.encrypt(%{key: key, plain_text: plain_text}, SoonReady.QuantifyingNeeds.Cipher) do
+          {:error, :vault_encyption_error}
+        end
+      _ ->
+        {:error, :unknown_error}
+      end
+
+    with {:ok, nickname_hash} <- encrypt_value.(participant.nickname),
+          {:ok, email_hash} <- encrypt_value.(participant.email),
+          {:ok, phone_number_hash} <- encrypt_value.(participant.phone_number)
+    do
+      HashedParticipant.create(%{nickname_hash: nickname_hash, email_hash: email_hash, phone_number_hash: phone_number_hash})
+    end
+  end
+
+  def decrypt_participant(hashed_participant, key) do
+    decrypt_value = fn
+      nil ->
+        {:ok, nil}
+      cipher_text when is_binary(cipher_text) ->
+        with :error <- SoonReady.Vault.decrypt(%{key: key, cipher_text: cipher_text}) do
+          {:error, :vault_decryption_error}
+        end
+      _ ->
+        {:error, :unknown_error}
+      end
+
+    with {:ok, nickname} <- decrypt_value.(hashed_participant.nickname_hash),
+          {:ok, email} <- decrypt_value.(hashed_participant.email_hash),
+          {:ok, phone_number} <- decrypt_value.(hashed_participant.phone_number_hash)
+    do
+      Participant.create(%{nickname: nickname, email: email, phone_number: phone_number})
+    end
   end
 end

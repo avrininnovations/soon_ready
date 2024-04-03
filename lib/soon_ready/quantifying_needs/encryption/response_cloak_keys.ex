@@ -6,7 +6,23 @@ defmodule SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys do
 
   attributes do
     attribute :response_id, :uuid, allow_nil?: false, primary_key?: true
-    attribute :cloak_key, :string, allow_nil?: false
+    attribute :encoded_cloak_key, :string, allow_nil?: false
+  end
+
+  calculations do
+    calculate :decoded_cloak_key, :string, fn record, _context ->
+      {:ok, Base.decode64!(record.encoded_cloak_key)}
+    end
+  end
+
+  changes do
+    change load(:decoded_cloak_key)
+  end
+
+  preparations do
+    prepare fn query, _context ->
+      Ash.Query.load(query, [:decoded_cloak_key])
+    end
   end
 
   actions do
@@ -16,32 +32,21 @@ defmodule SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys do
       primary? true
 
       change fn changeset, _context ->
-        Ash.Changeset.change_attribute(changeset, :cloak_key, 32 |> :crypto.strong_rand_bytes() |> Base.encode64())
+        Ash.Changeset.change_attribute(changeset, :encoded_cloak_key, 32 |> :crypto.strong_rand_bytes() |> Base.encode64())
       end
     end
 
     read :get do
       get_by [:response_id]
     end
-
-    action :get_cloak_key, :string do
-      argument :response_id, :uuid, allow_nil?: false
-
-      run fn input, _context ->
-        with {:ok, %{__struct__: __MODULE__, cloak_key: cloak_key}} <- __MODULE__.get(%{response_id: input.arguments.response_id}) do
-          {:ok, Base.decode64!(cloak_key)}
-        end
-      end
-    end
   end
 
   code_interface do
     define_for SoonReady.QuantifyingNeeds.Survey
     define :initialize
-    define :get
+    define :get, args: [:response_id]
     define :read
     define :destroy
-    define :get_cloak_key, args: [:response_id]
   end
 
   # TODO: Update table name
