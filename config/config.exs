@@ -23,6 +23,7 @@ config :soon_ready, ash_apis: [
   SoonReadyInterface.Respondents.Setup.Api,
 ]
 
+config :soon_ready, token_signing_secret: "super secret"
 config :soon_ready, cloak_key: "oZNBo0qMCrFTtTWKv/R/KD7bNmkDPVgEQW0nRjWMn4g="
 
 # Configures the endpoint

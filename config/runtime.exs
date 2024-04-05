@@ -22,6 +22,7 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
+  # TODO: Use secret base key instead?
   cloak_key =
     System.get_env("CLOAK_KEY") ||
       raise """
@@ -133,4 +134,7 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+
+  config :soon_ready, token_signing_secret: secret_key_base
 end

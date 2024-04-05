@@ -1,5 +1,6 @@
 defmodule SoonReadyInterface.Router do
   use SoonReadyInterface, :router
+  use AshAuthentication.Phoenix.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,10 +9,21 @@ defmodule SoonReadyInterface.Router do
     plug :put_root_layout, html: {SoonReadyInterface.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :load_from_session
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :load_from_bearer
+  end
+
+  scope "/", SoonReadyInterface.Public.Webpages do
+    pipe_through :browser
+
+    sign_in_route(register_path: "/register", reset_path: "/reset")
+    sign_out_route AuthController
+    auth_routes_for SoonReady.UserAuthentication.Entities.User, to: AuthController
+    reset_route []
   end
 
   scope "/", SoonReadyInterface.Public.Webpages do
