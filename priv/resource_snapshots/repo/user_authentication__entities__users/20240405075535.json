@@ -1,0 +1,59 @@
+{
+  "attributes": [
+    {
+      "default": "fragment(\"uuid_generate_v4()\")",
+      "size": null,
+      "type": "uuid",
+      "source": "id",
+      "references": null,
+      "allow_nil?": false,
+      "primary_key?": true,
+      "generated?": false
+    },
+    {
+      "default": "nil",
+      "size": null,
+      "type": "citext",
+      "source": "username",
+      "references": null,
+      "allow_nil?": false,
+      "primary_key?": false,
+      "generated?": false
+    },
+    {
+      "default": "nil",
+      "size": null,
+      "type": "text",
+      "source": "hashed_password",
+      "references": null,
+      "allow_nil?": false,
+      "primary_key?": false,
+      "generated?": false
+    }
+  ],
+  "table": "user_authentication__entities__users",
+  "hash": "D22575540710C8A76D8BCCC187BD202B53DAA1FF4BF1DAB637231F5083FCA38D",
+  "schema": null,
+  "repo": "Elixir.SoonReady.Repo",
+  "check_constraints": [],
+  "identities": [
+    {
+      "name": "unique_username",
+      "keys": [
+        "username"
+      ],
+      "base_filter": null,
+      "all_tenants?": false,
+      "index_name": "user_authentication__entities__users_unique_username_index"
+    }
+  ],
+  "custom_indexes": [],
+  "multitenancy": {
+    "global": null,
+    "strategy": null,
+    "attribute": null
+  },
+  "base_filter": null,
+  "custom_statements": [],
+  "has_create_action": true
+}

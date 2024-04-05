@@ -1,0 +1,49 @@
+defmodule SoonReady.UserAuthentication.Entities.User do
+  use Ash.Resource,
+    data_layer: AshPostgres.DataLayer,
+    extensions: [AshAuthentication],
+    authorizers: [Ash.Policy.Authorizer]
+
+  attributes do
+    uuid_primary_key :id
+    attribute :username, :ci_string, allow_nil?: false
+    attribute :hashed_password, :string, allow_nil?: false, sensitive?: true, private?: true
+  end
+
+  authentication do
+    api SoonReady.UserAuthentication.UserAccount
+
+    strategies do
+      password :password do
+        identity_field :username
+      end
+    end
+
+    tokens do
+      enabled? true
+      token_resource SoonReady.UserAuthentication.Entities.Token
+      signing_secret fn _, _ ->
+        Application.fetch_env(:soon_ready, :token_signing_secret)
+      end
+    end
+  end
+
+  postgres do
+    table "user_authentication__entities__users"
+    repo SoonReady.Repo
+  end
+
+  identities do
+    identity :unique_username, [:username]
+  end
+
+  # policies do
+  #   bypass AshAuthentication.Checks.AshAuthenticationInteraction do
+  #     authorize_if always()
+  #   end
+
+  #   policy always() do
+  #     forbid_if always()
+  #   end
+  # end
+end
