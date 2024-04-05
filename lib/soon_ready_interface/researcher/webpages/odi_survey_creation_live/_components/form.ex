@@ -1,6 +1,7 @@
 defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form do
   use Phoenix.Component
   import Phoenix.HTML.Form
+  use PhoenixHTMLHelpers
 
   attr :field, Phoenix.HTML.FormField, required: true
 

@@ -33,6 +33,8 @@ defmodule SoonReady.Application do
       # Start to serve requests, typically the last entry
       SoonReadyInterface.Endpoint,
 
+      {AshAuthentication.Supervisor, otp_app: :soon_ready},
+
       # Cloak Encryption
       SoonReady.Vault,
 

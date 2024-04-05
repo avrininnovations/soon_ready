@@ -34,14 +34,15 @@ defmodule SoonReady.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.7.9"},
-      {:phoenix_ecto, "~> 4.4"},
+      {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 3.3"},
+      {:phoenix_html, "~> 4.0"},
+      {:phoenix_html_helpers, "~> 1.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.20.9"},
       {:floki, ">= 0.30.0", only: :test},
-      {:phoenix_live_dashboard, "~> 0.8.2"},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
@@ -54,9 +55,8 @@ defmodule SoonReady.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
       {:ash, "~> 2.16"},
-      # TODO: Update when PR is merged:
-      {:ash_phoenix, git: "https://github.com/kingdomcoding/ash_phoenix.git"},
-      {:ash_postgres, "~> 1.3"},
+      {:ash_phoenix, "~> 1.3"},
+      {:ash_postgres, "~> 1.5"},
       {:commanded, "~> 1.4"},
       {:commanded_eventstore_adapter, "~> 1.4"},
       {:cloak, "~> 1.1"},
@@ -64,6 +64,8 @@ defmodule SoonReady.MixProject do
       {:pyro, "~> 0.3.6"},
       # Date/Time/Zone components & tooling
       {:tzdata, "~> 1.1"},
+      {:ash_authentication, "~> 3.12.4"},
+      {:ash_authentication_phoenix, "~> 1.9.4"},
     ]
   end
 

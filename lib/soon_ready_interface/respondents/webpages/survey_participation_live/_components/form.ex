@@ -1,6 +1,7 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form do
   use Phoenix.Component
   import Phoenix.HTML.Form
+  use PhoenixHTMLHelpers
 
 
   attr :is_wide, :boolean, default: false
