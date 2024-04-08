@@ -5,4 +5,10 @@ defmodule SoonReady.UserAuthentication.UserAccount do
     resource SoonReady.UserAuthentication.Entities.User
     resource SoonReady.UserAuthentication.Entities.Token
   end
+
+  def register_user_with_password(username, password, password_confirmation) do
+    SoonReady.UserAuthentication.Entities.User
+    |> AshAuthentication.Info.strategy!(:password)
+    |> AshAuthentication.Strategy.action(:register, %{"username" => username, "password" => password, "password_confirmation" => password_confirmation})
+  end
 end

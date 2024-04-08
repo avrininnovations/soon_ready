@@ -84,9 +84,9 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   describe "Survey Management" do
     test "WHEN: A researcher tries to create a survey, THEN: A survey is created" do
-      # TODO: Test the fact that the actor is an Avrin researcher
+      {:ok, user} = SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
-      case Survey.create_survey(@survey_details) do
+      case Survey.create_survey(@survey_details, user) do
         {:ok, %{survey_id: survey_id} = _aggregate} ->
           assert_receive_event(Application, SurveyCreatedV1,
             fn event -> event.survey_id == survey_id end,
@@ -105,9 +105,9 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
     end
 
     test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published" do
-      # TODO: Test the fact that the actor is an Avrin researcher
+      {:ok, user} = SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
-      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details) do
+      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details, user) do
         case Survey.publish_survey(%{survey_id: survey_id}) do
           {:ok, %{survey_id: ^survey_id}} ->
             assert_receive_event(Application, SurveyPublishedV1,
@@ -123,11 +123,10 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   describe "Survey Participation" do
     test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted" do
-      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details),
+      with {:ok, user} <- SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
+            {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details, user),
             {:ok, %{survey_id: ^survey_id}} <- Survey.publish_survey(%{survey_id: survey_id})
       do
-        # TODO: Test the fact that the actor is a participant
-
         @survey_response_details
         |> Map.put(:survey_id, survey_id)
         |> Survey.submit_response()

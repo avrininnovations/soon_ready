@@ -32,15 +32,17 @@ defmodule SoonReadyInterface.Router do
     live "/", HomepageLive, :home
   end
 
-  scope "/", SoonReadyInterface.Researcher.Webpages do
-    pipe_through :browser
+  ash_authentication_live_session :researcher_session do
+    scope "/", SoonReadyInterface.Researcher.Webpages do
+      pipe_through :browser
 
-    live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions
-    live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions
-    live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions
-    live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes
-    live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition
-    live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
+      live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions
+      live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions
+      live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions
+      live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes
+      live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition
+      live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
+    end
   end
 
   scope "/", SoonReadyInterface.Respondents.Webpages do

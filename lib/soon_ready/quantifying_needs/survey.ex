@@ -13,6 +13,10 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
     resource ResponseCloakKeys
   end
 
+  authorization do
+    authorize :by_default
+  end
+
   dispatch CreateSurvey, to: __MODULE__, identity: :survey_id
   dispatch PublishSurvey, to: __MODULE__, identity: :survey_id
 
@@ -20,7 +24,7 @@ defmodule SoonReady.QuantifyingNeeds.Survey do
 
   defstruct [:survey_id]
 
-  defdelegate create_survey(params), to: CreateSurvey, as: :dispatch
+  def create_survey(params, actor \\ nil), do: CreateSurvey.dispatch(params, [actor: actor])
   defdelegate publish_survey(params), to: PublishSurvey, as: :dispatch
   defdelegate submit_response(params), to: SubmitSurveyResponse, as: :dispatch
 

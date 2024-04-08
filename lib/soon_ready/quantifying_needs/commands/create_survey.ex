@@ -1,5 +1,7 @@
 defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
-  use Ash.Resource, data_layer: :embedded
+  use Ash.Resource,
+    authorizers: [Ash.Policy.Authorizer],
+    data_layer: :embedded
 
   alias SoonReady.Application
   alias SoonReady.QuantifyingNeeds.ValueObjects.{
@@ -9,6 +11,8 @@ defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
     DemographicQuestion,
     ContextQuestion
   }
+
+  alias SoonReady.QuantifyingNeeds.Checks.ActorIsResearcher
 
   attributes do
     uuid_primary_key :survey_id
@@ -20,7 +24,16 @@ defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
     attribute :context_questions, {:array, ContextQuestion}
   end
 
+  policies do
+    policy always() do
+      authorize_if ActorIsResearcher
+    end
+  end
+
+
   actions do
+    defaults [:create, :read]
+
     create :dispatch do
       change fn changeset, context ->
         Ash.Changeset.after_action(changeset, fn changeset, command ->
@@ -35,5 +48,6 @@ defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
   code_interface do
     define_for SoonReady.QuantifyingNeeds.Survey
     define :dispatch
+    define :create
   end
 end

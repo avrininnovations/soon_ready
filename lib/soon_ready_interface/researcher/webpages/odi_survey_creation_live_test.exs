@@ -6,7 +6,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   alias SoonReadyInterface.OdiSurveyCreationLive.MarketDefinitionPageTest, as: MarketDefinitionPage
 
   @timeout 300
-  
+
   @landing_page_query_params %{"brand_name" => "Big Brand Co"}
   @market_definition_query_params %{job_executor: "Person", job_to_be_done: "Do what persons do"}
   @desired_outcome_query_params %{"job_steps" => %{"0" => %{"name" => "Job Step 1", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}, "1" => %{"name" => "Job Step 2", "desired_outcomes" => %{"0" => %{"value" => "Desired Outcome 1"}, "1" => %{"value" => "Desired Outcome 2"}}}}}
@@ -472,6 +472,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two options each have been added to two context questions, WHEN: Researcher tries to submit the context questions, THEN: The context questions page is displayed", %{conn: conn} do
+      {:ok, user} = SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+
+      conn =
+        conn
+        |> Phoenix.ConnTest.init_test_session(%{})
+        |> AshAuthentication.Plug.Helpers.store_in_session(user)
+
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)

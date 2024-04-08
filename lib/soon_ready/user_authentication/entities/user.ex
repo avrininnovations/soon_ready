@@ -10,6 +10,26 @@ defmodule SoonReady.UserAuthentication.Entities.User do
     attribute :hashed_password, :string, allow_nil?: false, sensitive?: true, private?: true
   end
 
+  calculations do
+    calculate :is_researcher, :boolean, fn user, _context ->
+      {:ok, true}
+    end
+  end
+
+  changes do
+    change load(:is_researcher)
+  end
+
+  preparations do
+    prepare fn query, _context ->
+      Ash.Query.load(query, :is_researcher)
+    end
+  end
+
+  actions do
+    defaults [:read]
+  end
+
   authentication do
     api SoonReady.UserAuthentication.UserAccount
 

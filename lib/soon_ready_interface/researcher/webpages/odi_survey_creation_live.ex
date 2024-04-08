@@ -34,6 +34,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   end
 
   def mount(_params, _session, socket) do
+    current_user = Map.get(socket.assigns, :current_user)
+    socket = assign(socket, :actor, current_user)
     {:ok, socket, layout: {__MODULE__, :layout}}
   end
 
@@ -165,7 +167,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     normalized_params = normalize(socket.assigns.params)
 
 
-    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(normalized_params),
+    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(normalized_params, socket.assigns.actor),
           {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do
       socket =
