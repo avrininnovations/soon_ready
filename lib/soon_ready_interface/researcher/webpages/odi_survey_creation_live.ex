@@ -41,7 +41,11 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
         socket = assign(socket, :actor, current_user)
         {:ok, socket, layout: {__MODULE__, :layout}}
       _ ->
-        {:ok, redirect(socket, to: ~p"/sign-in")}
+        socket =
+          socket
+          |> redirect(to: ~p"/sign-in")
+          |> put_flash(:error, "A signed in researcher is required")
+        {:ok, socket}
     end
   end
 
