@@ -49,6 +49,7 @@ defmodule SoonReady.UserAuthentication.Entities.User do
     end
   end
 
+  # TODO: Rename table
   postgres do
     table "user_authentication__entities__users"
     repo SoonReady.Repo
