@@ -66,6 +66,7 @@ defmodule SoonReady.MixProject do
       {:tzdata, "~> 1.1"},
       {:ash_authentication, "~> 3.12.4"},
       {:ash_authentication_phoenix, "~> 1.9.4"},
+      {:ash_admin, "~> 0.10.9"},
     ]
   end
 
