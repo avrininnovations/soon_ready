@@ -12,6 +12,7 @@ defmodule SoonReady.UserAuthentication.Entities.User do
 
   calculations do
     calculate :is_researcher, :boolean, fn user, _context ->
+      # TODO: Update to read from researcher read model
       {:ok, true}
     end
   end
