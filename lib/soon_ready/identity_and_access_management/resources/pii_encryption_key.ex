@@ -1,7 +1,5 @@
 defmodule SoonReady.IdentityAndAccessManagement.Resources.PiiEncryptionKey do
-  # TODO: Update to postgres
-  # use Ash.Resource, data_layer: AshPostgres.DataLayer
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   require Logger
 
@@ -36,6 +34,11 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.PiiEncryptionKey do
         Ash.Changeset.change_attribute(changeset, :encoded_key, 32 |> :crypto.strong_rand_bytes() |> Base.encode64())
       end
     end
+  end
+
+  postgres do
+    table "identity_and_access_management__resources__pii_encryption_key"
+    repo SoonReady.Repo
   end
 
   code_interface do
