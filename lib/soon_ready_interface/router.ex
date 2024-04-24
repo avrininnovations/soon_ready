@@ -2,6 +2,8 @@ defmodule SoonReadyInterface.Router do
   use SoonReadyInterface, :router
   use AshAuthentication.Phoenix.Router
 
+  import AshAdmin.Router
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -56,6 +58,13 @@ defmodule SoonReadyInterface.Router do
     live "/survey/participate/:survey_id/comparison", SurveyParticipationLive, :comparison
     live "/survey/participate/:survey_id/desired-outcome-ratings", SurveyParticipationLive, :desired_outcome_ratings
     live "/survey/participate/:survey_id/thank-you", SurveyParticipationLive, :thank_you
+  end
+
+  scope "/" do
+    # Pipe it through your browser pipeline
+    pipe_through [:browser]
+
+    ash_admin "/admin"
   end
 
 

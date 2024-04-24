@@ -21,6 +21,7 @@ config :soon_ready, ash_apis: [
 
   SoonReadyInterface.Researcher.Api,
   SoonReadyInterface.Respondents.Setup.Api,
+  SoonReadyInterface.Admin.Api,
 ]
 
 config :soon_ready, token_signing_secret: "super secret"
