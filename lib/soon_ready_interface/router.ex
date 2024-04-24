@@ -22,7 +22,7 @@ defmodule SoonReadyInterface.Router do
   scope "/", SoonReadyInterface.Public.Webpages do
     pipe_through :browser
 
-    sign_in_route(register_path: "/register", reset_path: "/reset")
+    sign_in_route()
     sign_out_route AuthController
     auth_routes_for SoonReady.UserAuthentication.Entities.User, to: AuthController
     reset_route []
@@ -64,7 +64,7 @@ defmodule SoonReadyInterface.Router do
     # Pipe it through your browser pipeline
     pipe_through [:browser]
 
-    ash_admin "/admin"
+    ash_admin "/secret-admin"
   end
 
 
