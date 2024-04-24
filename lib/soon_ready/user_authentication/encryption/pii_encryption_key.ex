@@ -1,4 +1,4 @@
-defmodule SoonReady.UserAuthentication.Encryption.EncryptionKey do
+defmodule SoonReady.UserAuthentication.Encryption.PiiEncryptionKey do
   # TODO: Update to postgres
   # use Ash.Resource, data_layer: AshPostgres.DataLayer
   use Ash.Resource, data_layer: Ash.DataLayer.Ets
