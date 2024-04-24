@@ -1,4 +1,4 @@
-defmodule SoonReady.UserAuthentication.Encryption.PiiEncryptionKey do
+defmodule SoonReady.IdentityAndAccessManagement.Resources.PiiEncryptionKey do
   # TODO: Update to postgres
   # use Ash.Resource, data_layer: AshPostgres.DataLayer
   use Ash.Resource, data_layer: Ash.DataLayer.Ets
@@ -39,7 +39,7 @@ defmodule SoonReady.UserAuthentication.Encryption.PiiEncryptionKey do
   end
 
   code_interface do
-    define_for SoonReady.UserAuthentication.Api
+    define_for SoonReady.IdentityAndAccessManagement.Api
     define :generate
   end
 end

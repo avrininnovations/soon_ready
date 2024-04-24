@@ -32,7 +32,7 @@ defmodule SoonReady.UserAuthentication.Entities.User do
   end
 
   authentication do
-    api SoonReady.UserAuthentication.UserAccount
+    api SoonReady.IdentityAndAccessManagement.UserAccount
 
     strategies do
       password :password do
@@ -42,7 +42,7 @@ defmodule SoonReady.UserAuthentication.Entities.User do
 
     tokens do
       enabled? true
-      token_resource SoonReady.UserAuthentication.Entities.Token
+      token_resource SoonReady.IdentityAndAccessManagement.Resources.Token
       signing_secret fn _, _ ->
         Application.fetch_env(:soon_ready, :token_signing_secret)
       end

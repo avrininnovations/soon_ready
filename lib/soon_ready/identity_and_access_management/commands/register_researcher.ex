@@ -1,4 +1,4 @@
-defmodule SoonReady.UserAuthentication.Commands.RegisterResearcher do
+defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
@@ -25,7 +25,7 @@ defmodule SoonReady.UserAuthentication.Commands.RegisterResearcher do
   end
 
   code_interface do
-    define_for SoonReady.UserAuthentication.Api
+    define_for SoonReady.IdentityAndAccessManagement.Api
     define :dispatch
   end
 end

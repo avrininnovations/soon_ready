@@ -84,7 +84,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   describe "Survey Management" do
     test "WHEN: A researcher tries to create a survey, THEN: A survey is created" do
-      {:ok, user} = SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+      {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
       case Survey.create_survey(@survey_details, user) do
         {:ok, %{survey_id: survey_id} = _aggregate} ->
@@ -105,7 +105,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
     end
 
     test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published" do
-      {:ok, user} = SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+      {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
       with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details, user) do
         case Survey.publish_survey(%{survey_id: survey_id}) do
@@ -123,7 +123,7 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   describe "Survey Participation" do
     test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted" do
-      with {:ok, user} <- SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
+      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
             {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details, user),
             {:ok, %{survey_id: ^survey_id}} <- Survey.publish_survey(%{survey_id: survey_id})
       do

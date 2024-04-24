@@ -1,10 +1,10 @@
-defmodule SoonReady.UserAuthentication.Entities.Token do
+defmodule SoonReady.IdentityAndAccessManagement.Resources.Token do
   use Ash.Resource,
     data_layer: AshPostgres.DataLayer,
     extensions: [AshAuthentication.TokenResource]
 
   token do
-    api SoonReady.UserAuthentication.UserAccount
+    api SoonReady.IdentityAndAccessManagement.UserAccount
   end
 
   postgres do

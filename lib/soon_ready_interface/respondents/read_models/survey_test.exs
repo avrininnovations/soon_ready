@@ -41,7 +41,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
   }
 
   test "GIVEN: An ODI survey was publised, THEN: The survey is active" do
-    with {:ok, user} <- SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
+    with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
           {:ok, %{survey_id: survey_id}} <- Survey.create_survey(@survey_params, user),
           {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do

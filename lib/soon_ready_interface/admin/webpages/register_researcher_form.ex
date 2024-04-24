@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Admin.Webpages.RegisterResearcherForm do
   use Ash.Resource
 
-  alias SoonReady.UserAuthentication.Commands.RegisterResearcher
+  alias SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher
 
   attributes do
     uuid_primary_key :researcher_id

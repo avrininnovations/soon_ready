@@ -216,7 +216,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   end
 
   defp sign_in_researcher(conn) do
-    {:ok, user} = SoonReady.UserAuthentication.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+    {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})

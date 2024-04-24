@@ -1,9 +1,9 @@
-defmodule SoonReady.UserAuthentication.UserAccount do
+defmodule SoonReady.IdentityAndAccessManagement.UserAccount do
   use Ash.Api
 
   resources do
     resource SoonReady.UserAuthentication.Entities.User
-    resource SoonReady.UserAuthentication.Entities.Token
+    resource SoonReady.IdentityAndAccessManagement.Resources.Token
   end
 
   # TODO: Change to register researcher and add events
