@@ -21,7 +21,7 @@ defmodule SoonReadyInterface do
 
   def router do
     quote do
-      use Phoenix.Router, helpers: false
+      use Phoenix.Router, helpers: true
 
       # Import common connection and controller functions to use in pipelines
       import Plug.Conn
@@ -83,6 +83,8 @@ defmodule SoonReadyInterface do
     quote do
       # HTML escaping functionality
       import Phoenix.HTML
+      import Phoenix.HTML.Form
+      use PhoenixHTMLHelpers
       # Core UI components and translation
       import SoonReadyInterface.CoreComponents
       import SoonReadyInterface.Gettext

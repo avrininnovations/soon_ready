@@ -16,6 +16,7 @@ defmodule SoonReady.Application do
     ]
 
   router SoonReady.QuantifyingNeeds.Survey
+  router SoonReady.IdentityAndAccessManagement.Researcher
 
   router SoonReady.Onboarding.Commands.Router
 
@@ -32,6 +33,8 @@ defmodule SoonReady.Application do
       # {SoonReady.Worker, arg},
       # Start to serve requests, typically the last entry
       SoonReadyInterface.Endpoint,
+
+      {AshAuthentication.Supervisor, otp_app: :soon_ready},
 
       # Cloak Encryption
       SoonReady.Vault,

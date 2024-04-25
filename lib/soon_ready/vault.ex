@@ -8,16 +8,22 @@ defmodule SoonReady.Vault do
   def init(config) do
     config =
       Keyword.put(config, :ciphers, [
-        {:onboarding, {
+        default: {
+          SoonReady.Cipher,
+          tag: "#{SoonReady.Cipher}",
+          key: get_cloak_key_env()
+        },
+        onboarding: {
           SoonReady.Onboarding.PersonallyIdentifiableInformation.Cipher,
           tag: "Onboarding",
-        }},
-        {SoonReady.QuantifyingNeeds.Cipher, {
-          SoonReady.QuantifyingNeeds.Cipher,
-          tag: "#{SoonReady.QuantifyingNeeds.Cipher}"
-        }}
+        }
       ])
 
     {:ok, config}
+  end
+
+  defp get_cloak_key_env() do
+    Application.get_env(:soon_ready, :cloak_key)
+    |> Base.decode64!()
   end
 end

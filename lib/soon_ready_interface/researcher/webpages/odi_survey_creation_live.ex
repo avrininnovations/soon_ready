@@ -34,7 +34,19 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket, layout: {__MODULE__, :layout}}
+    current_user = Map.get(socket.assigns, :current_user)
+
+    case current_user do
+      %{is_researcher: true} ->
+        socket = assign(socket, :actor, current_user)
+        {:ok, socket, layout: {__MODULE__, :layout}}
+      _ ->
+        socket =
+          socket
+          |> redirect(to: ~p"/sign-in")
+          |> put_flash(:error, "A signed in researcher is required")
+        {:ok, socket}
+    end
   end
 
   def render(%{live_action: :landing_page} = assigns) do
@@ -165,7 +177,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     normalized_params = normalize(socket.assigns.params)
 
 
-    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(normalized_params),
+    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(normalized_params, socket.assigns.actor),
           {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
     do
       socket =

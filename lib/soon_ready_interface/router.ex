@@ -1,5 +1,8 @@
 defmodule SoonReadyInterface.Router do
   use SoonReadyInterface, :router
+  use AshAuthentication.Phoenix.Router
+
+  import AshAdmin.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,10 +11,21 @@ defmodule SoonReadyInterface.Router do
     plug :put_root_layout, html: {SoonReadyInterface.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :load_from_session
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :load_from_bearer
+  end
+
+  scope "/", SoonReadyInterface.Public.Webpages do
+    pipe_through :browser
+
+    sign_in_route()
+    sign_out_route AuthController
+    auth_routes_for SoonReady.UserAuthentication.Entities.User, to: AuthController
+    reset_route []
   end
 
   scope "/", SoonReadyInterface.Public.Webpages do
@@ -20,15 +34,17 @@ defmodule SoonReadyInterface.Router do
     live "/", HomepageLive, :home
   end
 
-  scope "/", SoonReadyInterface.Researcher.Webpages do
-    pipe_through :browser
+  ash_authentication_live_session :researcher_session do
+    scope "/", SoonReadyInterface.Researcher.Webpages do
+      pipe_through :browser
 
-    live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions
-    live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions
-    live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions
-    live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes
-    live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition
-    live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
+      live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions
+      live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions
+      live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions
+      live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes
+      live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition
+      live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
+    end
   end
 
   scope "/", SoonReadyInterface.Respondents.Webpages do
@@ -42,6 +58,13 @@ defmodule SoonReadyInterface.Router do
     live "/survey/participate/:survey_id/comparison", SurveyParticipationLive, :comparison
     live "/survey/participate/:survey_id/desired-outcome-ratings", SurveyParticipationLive, :desired_outcome_ratings
     live "/survey/participate/:survey_id/thank-you", SurveyParticipationLive, :thank_you
+  end
+
+  scope "/" do
+    # Pipe it through your browser pipeline
+    pipe_through [:browser]
+
+    ash_admin "/secret-admin"
   end
 
 

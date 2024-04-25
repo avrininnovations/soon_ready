@@ -15,12 +15,18 @@ config :soon_ready, event_stores: [SoonReady.EventStore]
 
 config :soon_ready, ash_apis: [
   SoonReady.QuantifyingNeeds.Survey,
+  SoonReady.IdentityAndAccessManagement.UserAccount,
+  SoonReady.IdentityAndAccessManagement.Api,
 
   SoonReady.Onboarding.Setup.Api,
 
   SoonReadyInterface.Researcher.Api,
   SoonReadyInterface.Respondents.Setup.Api,
+  SoonReadyInterface.Admin.Api,
 ]
+
+config :soon_ready, token_signing_secret: "super secret"
+config :soon_ready, cloak_key: "oZNBo0qMCrFTtTWKv/R/KD7bNmkDPVgEQW0nRjWMn4g="
 
 # Configures the endpoint
 config :soon_ready, SoonReadyInterface.Endpoint,

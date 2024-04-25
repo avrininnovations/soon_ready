@@ -5,8 +5,8 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   alias SoonReady.Application
   alias SoonReady.QuantifyingNeeds.Survey
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
-  alias SoonReady.QuantifyingNeeds.Survey.DomainEvents.SurveyResponseSubmittedV1
+  alias SoonReady.QuantifyingNeeds.Events.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1
 
 
   @survey_details %{
@@ -84,9 +84,9 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   describe "Survey Management" do
     test "WHEN: A researcher tries to create a survey, THEN: A survey is created" do
-      # TODO: Test the fact that the actor is an Avrin researcher
+      {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
-      case Survey.create_survey(@survey_details) do
+      case Survey.create_survey(@survey_details, user) do
         {:ok, %{survey_id: survey_id} = _aggregate} ->
           assert_receive_event(Application, SurveyCreatedV1,
             fn event -> event.survey_id == survey_id end,
@@ -105,9 +105,9 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
     end
 
     test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published" do
-      # TODO: Test the fact that the actor is an Avrin researcher
+      {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
-      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details) do
+      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details, user) do
         case Survey.publish_survey(%{survey_id: survey_id}) do
           {:ok, %{survey_id: ^survey_id}} ->
             assert_receive_event(Application, SurveyPublishedV1,
@@ -123,11 +123,10 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
 
   describe "Survey Participation" do
     test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted" do
-      with {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details),
+      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
+            {:ok, %{survey_id: survey_id} = survey} <- Survey.create_survey(@survey_details, user),
             {:ok, %{survey_id: ^survey_id}} <- Survey.publish_survey(%{survey_id: survey_id})
       do
-        # TODO: Test the fact that the actor is a participant
-
         @survey_response_details
         |> Map.put(:survey_id, survey_id)
         |> Survey.submit_response()
@@ -136,17 +135,20 @@ defmodule SoonReady.QuantifyingNeeds.SurveyTest do
             assert_receive_event(Application, SurveyResponseSubmittedV1,
               fn event -> event.response_id == response_id end,
               fn event ->
-                decrypted_participant = Survey.decrypt_participant_details(event.response_id, event.participant)
+                event =
+                  event
+                  |> Map.from_struct()
+                  |> SurveyResponseSubmittedV1.decrypt!()
 
                 assert event.survey_id == survey_id
-                assert decrypted_participant.nickname == @survey_response_details.participant.nickname
-                assert decrypted_participant.email == @survey_response_details.participant.email
-                assert decrypted_participant.phone_number == @survey_response_details.participant.phone_number
-                assert SoonReady.Utils.is_equal_or_subset?(event.screening_responses, @survey_response_details.screening_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.demographic_responses, @survey_response_details.demographic_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.context_responses, @survey_response_details.context_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.comparison_responses, @survey_response_details.comparison_responses)
-                assert SoonReady.Utils.is_equal_or_subset?(event.desired_outcome_ratings, @survey_response_details.desired_outcome_ratings)
+                assert event.participant.nickname == @survey_response_details.participant.nickname
+                assert event.participant.email == @survey_response_details.participant.email
+                assert event.participant.phone_number == @survey_response_details.participant.phone_number
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.screening_responses, event.screening_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.demographic_responses, event.demographic_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.context_responses, event.context_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.comparison_responses, event.comparison_responses)
+                assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.desired_outcome_ratings, event.desired_outcome_ratings)
               end
             )
           {:error, error} ->
