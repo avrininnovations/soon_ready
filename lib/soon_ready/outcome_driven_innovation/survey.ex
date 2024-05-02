@@ -7,10 +7,10 @@ defmodule SoonReady.OutcomeDrivenInnovation.Survey do
 
   alias SoonReady.OutcomeDrivenInnovation.Commands.SubmitSurveyResponse
   alias SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1
-  alias SoonReady.OutcomeDrivenInnovation.Encryption.SurveyResponseCloakKeys
+  alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
   resources do
-    resource SurveyResponseCloakKeys
+    resource PersonalIdentifiableInformationEncryptionKey
   end
 
   authorization do

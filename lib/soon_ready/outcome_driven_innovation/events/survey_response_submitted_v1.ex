@@ -4,7 +4,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1 do
   require Logger
 
   alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
-  alias SoonReady.OutcomeDrivenInnovation.Encryption.SurveyResponseCloakKeys
+  alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
 
   attributes do
@@ -20,7 +20,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1 do
 
   calculations do
     calculate :participant, Participant, fn record, _context ->
-      with {:ok, %{decoded_cloak_key: key}} <- SurveyResponseCloakKeys.get(record.response_id),
+      with {:ok, %{key: key}} <- PersonalIdentifiableInformationEncryptionKey.get(record.response_id),
           {:ok, participant} <- decrypt_participant(record.hashed_participant, key)
       do
         {:ok, participant}
@@ -40,13 +40,13 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1 do
         response_id = Ash.Changeset.get_attribute(changeset, :response_id)
         participant = Ash.Changeset.get_argument(changeset, :participant)
 
-        with {:ok, %{decoded_cloak_key: key} = response_cloak_keys} <- SurveyResponseCloakKeys.initialize(%{response_id: response_id}) do
+        with {:ok, %{key: key} = response_cloak_keys} <- PersonalIdentifiableInformationEncryptionKey.generate(%{id: response_id}) do
           with {:ok, hashed_participant} <- encrypt_participant(participant, key) do
             Ash.Changeset.change_attribute(changeset, :hashed_participant, hashed_participant)
           else
             {:error, error} ->
               Logger.warning("Encryption failed, #{inspect(error)}")
-              SurveyResponseCloakKeys.destroy!(response_cloak_keys)
+              PersonalIdentifiableInformationEncryptionKey.destroy!(response_cloak_keys)
               {:error, error}
           end
         end

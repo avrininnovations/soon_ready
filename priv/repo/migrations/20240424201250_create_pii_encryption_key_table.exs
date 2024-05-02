@@ -1,4 +1,4 @@
-defmodule SoonReady.Repo.Migrations.CreatePiiEncryptionKeyTable do
+defmodule SoonReady.Repo.Migrations.CreatePersonalIdentifiableInformationEncryptionKeyTable do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 

@@ -1,10 +1,11 @@
-defmodule SoonReady.IdentityAndAccessManagement.Resources.PiiEncryptionKey do
-  use Ash.Resource, data_layer: AshPostgres.DataLayer
-
+defmodule SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey do
+  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+  # TODO: Change to postgres
+  # use Ash.Resource, data_layer: AshPostgres.DataLayer
   require Logger
 
   attributes do
-    attribute :user_id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :id, :uuid, allow_nil?: false, primary_key?: true
     attribute :encoded_key, :string, allow_nil?: false, private?: true
   end
 
@@ -25,7 +26,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.PiiEncryptionKey do
   end
 
   actions do
-    defaults [:read]
+    defaults [:read, :destroy]
 
     create :generate do
       primary? true
@@ -34,15 +35,23 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.PiiEncryptionKey do
         Ash.Changeset.change_attribute(changeset, :encoded_key, 32 |> :crypto.strong_rand_bytes() |> Base.encode64())
       end
     end
-  end
 
-  postgres do
-    table "identity_and_access_management__resources__pii_encryption_key"
-    repo SoonReady.Repo
+    read :get do
+      get_by [:id]
+    end
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement.Api
+    define_for SoonReady.Encryption.Api
     define :generate
+    define :get, args: [:id]
+    define :read
+    define :destroy
   end
+
+  # # TODO: Update table name
+  # postgres do
+  #   repo SoonReady.Repo
+  #   table "quantifying_needs__survey_response__encryption__ciphers"
+  # end
 end
