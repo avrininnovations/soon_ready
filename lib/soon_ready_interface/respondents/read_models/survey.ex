@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   use Ash.Resource, data_layer: AshPostgres.DataLayer
 
-  alias SoonReady.QuantifyingNeeds.ValueObjects.{
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{
     Market,
     JobStep,
     ScreeningQuestion,
@@ -63,7 +63,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
     name: "#{__MODULE__}",
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.QuantifyingNeeds.Events.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.OutcomeDrivenInnovation.Events.{SurveyCreatedV1, SurveyPublishedV1}
 
   def handle(%SurveyCreatedV1{} = event, _metadata) do
     %{

@@ -1,7 +1,7 @@
 defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegisteredV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
   require Logger
-  alias SoonReady.IdentityAndAccessManagement.Resources.PiiEncryptionKey
+  alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
   attributes do
     attribute :researcher_id, :uuid, allow_nil?: false, primary_key?: true
@@ -22,7 +22,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegisteredV1 do
         first_name = Ash.Changeset.get_argument(changeset, :first_name)
         last_name = Ash.Changeset.get_argument(changeset, :last_name)
 
-        with {:ok, %{key: encryption_key} = _user_encryption_key} <- PiiEncryptionKey.generate(%{user_id: user_id}) do
+        with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.generate(%{id: user_id}) do
           changeset =
             case SoonReady.Vault.encrypt(%{key: encryption_key, plain_text: first_name}) do
               {:ok, first_name_hash} ->

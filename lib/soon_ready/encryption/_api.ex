@@ -1,4 +1,4 @@
-defmodule SoonReady.IdentityAndAccessManagement.Api do
+defmodule SoonReady.Encryption.Api do
   use Ash.Api
 
   resources do

@@ -1,4 +1,4 @@
-defmodule SoonReady.Repo.Migrations.CreatePersonalIdentifiableInformationEncryptionKeyTable do
+defmodule SoonReady.Repo.Migrations.CreateTableEncryptionPersonalIdentifiableInformationEncryptionKey do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -8,15 +8,15 @@ defmodule SoonReady.Repo.Migrations.CreatePersonalIdentifiableInformationEncrypt
   use Ecto.Migration
 
   def up do
-    create table(:identity_and_access_management__resources__pii_encryption_key,
+    create table(:encryption__personal_identifiable_information_encryption_key,
              primary_key: false
            ) do
-      add :user_id, :uuid, null: false, primary_key: true
+      add :id, :uuid, null: false, primary_key: true
       add :encoded_key, :text, null: false
     end
   end
 
   def down do
-    drop table(:identity_and_access_management__resources__pii_encryption_key)
+    drop table(:encryption__personal_identifiable_information_encryption_key)
   end
 end
