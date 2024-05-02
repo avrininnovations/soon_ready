@@ -1,11 +1,8 @@
 defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.ScreeningQuestion do
-  # TODO: Replace value objects with fragments?
-  # and let every command/event have its own child/embed resource?
-  # Events especially as it might make obvious when changes happen
-
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias __MODULE__.Option
+  alias __MODULE__.Validations.AtLeastOneOptionIsCorrect
 
   attributes do
     attribute :prompt, :string, allow_nil?: false
@@ -13,6 +10,6 @@ defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.ScreeningQuestio
   end
 
   validations do
-    # TODO: validate that at least one option is marked as the correct answer
+    validate AtLeastOneOptionIsCorrect
   end
 end

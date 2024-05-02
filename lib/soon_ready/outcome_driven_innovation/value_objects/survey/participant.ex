@@ -3,7 +3,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.Participant do
 
   attributes do
     attribute :nickname, :string, allow_nil?: false
-    # TODO: Create custom types for email and phone_number
+    # MAYBE: Create custom types for email and phone_number
     attribute :email, :string, allow_nil?: false
     attribute :phone_number, :string, allow_nil?: false
   end
