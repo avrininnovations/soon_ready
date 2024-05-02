@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.ScreeningQuestion do
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.ScreeningQuestion do
   # TODO: Replace value objects with fragments?
   # and let every command/event have its own child/embed resource?
   # Events especially as it might make obvious when changes happen

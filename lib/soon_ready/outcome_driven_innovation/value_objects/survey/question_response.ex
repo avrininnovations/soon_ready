@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.QuestionResponse do
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.QuestionResponse do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   # TODO: Should value objects have constraints and allow nils?

@@ -1,7 +1,7 @@
 defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreatedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{
     Market,
     JobStep,
     ScreeningQuestion,

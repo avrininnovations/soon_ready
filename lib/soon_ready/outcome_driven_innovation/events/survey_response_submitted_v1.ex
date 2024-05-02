@@ -3,7 +3,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1 do
 
   require Logger
 
-  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
   alias SoonReady.OutcomeDrivenInnovation.Encryption.SurveyResponseCloakKeys
 
 
