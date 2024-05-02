@@ -1,7 +1,7 @@
-defmodule SoonReady.QuantifyingNeeds.ValueObjects.JobStep do
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.JobStep do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.QuantifyingNeeds.ValueObjects.{JobStatement, OutcomeStatement}
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{JobStatement, OutcomeStatement}
 
   attributes do
     attribute :name, JobStatement, allow_nil?: false

@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys do
+defmodule SoonReady.OutcomeDrivenInnovation.Encryption.SurveyResponseCloakKeys do
   use Ash.Resource, data_layer: AshPostgres.DataLayer
   # TODO: Update to postgres
 
@@ -42,7 +42,7 @@ defmodule SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey
+    define_for SoonReady.OutcomeDrivenInnovation.Survey
     define :initialize
     define :get, args: [:response_id]
     define :read

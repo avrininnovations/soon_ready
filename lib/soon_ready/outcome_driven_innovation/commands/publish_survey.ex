@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Commands.PublishSurvey do
+defmodule SoonReady.OutcomeDrivenInnovation.Commands.PublishSurvey do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
@@ -20,7 +20,7 @@ defmodule SoonReady.QuantifyingNeeds.Commands.PublishSurvey do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey
+    define_for SoonReady.OutcomeDrivenInnovation.Survey
     define :dispatch
   end
 end

@@ -15,7 +15,7 @@ defmodule SoonReady.Application do
       consistency: Application.get_env(:soon_ready, :consistency, :eventual)
     ]
 
-  router SoonReady.QuantifyingNeeds.Survey
+  router SoonReady.OutcomeDrivenInnovation.Survey
   router SoonReady.IdentityAndAccessManagement.Researcher
 
   router SoonReady.Onboarding.Commands.Router
@@ -42,7 +42,7 @@ defmodule SoonReady.Application do
       # Commanded
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
-      SoonReady.QuantifyingNeeds.Supervisor,
+      SoonReady.OutcomeDrivenInnovation.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

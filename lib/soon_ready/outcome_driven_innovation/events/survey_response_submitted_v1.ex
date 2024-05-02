@@ -1,10 +1,10 @@
-defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
+defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   require Logger
 
-  alias SoonReady.QuantifyingNeeds.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
-  alias SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
+  alias SoonReady.OutcomeDrivenInnovation.Encryption.SurveyResponseCloakKeys
 
 
   attributes do
@@ -20,7 +20,7 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
 
   calculations do
     calculate :participant, Participant, fn record, _context ->
-      with {:ok, %{decoded_cloak_key: key}} <- ResponseCloakKeys.get(record.response_id),
+      with {:ok, %{decoded_cloak_key: key}} <- SurveyResponseCloakKeys.get(record.response_id),
           {:ok, participant} <- decrypt_participant(record.hashed_participant, key)
       do
         {:ok, participant}
@@ -40,13 +40,13 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
         response_id = Ash.Changeset.get_attribute(changeset, :response_id)
         participant = Ash.Changeset.get_argument(changeset, :participant)
 
-        with {:ok, %{decoded_cloak_key: key} = response_cloak_keys} <- ResponseCloakKeys.initialize(%{response_id: response_id}) do
+        with {:ok, %{decoded_cloak_key: key} = response_cloak_keys} <- SurveyResponseCloakKeys.initialize(%{response_id: response_id}) do
           with {:ok, hashed_participant} <- encrypt_participant(participant, key) do
             Ash.Changeset.change_attribute(changeset, :hashed_participant, hashed_participant)
           else
             {:error, error} ->
               Logger.warning("Encryption failed, #{inspect(error)}")
-              ResponseCloakKeys.destroy!(response_cloak_keys)
+              SurveyResponseCloakKeys.destroy!(response_cloak_keys)
               {:error, error}
           end
         end
@@ -62,7 +62,7 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1 do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey
+    define_for SoonReady.OutcomeDrivenInnovation.Survey
     define :new
     define :decrypt
   end

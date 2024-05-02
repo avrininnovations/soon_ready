@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.ValueObjects.ScreeningQuestion.Option do
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.ScreeningQuestion.Option do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

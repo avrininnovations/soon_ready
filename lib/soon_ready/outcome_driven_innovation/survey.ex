@@ -1,16 +1,16 @@
-defmodule SoonReady.QuantifyingNeeds.Survey do
+defmodule SoonReady.OutcomeDrivenInnovation.Survey do
   use Ash.Api
   use Commanded.Commands.Router
 
-  alias SoonReady.QuantifyingNeeds.Commands.{CreateSurvey, PublishSurvey}
-  alias SoonReady.QuantifyingNeeds.Events.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.OutcomeDrivenInnovation.Commands.{CreateSurvey, PublishSurvey}
+  alias SoonReady.OutcomeDrivenInnovation.Events.{SurveyCreatedV1, SurveyPublishedV1}
 
-  alias SoonReady.QuantifyingNeeds.Commands.SubmitSurveyResponse
-  alias SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1
-  alias SoonReady.QuantifyingNeeds.Encryption.ResponseCloakKeys
+  alias SoonReady.OutcomeDrivenInnovation.Commands.SubmitSurveyResponse
+  alias SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1
+  alias SoonReady.OutcomeDrivenInnovation.Encryption.SurveyResponseCloakKeys
 
   resources do
-    resource ResponseCloakKeys
+    resource SurveyResponseCloakKeys
   end
 
   authorization do

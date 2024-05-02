@@ -1,7 +1,7 @@
-defmodule SoonReady.QuantifyingNeeds.Events.SurveyCreatedV1 do
+defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreatedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.QuantifyingNeeds.ValueObjects.{
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,
@@ -24,7 +24,7 @@ defmodule SoonReady.QuantifyingNeeds.Events.SurveyCreatedV1 do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey
+    define_for SoonReady.OutcomeDrivenInnovation.Survey
     define :new
   end
 end

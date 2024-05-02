@@ -1,12 +1,12 @@
-defmodule SoonReady.QuantifyingNeeds.SurveyTest do
+defmodule SoonReady.OutcomeDrivenInnovation.SurveyTest do
   use SoonReady.DataCase
 
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.QuantifyingNeeds.Survey
-  alias SoonReady.QuantifyingNeeds.Events.{SurveyCreatedV1, SurveyPublishedV1}
-  alias SoonReady.QuantifyingNeeds.Events.SurveyResponseSubmittedV1
+  alias SoonReady.OutcomeDrivenInnovation.Survey
+  alias SoonReady.OutcomeDrivenInnovation.Events.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1
 
 
   @survey_details %{

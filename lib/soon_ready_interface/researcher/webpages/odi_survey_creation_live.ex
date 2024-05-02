@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   require Logger
 
-  alias SoonReady.QuantifyingNeeds.Survey
+  alias SoonReady.OutcomeDrivenInnovation.Survey
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
     LandingPageForm,
     MarketDefinitionForm,

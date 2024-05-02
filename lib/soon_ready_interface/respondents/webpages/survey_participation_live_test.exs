@@ -218,8 +218,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   describe "Landing Page" do
     test "GIVEN: Survey has been published, WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id})
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id})
       do
         {:ok, _view, html} = live(conn, ~p"/survey/participate/#{survey_id}")
 
@@ -232,8 +232,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
     test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
       do
         _resulting_html = submit_nickname_form_response(view)
@@ -254,8 +254,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   describe "Screening Questions Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view)
@@ -276,8 +276,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}"),
             _ = submit_nickname_form_response(view),
             _ = assert_patch(view)
@@ -299,8 +299,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   describe "Contact Details Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
@@ -325,8 +325,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   describe "Demographics Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
@@ -353,8 +353,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   describe "Context Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
@@ -383,8 +383,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   describe "Comparison Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),
@@ -415,8 +415,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   describe "Desired Outcome Rating Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn} do
       with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.QuantifyingNeeds.Survey.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.QuantifyingNeeds.Survey.publish_survey(%{survey_id: survey_id}),
+            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.Survey.create_survey(@survey_params, user),
+            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.Survey.publish_survey(%{survey_id: survey_id}),
             {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
             _ <- submit_nickname_form_response(view),
             _ <- assert_patch(view),

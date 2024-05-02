@@ -1,4 +1,4 @@
-defmodule SoonReady.QuantifyingNeeds.Supervisor do
+defmodule SoonReady.OutcomeDrivenInnovation.Supervisor do
   use Supervisor
 
   def start_link(arg) do

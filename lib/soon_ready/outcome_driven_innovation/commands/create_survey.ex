@@ -1,10 +1,10 @@
-defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
+defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
   use Ash.Resource,
     authorizers: [Ash.Policy.Authorizer],
     data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.QuantifyingNeeds.ValueObjects.{
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{
     Market,
     JobStep,
     ScreeningQuestion,
@@ -12,7 +12,7 @@ defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
     ContextQuestion
   }
 
-  alias SoonReady.QuantifyingNeeds.Checks.ActorIsResearcher
+  alias SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher
 
   attributes do
     uuid_primary_key :survey_id
@@ -46,7 +46,7 @@ defmodule SoonReady.QuantifyingNeeds.Commands.CreateSurvey do
   end
 
   code_interface do
-    define_for SoonReady.QuantifyingNeeds.Survey
+    define_for SoonReady.OutcomeDrivenInnovation.Survey
     define :dispatch
     define :create
   end
