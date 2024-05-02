@@ -1,7 +1,5 @@
 defmodule SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey do
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
-  # TODO: Change to postgres
-  # use Ash.Resource, data_layer: AshPostgres.DataLayer
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
   require Logger
 
   attributes do
@@ -49,9 +47,8 @@ defmodule SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey do
     define :destroy
   end
 
-  # # TODO: Update table name
-  # postgres do
-  #   repo SoonReady.Repo
-  #   table "quantifying_needs__survey_response__encryption__ciphers"
-  # end
+  postgres do
+    repo SoonReady.Repo
+    table "encryption__personal_identifiable_information_encryption_key"
+  end
 end

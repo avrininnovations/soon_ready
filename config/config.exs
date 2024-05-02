@@ -17,6 +17,7 @@ config :soon_ready, ash_apis: [
   SoonReady.OutcomeDrivenInnovation.Survey,
   SoonReady.IdentityAndAccessManagement.UserAccount,
   SoonReady.IdentityAndAccessManagement.Api,
+  SoonReady.Encryption.Api,
 
   SoonReady.Onboarding.Setup.Api,
 
