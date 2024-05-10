@@ -53,6 +53,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1 do
       end
     end
 
+    # TODO:
     # hydrate?
     # decrypt participant details?
     # participant vs participant details?
