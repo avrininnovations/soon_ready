@@ -1,5 +1,5 @@
 defmodule SoonReady.OutcomeDrivenInnovation.Survey do
-  use Ash.Api
+  use Ash.Resource
   use Commanded.Commands.Router
 
   alias SoonReady.OutcomeDrivenInnovation.Commands.{CreateSurvey, PublishSurvey}
@@ -9,24 +9,13 @@ defmodule SoonReady.OutcomeDrivenInnovation.Survey do
   alias SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1
   alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
-  resources do
-    resource PersonalIdentifiableInformationEncryptionKey
-  end
-
-  authorization do
-    authorize :by_default
+  attributes do
+    attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
   end
 
   dispatch CreateSurvey, to: __MODULE__, identity: :survey_id
   dispatch PublishSurvey, to: __MODULE__, identity: :survey_id
-
   dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
-
-  defstruct [:survey_id]
-
-  def create_survey(params, actor \\ nil), do: CreateSurvey.dispatch(params, [actor: actor])
-  defdelegate publish_survey(params), to: PublishSurvey, as: :dispatch
-  defdelegate submit_response(params), to: SubmitSurveyResponse, as: :dispatch
 
   def execute(_aggregate_state, %CreateSurvey{} = command) do
     SurveyCreatedV1.new(%{

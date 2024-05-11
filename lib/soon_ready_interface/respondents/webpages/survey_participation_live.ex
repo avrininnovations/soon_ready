@@ -226,7 +226,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   def handle_info({:handle_submission, DesiredOutcomeRatingForm}, socket) do
     socket.assigns.params
     |> normalize()
-    |> SoonReady.OutcomeDrivenInnovation.Survey.submit_response()
+    |> SoonReady.OutcomeDrivenInnovation.submit_response()
     |> case do
       {:ok, _aggregate} ->
         socket =

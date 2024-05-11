@@ -28,7 +28,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.SubmitSurveyResponse do
   end
 
   code_interface do
-    define_for SoonReady.OutcomeDrivenInnovation.Survey
+    define_for SoonReady.OutcomeDrivenInnovation
     define :dispatch
   end
 end

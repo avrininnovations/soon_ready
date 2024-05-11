@@ -63,7 +63,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1 do
   end
 
   code_interface do
-    define_for SoonReady.OutcomeDrivenInnovation.Survey
+    define_for SoonReady.OutcomeDrivenInnovation
     define :new
     define :decrypt
   end

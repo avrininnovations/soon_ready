@@ -24,7 +24,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreatedV1 do
   end
 
   code_interface do
-    define_for SoonReady.OutcomeDrivenInnovation.Survey
+    define_for SoonReady.OutcomeDrivenInnovation
     define :new
   end
 end

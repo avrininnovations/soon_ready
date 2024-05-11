@@ -1,8 +1,7 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
   use SoonReady.DataCase
 
-  alias SoonReady.OutcomeDrivenInnovation.Survey
-  alias SoonReadyInterface.Respondents.ReadModels.Survey, as: SurveyReadModel
+  alias SoonReadyInterface.Respondents.ReadModels.Survey
 
   @survey_params %{
     brand: "A Big Brand",
@@ -42,10 +41,10 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
 
   test "GIVEN: An ODI survey was publised, THEN: The survey is active" do
     with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-          {:ok, %{survey_id: survey_id}} <- Survey.create_survey(@survey_params, user),
-          {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
+          {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
+          {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
     do
-      {:ok, survey} = SurveyReadModel.get_active(survey_id)
+      {:ok, survey} = Survey.get_active(survey_id)
       assert survey.id == survey_id
     else
       {:error, error} ->

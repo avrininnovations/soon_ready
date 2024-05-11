@@ -14,7 +14,7 @@ config :soon_ready,
 config :soon_ready, event_stores: [SoonReady.EventStore]
 
 config :soon_ready, ash_apis: [
-  SoonReady.OutcomeDrivenInnovation.Survey,
+  SoonReady.OutcomeDrivenInnovation,
   SoonReady.IdentityAndAccessManagement.UserAccount,
   SoonReady.IdentityAndAccessManagement.Api,
   SoonReady.Encryption.Api,

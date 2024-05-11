@@ -3,7 +3,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   require Logger
 
-  alias SoonReady.OutcomeDrivenInnovation.Survey
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
     LandingPageForm,
     MarketDefinitionForm,
@@ -177,8 +176,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     normalized_params = normalize(socket.assigns.params)
 
 
-    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(normalized_params, socket.assigns.actor),
-          {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
+    with {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(normalized_params, socket.assigns.actor),
+          {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
     do
       socket =
         socket

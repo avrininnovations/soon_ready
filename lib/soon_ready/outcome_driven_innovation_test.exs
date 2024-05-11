@@ -1,10 +1,9 @@
-defmodule SoonReady.OutcomeDrivenInnovation.SurveyTest do
+defmodule SoonReady.OutcomeDrivenInnovationTest do
   use SoonReady.DataCase
 
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.Survey
   alias SoonReady.OutcomeDrivenInnovation.Events.{SurveyCreatedV1, SurveyPublishedV1}
   alias SoonReady.OutcomeDrivenInnovation.Events.SurveyResponseSubmittedV1
 
@@ -88,8 +87,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.SurveyTest do
       # TODO: Move to setup
       {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
 
-      # TODO: SoonReady.OutcomeDrivenInnovation.create_survey
-      {:ok, %{survey_id: survey_id} = _aggregate} = Survey.create_survey(@survey_details, user)
+      {:ok, %{survey_id: survey_id} = _aggregate} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_details, user)
 
       assert_receive_event(Application, SurveyCreatedV1,
         fn event -> event.survey_id == survey_id end,
@@ -106,9 +104,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.SurveyTest do
 
     test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published" do
       {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
-      {:ok, %{survey_id: survey_id} = survey} = Survey.create_survey(@survey_details, user)
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_details, user)
 
-      {:ok, %{survey_id: ^survey_id}} = Survey.publish_survey(%{survey_id: survey_id})
+      {:ok, %{survey_id: ^survey_id}} = SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
 
       assert_receive_event(Application, SurveyPublishedV1,
         fn event -> event.survey_id == survey_id end,
@@ -120,11 +118,11 @@ defmodule SoonReady.OutcomeDrivenInnovation.SurveyTest do
   describe "Survey Participation" do
     test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted" do
       {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
-      {:ok, %{survey_id: survey_id} = survey} = Survey.create_survey(@survey_details, user)
-      {:ok, %{survey_id: ^survey_id}} = Survey.publish_survey(%{survey_id: survey_id})
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_details, user)
+      {:ok, %{survey_id: ^survey_id}} = SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
 
       response = Map.put(@survey_response_details, :survey_id, survey_id)
-      {:ok, %{response_id: response_id} = _aggregate} = Survey.submit_response(response)
+      {:ok, %{response_id: response_id} = _aggregate} = SoonReady.OutcomeDrivenInnovation.submit_response(response)
 
 
       assert_receive_event(Application, SurveyResponseSubmittedV1,
