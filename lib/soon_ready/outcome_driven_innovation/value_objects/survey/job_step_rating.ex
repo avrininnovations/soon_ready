@@ -1,4 +1,5 @@
 defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.JobStepRating do
+  # TODO: Change to GroupQuestionResponse
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.DesiredOutcomeRating
