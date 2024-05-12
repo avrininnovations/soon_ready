@@ -12,7 +12,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Supervisor do
       # TODO: Move
       SoonReadyInterface.Respondents.ReadModels.Survey,
 
-      # SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
+      SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
