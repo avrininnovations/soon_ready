@@ -9,7 +9,7 @@ defmodule SoonReady.OutcomeDrivenInnovation do
     # TODO: Move
     resource SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
-    resource SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
+    # resource SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
   end
 
   authorization do

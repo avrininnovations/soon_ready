@@ -89,7 +89,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
       password: "outatime1985",
       password_confirmation: "outatime1985",
     }
-    {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.register_researcher(params)
+    {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
 
     {:ok, %{user: user}} = SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache.get(researcher_id)
     %{user: user}

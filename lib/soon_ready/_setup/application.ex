@@ -43,6 +43,10 @@ defmodule SoonReady.Application do
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
       SoonReady.OutcomeDrivenInnovation.Supervisor,
+
+
+      # TODO: Move to supervisor
+      SoonReady.IdentityAndAccessManagement.ResearcherRegistrationEventHandler,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

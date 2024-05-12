@@ -1,13 +1,9 @@
-defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
+defmodule SoonReady.IdentityAndAccessManagement.Commands.MarkResearcherRegistrationAsFailed do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
-    uuid_primary_key :researcher_id
-    attribute :first_name, :ci_string, allow_nil?: false
-    attribute :last_name, :ci_string, allow_nil?: false
-    attribute :username, :ci_string, allow_nil?:  false
-    attribute :password, :string, allow_nil?: false
-    attribute :password_confirmation, :string, allow_nil?: false
+    attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :error, :map, allow_nil?: false
   end
 
   actions do
