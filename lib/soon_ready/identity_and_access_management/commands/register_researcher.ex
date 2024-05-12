@@ -25,7 +25,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement.Api
+    define_for SoonReady.IdentityAndAccessManagement
     define :dispatch
   end
 end

@@ -10,14 +10,14 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement.Api
+    define_for SoonReady.IdentityAndAccessManagement
     define :create
   end
 
   dispatch RegisterResearcher, to: __MODULE__, identity: :researcher_id
 
   def execute(_aggregate_state, %RegisterResearcher{} = command) do
-    with {:ok, %{id: user_id} = user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password(command.username, command.password, command.password_confirmation) do
+    with {:ok, %{id: user_id} = user} <- SoonReady.UserAuthentication.Entities.User.register_user_with_password(command.username, command.password, command.password_confirmation) do
       ResearcherRegistered.create(%{researcher_id: command.researcher_id, user_id: user_id, first_name: command.first_name, last_name: command.last_name})
     end
   end

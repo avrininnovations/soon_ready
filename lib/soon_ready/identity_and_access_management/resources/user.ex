@@ -37,7 +37,7 @@ defmodule SoonReady.UserAuthentication.Entities.User do
   end
 
   authentication do
-    api SoonReady.IdentityAndAccessManagement.UserAccount
+    api SoonReady.IdentityAndAccessManagement
 
     strategies do
       password :password do
@@ -78,4 +78,10 @@ defmodule SoonReady.UserAuthentication.Entities.User do
   #     forbid_if always()
   #   end
   # end
+
+  def register_user_with_password(username, password, password_confirmation) do
+    SoonReady.UserAuthentication.Entities.User
+    |> AshAuthentication.Info.strategy!(:password)
+    |> AshAuthentication.Strategy.action(:register, %{"username" => username, "password" => password, "password_confirmation" => password_confirmation})
+  end
 end

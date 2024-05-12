@@ -85,7 +85,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegisteredV1 do
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement.Api
+    define_for SoonReady.IdentityAndAccessManagement
     define :create
     define :decrypt
   end
