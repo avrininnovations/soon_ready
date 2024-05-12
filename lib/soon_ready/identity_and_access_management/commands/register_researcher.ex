@@ -2,10 +2,10 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
-    attribute :researcher_id, :uuid, allow_nil?: false, primary_key?: true
-    attribute :first_name, :string, allow_nil?: false
-    attribute :last_name, :string, allow_nil?: false
-    attribute :username, :string, allow_nil?:  false
+    uuid_primary_key :researcher_id
+    attribute :first_name, :ci_string, allow_nil?: false
+    attribute :last_name, :ci_string, allow_nil?: false
+    attribute :username, :ci_string, allow_nil?:  false
     attribute :password, :string, allow_nil?: false
     attribute :password_confirmation, :string, allow_nil?: false
   end

@@ -1,4 +1,5 @@
 defmodule SoonReady.UserAuthentication.Entities.User do
+  # TODO: Rename
   use Ash.Resource,
     data_layer: AshPostgres.DataLayer,
     extensions: [AshAuthentication],
@@ -29,6 +30,10 @@ defmodule SoonReady.UserAuthentication.Entities.User do
 
   actions do
     defaults [:read]
+
+    read :get do
+      get_by [:id]
+    end
   end
 
   authentication do
@@ -57,6 +62,11 @@ defmodule SoonReady.UserAuthentication.Entities.User do
 
   identities do
     identity :unique_username, [:username]
+  end
+
+  code_interface do
+    define_for SoonReady.IdentityAndAccessManagement
+    define :get, args: [:id]
   end
 
   # policies do
