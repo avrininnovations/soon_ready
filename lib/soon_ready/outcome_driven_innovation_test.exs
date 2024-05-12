@@ -81,12 +81,22 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
     ]
   }
 
-  describe "Survey Management" do
-    test "WHEN: A researcher tries to create a survey, THEN: A survey is created" do
-      # TODO: SoonReady.IdentityAndAccessManagement.register_researcher
-      # TODO: Move to setup
-      {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+  setup do
+    params = %{
+      first_name: "John",
+      last_name: "Doe",
+      username: "john.doe",
+      password: "outatime1985",
+      password_confirmation: "outatime1985",
+    }
+    {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.register_researcher(params)
 
+    {:ok, %{user: user}} = SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache.get(researcher_id)
+    %{user: user}
+  end
+
+  describe "Survey Management" do
+    test "WHEN: A researcher tries to create a survey, THEN: A survey is created", %{user: user} do
       {:ok, %{survey_id: survey_id} = _aggregate} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_details, user)
 
       assert_receive_event(Application, SurveyCreatedV1,
@@ -102,8 +112,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
       )
     end
 
-    test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published" do
-      {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+    test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published", %{user: user} do
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_details, user)
 
       {:ok, %{survey_id: ^survey_id}} = SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
@@ -116,8 +125,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
   end
 
   describe "Survey Participation" do
-    test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted" do
-      {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+    test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted", %{user: user} do
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_details, user)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
 

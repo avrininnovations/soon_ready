@@ -4,7 +4,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.Token do
     extensions: [AshAuthentication.TokenResource]
 
   token do
-    api SoonReady.IdentityAndAccessManagement.UserAccount
+    api SoonReady.IdentityAndAccessManagement
   end
 
   # TODO: Rename table

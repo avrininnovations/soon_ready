@@ -9,7 +9,10 @@ defmodule SoonReady.OutcomeDrivenInnovation.Supervisor do
   def init(_arg) do
     children = [
       # Event handlers
-      SoonReadyInterface.Respondents.ReadModels.Survey
+      # TODO: Move
+      SoonReadyInterface.Respondents.ReadModels.Survey,
+
+      SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
