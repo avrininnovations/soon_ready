@@ -1,9 +1,10 @@
 defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
-  # TODO: Rename
   use Ash.Resource,
     data_layer: AshPostgres.DataLayer,
     extensions: [AshAuthentication],
     authorizers: [Ash.Policy.Authorizer]
+
+  alias SoonReady.IdentityAndAccessManagement.Resources.Researcher
 
   attributes do
     uuid_primary_key :id
@@ -11,20 +12,29 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
     attribute :hashed_password, :string, allow_nil?: false, sensitive?: true, private?: true
   end
 
+  relationships do
+    has_one :researcher, SoonReady.IdentityAndAccessManagement.Resources.Researcher
+  end
+
   calculations do
-    calculate :is_researcher, :boolean, fn user, _context ->
-      # TODO: Update to read from researcher read model
-      {:ok, true}
+    calculate :is_researcher, :boolean, fn
+      %{researcher: %Researcher{}} = _user, _context ->
+        {:ok, true}
+      _user, _context ->
+        {:ok, false}
     end
   end
 
   changes do
     change load(:is_researcher)
+    change load(:researcher)
   end
 
   preparations do
     prepare fn query, _context ->
-      Ash.Query.load(query, :is_researcher)
+      query
+      |> Ash.Query.load(:is_researcher)
+      |> Ash.Query.load(:researcher)
     end
   end
 
