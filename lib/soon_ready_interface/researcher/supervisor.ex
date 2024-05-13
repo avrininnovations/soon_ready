@@ -8,7 +8,7 @@ defmodule SoonReadyInterface.Researcher.Supervisor do
   @impl true
   def init(_arg) do
     children = [
-      SoonReadyInterface.Researcher.ReadModels.ResearcherCache,
+
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

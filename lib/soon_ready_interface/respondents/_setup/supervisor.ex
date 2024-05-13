@@ -9,7 +9,6 @@ defmodule SoonReadyInterface.Respondents.Setup.Supervisor do
   def init(_arg) do
     children = [
       SoonReadyInterface.Respondents.ReadModels.Survey,
-      SoonReadyInterface.Respondents.ReadModels.ResearcherCache,
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

@@ -1,0 +1,47 @@
+defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
+  # TODO: Change to postgres
+  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+
+  use Commanded.Event.Handler,
+    application: SoonReady.Application,
+    name: __MODULE__,
+    consistency: Application.get_env(:soon_ready, :consistency, :eventual)
+
+  alias SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationSucceededV1
+
+  attributes do
+    attribute :id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :user_id, :uuid, allow_nil?: false
+  end
+
+  relationships do
+    belongs_to :user, SoonReady.UserAuthentication.Entities.User do
+      define_attribute? false
+      source_attribute :user_id
+    end
+  end
+
+  actions do
+    defaults [:create, :read]
+
+    read :get do
+      get_by [:id]
+
+      prepare fn query, _context ->
+        Ash.Query.load(query, [:user])
+      end
+    end
+  end
+
+  code_interface do
+    define_for SoonReady.IdentityAndAccessManagement
+    define :create
+    define :get, args: [:id]
+  end
+
+  def handle(%ResearcherRegistrationSucceededV1{researcher_id: researcher_id, user_id: user_id} = event, _metadata) do
+    with {:ok, _active_odi_survey} <- __MODULE__.create(%{id: researcher_id, user_id: user_id}) do
+      :ok
+    end
+  end
+end

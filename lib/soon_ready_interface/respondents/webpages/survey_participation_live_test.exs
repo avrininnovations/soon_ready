@@ -224,7 +224,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       password_confirmation: "outatime1985",
     }
     {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
-    {:ok, %{user: user}} = SoonReadyInterface.Respondents.ReadModels.ResearcherCache.get(researcher_id)
+    {:ok, %{user: user}} = SoonReady.IdentityAndAccessManagement.get_researcher(researcher_id)
 
     {:ok, %{survey_id: survey_id}} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user)
     {:ok, _survey} = SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})

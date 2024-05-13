@@ -6,7 +6,7 @@ defmodule SoonReady.OutcomeDrivenInnovation do
   alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
   resources do
-    resource SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
+
   end
 
   authorization do

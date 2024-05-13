@@ -6,10 +6,9 @@ defmodule SoonReady.IdentityAndAccessManagement do
   resources do
     resource SoonReady.UserAuthentication.Entities.User
     resource SoonReady.IdentityAndAccessManagement.Resources.Token
+    resource SoonReady.IdentityAndAccessManagement.Resources.Researcher
   end
 
   defdelegate initiate_researcher_registration(params), to: InitiateResearcherRegistration, as: :dispatch
-  def get_user(user_id) do
-    SoonReady.UserAuthentication.Entities.User.get(user_id)
-  end
+  defdelegate get_researcher(researcher_id), to: SoonReady.IdentityAndAccessManagement.Resources.Researcher, as: :get
 end

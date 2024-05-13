@@ -91,7 +91,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
     }
     {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
 
-    {:ok, %{user: user}} = SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache.get(researcher_id)
+    {:ok, %{user: user}} = SoonReady.IdentityAndAccessManagement.get_researcher(researcher_id)
     %{user: user}
   end
 

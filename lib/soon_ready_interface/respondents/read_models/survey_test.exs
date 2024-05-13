@@ -48,7 +48,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
       password_confirmation: "outatime1985",
     }
     {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
-    {:ok, %{user: user}} = SoonReadyInterface.Respondents.ReadModels.ResearcherCache.get(researcher_id)
+    {:ok, %{user: user}} = SoonReady.IdentityAndAccessManagement.get_researcher(researcher_id)
 
     %{user: user}
   end

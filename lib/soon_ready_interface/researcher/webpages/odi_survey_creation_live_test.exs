@@ -224,7 +224,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       password_confirmation: "outatime1985",
     }
     {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
-    {:ok, %{user: user}} = SoonReadyInterface.Researcher.ReadModels.ResearcherCache.get(researcher_id)
+    {:ok, %{user: user}} = SoonReady.IdentityAndAccessManagement.get_researcher(researcher_id)
 
     conn =
       conn
