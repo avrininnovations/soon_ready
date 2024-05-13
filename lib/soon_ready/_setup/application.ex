@@ -43,13 +43,9 @@ defmodule SoonReady.Application do
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
       SoonReady.OutcomeDrivenInnovation.Supervisor,
-
-
-      # TODO: Move to supervisor
-      SoonReady.IdentityAndAccessManagement.ResearcherRegistrationEventHandler,
+      SoonReady.IdentityAndAccessManagement.Supervisor,
 
       SoonReadyInterface.Respondents.Setup.Supervisor,
-
       SoonReadyInterface.Researcher.Supervisor,
     ]
 

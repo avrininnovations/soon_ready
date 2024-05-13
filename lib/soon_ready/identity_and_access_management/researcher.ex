@@ -1,6 +1,10 @@
 defmodule SoonReady.IdentityAndAccessManagement.Researcher do
   use Ash.Resource, data_layer: :embedded
   use Commanded.Commands.Router
+  use Commanded.Event.Handler,
+    application: SoonReady.Application,
+    consistency: :strong,
+    name: __MODULE__
 
   alias SoonReady.IdentityAndAccessManagement.Commands.{
     InitiateResearcherRegistration,
@@ -54,6 +58,26 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
 
   def execute(_aggregate_state, %MarkResearcherRegistrationAsFailed{researcher_id: researcher_id, error: error} = command) do
     ResearcherRegistrationFailedV1.create(%{researcher_id: researcher_id, error: error})
+  end
+
+  def handle(%ResearcherRegistrationInitiatedV1{} = event, _metadata) do
+    %{
+      researcher_id: researcher_id,
+      first_name: first_name,
+      last_name: last_name,
+      username: username,
+      password: password,
+      password_confirmation: password_confirmation
+    } = event
+
+    case SoonReady.UserAuthentication.Entities.User.register_user_with_password(username, password, password_confirmation) do
+      {:ok, %{id: user_id} = user} ->
+        {:ok, _command} = MarkResearcherRegistrationAsSuccessful.dispatch(%{researcher_id: researcher_id, user_id: user_id})
+      {:error, error} ->
+        {:ok, _command} = MarkResearcherRegistrationAsFailed.dispatch(%{researcher_id: researcher_id, error: error})
+    end
+
+    :ok
   end
 
   def apply(state, %ResearcherRegistrationInitiatedV1{researcher_id: researcher_id} = _event) do
