@@ -215,233 +215,170 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     assert query_params == @landing_page_query_params
   end
 
-  describe "Landing Page" do
-    test "GIVEN: Survey has been published, WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
-      do
-        {:ok, _view, html} = live(conn, ~p"/survey/participate/#{survey_id}")
+  setup do
+    params = %{
+      first_name: "John",
+      last_name: "Doe",
+      username: "john.doe",
+      password: "outatime1985",
+      password_confirmation: "outatime1985",
+    }
+    {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
+    {:ok, %{user: user}} = SoonReadyInterface.Respondents.ReadModels.ResearcherCache.get(researcher_id)
 
-        assert html =~ "Welcome to our Survey!"
-      else
-        {:error, error} ->
-          flunk("Error publishing survey: #{inspect(error)}")
-      end
+    {:ok, %{survey_id: survey_id}} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user)
+    {:ok, _survey} = SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
+
+    %{survey_id: survey_id}
+  end
+
+  describe "Landing Page" do
+    test "WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, _view, html} = live(conn, ~p"/survey/participate/#{survey_id}")
+
+      assert html =~ "Welcome to our Survey!"
     end
 
-    test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-      do
-        _resulting_html = submit_nickname_form_response(view)
+    test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/screening-questions"
-        assert has_element?(view, "h2", "Screening Questions")
-        assert_landing_page_query_params(path)
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_nickname_form_response(view)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/screening-questions"
+      assert has_element?(view, "h2", "Screening Questions")
+      assert_landing_page_query_params(path)
     end
   end
 
   describe "Screening Questions Form" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
-            _ <- submit_nickname_form_response(view),
-            _ <- assert_patch(view)
-      do
-        _resulting_html = submit_screening_form_response(view, @correct_screening_form_params)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/contact-details"
-        assert has_element?(view, "h2", "Contact Details")
-        assert_screening_page_query_params(path)
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_screening_form_response(view, @correct_screening_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/contact-details"
+      assert has_element?(view, "h2", "Contact Details")
+      assert_screening_page_query_params(path)
     end
 
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}"),
-            _ = submit_nickname_form_response(view),
-            _ = assert_patch(view)
-      do
-        _resulting_html = submit_screening_form_response(view, @incorrect_screening_form_params)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
-        assert has_element?(view, "h2", "Thank You!")
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_screening_form_response(view, @incorrect_screening_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
+      assert has_element?(view, "h2", "Thank You!")
     end
   end
 
   describe "Contact Details Form" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
-            _ <- submit_nickname_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_screening_form_response(view),
-            _ <- assert_patch(view)
-      do
-        _resulting_html = submit_contact_details_form_response(view)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/demographics"
-        assert has_element?(view, "h2", "Demographics")
-        assert_contact_details_page_query_params(path)
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_contact_details_form_response(view)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/demographics"
+      assert has_element?(view, "h2", "Demographics")
+      assert_contact_details_page_query_params(path)
     end
   end
 
   describe "Demographics Form" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
-            _ <- submit_nickname_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_screening_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_contact_details_form_response(view),
-            _ <- assert_patch(view)
-      do
-        _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/context"
-        assert has_element?(view, "h2", "Context")
-        assert_demographics_page_query_params(path)
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/context"
+      assert has_element?(view, "h2", "Context")
+      assert_demographics_page_query_params(path)
     end
   end
 
   describe "Context Form" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
-            _ <- submit_nickname_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_screening_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_contact_details_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_demographics_form_response(view),
-            _ <- assert_patch(view)
-      do
-        _resulting_html = submit_context_form_response(view, @context_form_params)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_demographics_form_response(view)
+      _ = assert_patch(view)
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/comparison"
-        assert has_element?(view, "h2", "Comparison")
-        assert_context_page_query_params(path)
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_context_form_response(view, @context_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/comparison"
+      assert has_element?(view, "h2", "Comparison")
+      assert_context_page_query_params(path)
     end
   end
 
   describe "Comparison Form" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
-            _ <- submit_nickname_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_screening_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_contact_details_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_demographics_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_context_form_response(view),
-            _ <- assert_patch(view)
-      do
-        _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_demographics_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_context_form_response(view)
+      _ = assert_patch(view)
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/desired-outcome-ratings"
-        assert has_element?(view, "h2", "Desired Outcome Ratings")
-        assert_comparison_page_query_params(path)
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/desired-outcome-ratings"
+      assert has_element?(view, "h2", "Desired Outcome Ratings")
+      assert_comparison_page_query_params(path)
     end
   end
 
   describe "Desired Outcome Rating Form" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn} do
-      with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-            {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-            {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id}),
-            {:ok, view, _html} <- live(conn, ~p"/survey/participate/#{survey_id}"),
-            _ <- submit_nickname_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_screening_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_contact_details_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_demographics_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_context_form_response(view),
-            _ <- assert_patch(view),
-            _ <- submit_comparison_form_response(view),
-            _ <- assert_patch(view)
-      do
-        _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_demographics_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_context_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_comparison_form_response(view)
+      _ = assert_patch(view)
 
-        path = assert_patch(view)
-        assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
-        assert has_element?(view, "h2", "Thank You!")
-      else
-        {:error, error} ->
-          flunk("Error: #{inspect(error)}")
-        _ ->
-          flunk("An unexpected error occurred")
-      end
+      _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
+      assert has_element?(view, "h2", "Thank You!")
     end
   end
 end

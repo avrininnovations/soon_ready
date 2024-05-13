@@ -39,9 +39,22 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
     ]
   }
 
-  test "GIVEN: An ODI survey was publised, THEN: The survey is active" do
-    with {:ok, user} <- SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985"),
-          {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
+  setup do
+    params = %{
+      first_name: "John",
+      last_name: "Doe",
+      username: "john.doe",
+      password: "outatime1985",
+      password_confirmation: "outatime1985",
+    }
+    {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
+    {:ok, %{user: user}} = SoonReadyInterface.Respondents.ReadModels.ResearcherCache.get(researcher_id)
+
+    %{user: user}
+  end
+
+  test "GIVEN: An ODI survey was publised, THEN: The survey is active", %{user: user} do
+    with {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
           {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
     do
       {:ok, survey} = Survey.get_active(survey_id)
