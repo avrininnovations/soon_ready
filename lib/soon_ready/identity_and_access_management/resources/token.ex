@@ -7,9 +7,8 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.Token do
     api SoonReady.IdentityAndAccessManagement
   end
 
-  # TODO: Rename table
   postgres do
-    table "user_authentication__entities__tokens"
+    table "identity_and_access_management__resources__tokens"
     repo SoonReady.Repo
   end
 
