@@ -14,7 +14,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
   end
 
   relationships do
-    belongs_to :user, SoonReady.UserAuthentication.Entities.User do
+    belongs_to :user, SoonReady.IdentityAndAccessManagement.Resources.User do
       define_attribute? false
       source_attribute :user_id
     end

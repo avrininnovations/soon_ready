@@ -70,7 +70,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
       password_confirmation: password_confirmation
     } = event
 
-    case SoonReady.UserAuthentication.Entities.User.register_user_with_password(username, password, password_confirmation) do
+    case SoonReady.IdentityAndAccessManagement.Resources.User.register_user_with_password(username, password, password_confirmation) do
       {:ok, %{id: user_id} = user} ->
         {:ok, _command} = MarkResearcherRegistrationAsSuccessful.dispatch(%{researcher_id: researcher_id, user_id: user_id})
       {:error, error} ->

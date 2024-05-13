@@ -44,7 +44,7 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
           |> Map.from_struct()
           |> ResearcherRegistrationSucceededV1.create()
 
-        {:ok, user} = SoonReady.UserAuthentication.Entities.User.get(event.user_id)
+        {:ok, user} = SoonReady.IdentityAndAccessManagement.Resources.User.get(event.user_id)
         assert event.user_id == user.id
         assert command.username == user.username
         # TODO: Test password

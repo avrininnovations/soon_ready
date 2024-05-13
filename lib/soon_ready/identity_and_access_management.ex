@@ -4,7 +4,7 @@ defmodule SoonReady.IdentityAndAccessManagement do
   alias SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegistration
 
   resources do
-    resource SoonReady.UserAuthentication.Entities.User
+    resource SoonReady.IdentityAndAccessManagement.Resources.User
     resource SoonReady.IdentityAndAccessManagement.Resources.Token
     resource SoonReady.IdentityAndAccessManagement.Resources.Researcher
   end

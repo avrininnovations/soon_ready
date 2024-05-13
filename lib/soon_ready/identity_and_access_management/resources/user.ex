@@ -1,4 +1,4 @@
-defmodule SoonReady.UserAuthentication.Entities.User do
+defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
   # TODO: Rename
   use Ash.Resource,
     data_layer: AshPostgres.DataLayer,
@@ -79,7 +79,7 @@ defmodule SoonReady.UserAuthentication.Entities.User do
   # end
 
   def register_user_with_password(username, password, password_confirmation) do
-    SoonReady.UserAuthentication.Entities.User
+    SoonReady.IdentityAndAccessManagement.Resources.User
     |> AshAuthentication.Info.strategy!(:password)
     |> AshAuthentication.Strategy.action(:register, %{"username" => username, "password" => password, "password_confirmation" => password_confirmation})
   end

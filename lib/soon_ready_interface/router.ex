@@ -24,7 +24,7 @@ defmodule SoonReadyInterface.Router do
 
     sign_in_route()
     sign_out_route AuthController
-    auth_routes_for SoonReady.UserAuthentication.Entities.User, to: AuthController
+    auth_routes_for SoonReady.IdentityAndAccessManagement.Resources.User, to: AuthController
     reset_route []
   end
 

@@ -1,7 +1,7 @@
 defmodule SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher do
   use Ash.Policy.SimpleCheck
 
-  alias SoonReady.UserAuthentication.Entities.User
+  alias SoonReady.IdentityAndAccessManagement.Resources.User
 
   def describe(_) do
     "actor is a researcher"
