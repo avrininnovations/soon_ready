@@ -10,6 +10,8 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
     ResearcherRegistrationSucceededV1,
   }
 
+  alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
+
   test "WHEN: An administrator tries to register a researcher, THEN: A researcher" do
     params = %{
       first_name: "John",
@@ -26,13 +28,23 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
         {:ok, event} =
           event
           |> Map.from_struct()
-          |> ResearcherRegistrationInitiatedV1.create()
+          |> ResearcherRegistrationInitiatedV1.decrypt()
 
-        assert command.first_name == event.first_name
-        assert command.last_name == event.last_name
-        assert command.username == event.username
-        assert command.password == event.password
-        assert command.password_confirmation == event.password_confirmation
+        with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.get(event.researcher_id),
+              {:ok, first_name} <- SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: event.first_name_hash}),
+              {:ok, last_name} <- SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: event.last_name_hash}),
+              {:ok, username} <- SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: event.username_hash}),
+              {:ok, password} <- SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: event.password_hash}),
+              {:ok, password_confirmation} <- SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: event.password_confirmation_hash})
+        do
+          assert command.first_name == event.first_name
+          assert command.last_name == event.last_name
+          assert command.username == event.username
+          assert command.password == event.password
+          assert command.password_confirmation == event.password_confirmation
+        else
+          error -> flunk("An error occured #{error}")
+        end
       end
     )
 

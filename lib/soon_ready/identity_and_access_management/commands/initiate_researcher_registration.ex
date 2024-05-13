@@ -10,7 +10,9 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegis
     attribute :password_confirmation, :string, allow_nil?: false
   end
 
-  # TODO: Validate password_confirmation
+  validations do
+    validate confirm(:password, :password_confirmation)
+  end
 
   actions do
     create :dispatch do

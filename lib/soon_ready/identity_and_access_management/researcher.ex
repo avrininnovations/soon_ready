@@ -61,6 +61,11 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
   end
 
   def handle(%ResearcherRegistrationInitiatedV1{} = event, _metadata) do
+    event =
+      event
+      |> Map.from_struct()
+      |> ResearcherRegistrationInitiatedV1.decrypt!()
+
     %{
       researcher_id: researcher_id,
       first_name: first_name,
