@@ -1,6 +1,5 @@
 defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
-  # TODO: Change to postgres
-  use Ash.Resource, data_layer: Ash.DataLayer.Ets
+  use Ash.Resource, data_layer: AshPostgres.DataLayer
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -37,6 +36,11 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
     define_for SoonReady.IdentityAndAccessManagement
     define :create
     define :get, args: [:id]
+  end
+
+  postgres do
+    repo SoonReady.Repo
+    table "identity_and_access_management__resources__researchers"
   end
 
   def handle(%ResearcherRegistrationSucceededV1{researcher_id: researcher_id, user_id: user_id} = event, _metadata) do
