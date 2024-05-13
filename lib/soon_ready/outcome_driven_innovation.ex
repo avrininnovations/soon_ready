@@ -6,9 +6,6 @@ defmodule SoonReady.OutcomeDrivenInnovation do
   alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
   resources do
-    # TODO: Move
-    resource SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
-
     resource SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
   end
 

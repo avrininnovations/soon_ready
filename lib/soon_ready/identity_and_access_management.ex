@@ -4,9 +4,6 @@ defmodule SoonReady.IdentityAndAccessManagement do
   alias SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegistration
 
   resources do
-    # TODO: Move this out
-    resource SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
-
     resource SoonReady.UserAuthentication.Entities.User
     resource SoonReady.IdentityAndAccessManagement.Resources.Token
   end

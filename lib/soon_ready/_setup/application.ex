@@ -48,11 +48,9 @@ defmodule SoonReady.Application do
       # TODO: Move to supervisor
       SoonReady.IdentityAndAccessManagement.ResearcherRegistrationEventHandler,
 
-      # TODO: Move to supervisor
-      SoonReadyInterface.Researcher.ReadModels.ResearcherCache,
+      SoonReadyInterface.Respondents.Setup.Supervisor,
 
-      # TODO: Move to supervisor
-      SoonReadyInterface.Respondents.ReadModels.ResearcherCache,
+      SoonReadyInterface.Researcher.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

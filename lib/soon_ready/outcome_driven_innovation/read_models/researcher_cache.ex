@@ -1,5 +1,4 @@
 defmodule SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache do
-  # TODO: Rename folder from read_models to cache or test_cache
   use Ash.Resource, data_layer: Ash.DataLayer.Ets
 
   use Commanded.Event.Handler,

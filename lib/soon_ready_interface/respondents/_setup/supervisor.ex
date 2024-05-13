@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Supervisor do
+defmodule SoonReadyInterface.Respondents.Setup.Supervisor do
   use Supervisor
 
   def start_link(arg) do
@@ -8,7 +8,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Supervisor do
   @impl true
   def init(_arg) do
     children = [
-      SoonReady.OutcomeDrivenInnovation.ReadModels.ResearcherCache
+      SoonReadyInterface.Respondents.ReadModels.Survey,
+      SoonReadyInterface.Respondents.ReadModels.ResearcherCache,
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
