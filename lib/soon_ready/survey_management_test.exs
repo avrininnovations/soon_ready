@@ -7,7 +7,12 @@ defmodule SoonReady.SurveyManagementTest do
   alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1, SurveyResponseSubmittedV1}
 
   # TODO: Remove Survey prefix
-  alias SoonReady.SurveyManagement.ValueObjects.Survey.{SingleSelectQuestion, MultiSelectQuestion}
+  alias SoonReady.SurveyManagement.ValueObjects.Survey.{
+    ShortAnswerQuestion,
+    LongAnswerQuestion,
+    SingleSelectQuestion,
+    MultiSelectQuestion
+  }
   alias SoonReady.SurveyManagement.ValueObjects.OptionWithCorrectFlag
 
   @old_survey_details %{
@@ -99,6 +104,8 @@ defmodule SoonReady.SurveyManagementTest do
 
   @survey_details %{pages: [
     %{questions: [
+      %{type: "short_answer_question", prompt: "The prompt"},
+      %{type: "long_answer_question", prompt: "The prompt"},
       %{type: "single_select_option", prompt: "The prompt", options: ["Option 1", "Option 2"]},
       %{type: "single_select_option", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}]},
       # TODO: Test default :correct_answer_criteria
