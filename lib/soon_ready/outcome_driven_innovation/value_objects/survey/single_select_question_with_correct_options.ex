@@ -1,5 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.ScreeningQuestion do
-  # TODO: SingleSelectQuestionWithCorrectOptions
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.SingleSelectQuestionWithCorrectOptions do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias __MODULE__.Option

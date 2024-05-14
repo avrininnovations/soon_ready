@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.ScreeningQuestion.Validations.AtLeastOneOptionIsCorrect do
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.SingleSelectQuestionWithCorrectOptions.Validations.AtLeastOneOptionIsCorrect do
   use Ash.Resource.Validation
 
   alias Ash.Error.Changes.InvalidAttribute
