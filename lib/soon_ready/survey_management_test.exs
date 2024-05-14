@@ -104,6 +104,11 @@ defmodule SoonReady.SurveyManagementTest do
       %{type: "multi_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
       %{type: "multi_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:any_correct_option}"},
       %{type: "multi_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:all_correct_options}"},
+
+      %{type: "question_group", prompt: "The group", questions: [
+        %{type: "single_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+        %{type: "single_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+      ]},
     ]}
   ]}
 
