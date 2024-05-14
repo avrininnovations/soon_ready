@@ -6,6 +6,9 @@ defmodule SoonReady.SurveyManagementTest do
   alias SoonReady.Application
   alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1, SurveyResponseSubmittedV1}
 
+  # TODO: Remove Survey prefix
+  alias SoonReady.SurveyManagement.ValueObjects.Survey.{SingleSelectQuestion}
+  alias SoonReady.SurveyManagement.ValueObjects.OptionWithCorrectFlag
 
   @old_survey_details %{
     brand: "A Big Brand",
@@ -96,7 +99,8 @@ defmodule SoonReady.SurveyManagementTest do
 
   @survey_details %{pages: [
     %{questions: [
-      %{type: "single_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"]}
+      %SingleSelectQuestion{prompt: "The prompt", options: ["Option 1", "Option 2"]},
+      %SingleSelectQuestion{prompt: "The prompt", options: [%OptionWithCorrectFlag{value: "Option 1", correct?: true}, %OptionWithCorrectFlag{value: "Option 2", correct?: false}]}
     ]}
   ]}
 
