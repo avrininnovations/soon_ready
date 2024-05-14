@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.QuestionGroupResponse do
   alias SoonReady.SurveyManagement.ValueObjects.SimpleResponse
 
   attributes do
-    attribute :prompt, :string, allow_nil?: false
+    attribute :prompt, :ci_string, allow_nil?: false
     attribute :response, {:array, SimpleResponse}, allow_nil?: false
   end
 end

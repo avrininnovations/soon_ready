@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.SingleSelectQuestion do
   alias SoonReady.SurveyManagement.ValueObjects.Option
 
   attributes do
-    attribute :prompt, :string, allow_nil?: false
+    attribute :prompt, :ci_string, allow_nil?: false
     attribute :options, {:array, Option}, allow_nil?: false, constraints: [min_length: 2]
   end
 

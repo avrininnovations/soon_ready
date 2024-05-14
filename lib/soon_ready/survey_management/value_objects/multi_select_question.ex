@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.MultiSelectQuestion do
   alias SoonReady.SurveyManagement.ValueObjects.Option
 
   attributes do
-    attribute :prompt, :string, allow_nil?: false
+    attribute :prompt, :ci_string, allow_nil?: false
     attribute :options, {:array, Option}, allow_nil?: false, constraints: [min_length: 2]
     attribute :correct_answer_criteria, :atom, constraints: [one_of: [:not_applicable, :any_correct_option, :all_correct_options]], default: :not_applicable, allow_nil?: false
   end

@@ -5,7 +5,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.JobStepRating do
   alias SoonReady.SurveyManagement.ValueObjects.DesiredOutcomeRating
 
   attributes do
-    attribute :name, :string, allow_nil?: false
+    attribute :name, :ci_string, allow_nil?: false
     attribute :desired_outcomes, {:array, DesiredOutcomeRating}, allow_nil?: false, constraints: [min_length: 1]
   end
 end
