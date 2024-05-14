@@ -16,6 +16,7 @@ defmodule SoonReady.Application do
     ]
 
   router SoonReady.OutcomeDrivenInnovation.Survey
+  router SoonReady.SurveyManagement.Survey
   router SoonReady.IdentityAndAccessManagement.Researcher
 
   router SoonReady.Onboarding.Commands.Router
@@ -43,6 +44,7 @@ defmodule SoonReady.Application do
       __MODULE__,
       SoonReady.Onboarding.Setup.Supervisor,
       SoonReady.OutcomeDrivenInnovation.Supervisor,
+      SoonReady.SurveyManagement.Supervisor,
       SoonReady.IdentityAndAccessManagement.Supervisor,
 
       SoonReadyInterface.Respondents.Setup.Supervisor,
