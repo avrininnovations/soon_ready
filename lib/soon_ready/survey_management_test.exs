@@ -7,7 +7,7 @@ defmodule SoonReady.SurveyManagementTest do
   alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1, SurveyResponseSubmittedV1}
 
   # TODO: Remove Survey prefix
-  alias SoonReady.SurveyManagement.ValueObjects.Survey.{SingleSelectQuestion}
+  alias SoonReady.SurveyManagement.ValueObjects.Survey.{SingleSelectQuestion, MultiSelectQuestion}
   alias SoonReady.SurveyManagement.ValueObjects.OptionWithCorrectFlag
 
   @old_survey_details %{
@@ -99,8 +99,13 @@ defmodule SoonReady.SurveyManagementTest do
 
   @survey_details %{pages: [
     %{questions: [
-      %SingleSelectQuestion{prompt: "The prompt", options: ["Option 1", "Option 2"]},
-      %SingleSelectQuestion{prompt: "The prompt", options: [%OptionWithCorrectFlag{value: "Option 1", correct?: true}, %OptionWithCorrectFlag{value: "Option 2", correct?: false}]}
+      %{type: "single_select_option", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+      %{type: "single_select_option", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}]},
+      # TODO: Test default :correct_answer_criteria
+      # TODO: Avoid string wrapping
+      %{type: "multi_select_option", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
+      %{type: "multi_select_option", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:any_correct_option}"},
+      %{type: "multi_select_option", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:all_correct_options}"},
     ]}
   ]}
 
@@ -135,7 +140,6 @@ defmodule SoonReady.SurveyManagementTest do
   describe "Survey Participation" do
     test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted", %{user: user} do
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(@survey_details, user)
-      IO.inspect(survey_id)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
       response = Map.put(@survey_response_details, :survey_id, survey_id)
