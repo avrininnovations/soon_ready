@@ -6,15 +6,6 @@ defmodule SoonReady.SurveyManagementTest do
   alias SoonReady.Application
   alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1, SurveyResponseSubmittedV1}
 
-  # TODO: Remove Survey prefix
-  alias SoonReady.SurveyManagement.ValueObjects.Survey.{
-    ShortAnswerQuestion,
-    LongAnswerQuestion,
-    SingleSelectQuestion,
-    MultiSelectQuestion
-  }
-  alias SoonReady.SurveyManagement.ValueObjects.OptionWithCorrectFlag
-
   @old_survey_details %{
     brand: "A Big Brand",
     market: %{
@@ -106,13 +97,13 @@ defmodule SoonReady.SurveyManagementTest do
     %{questions: [
       %{type: "short_answer_question", prompt: "The prompt"},
       %{type: "long_answer_question", prompt: "The prompt"},
-      %{type: "single_select_option", prompt: "The prompt", options: ["Option 1", "Option 2"]},
-      %{type: "single_select_option", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}]},
+      %{type: "single_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+      %{type: "single_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}]},
       # TODO: Test default :correct_answer_criteria
       # TODO: Avoid string wrapping
-      %{type: "multi_select_option", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
-      %{type: "multi_select_option", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:any_correct_option}"},
-      %{type: "multi_select_option", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:all_correct_options}"},
+      %{type: "multi_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
+      %{type: "multi_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:any_correct_option}"},
+      %{type: "multi_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:all_correct_options}"},
     ]}
   ]}
 

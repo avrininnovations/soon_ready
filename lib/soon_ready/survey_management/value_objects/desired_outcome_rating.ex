@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.Survey.DesiredOutcomeRating do
+defmodule SoonReady.SurveyManagement.ValueObjects.DesiredOutcomeRating do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

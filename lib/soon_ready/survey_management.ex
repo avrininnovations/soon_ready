@@ -8,9 +8,9 @@ defmodule SoonReady.SurveyManagement do
 
   end
 
-  # authorization do
-  #   authorize :by_default
-  # end
+  authorization do
+    authorize :by_default
+  end
 
   def create_survey(params, actor \\ nil), do: CreateSurvey.dispatch(params, [actor: actor])
   defdelegate publish_survey(params), to: PublishSurvey, as: :dispatch

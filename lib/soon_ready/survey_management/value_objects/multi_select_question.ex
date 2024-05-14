@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.Survey.MultiSelectQuestion do
+defmodule SoonReady.SurveyManagement.ValueObjects.MultiSelectQuestion do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias SoonReady.SurveyManagement.ValueObjects.Option

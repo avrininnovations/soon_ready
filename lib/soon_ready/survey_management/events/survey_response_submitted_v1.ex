@@ -3,7 +3,7 @@ defmodule SoonReady.SurveyManagement.Events.SurveyResponseSubmittedV1 do
 
   require Logger
 
-  # alias SoonReady.SurveyManagement.ValueObjects.Survey.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
+  # alias SoonReady.SurveyManagement.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
   # alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
 

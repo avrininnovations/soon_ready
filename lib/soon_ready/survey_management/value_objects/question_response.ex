@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.Survey.QuestionResponse do
+defmodule SoonReady.SurveyManagement.ValueObjects.QuestionResponse do
   # TODO: Rename to SingleValueQuestionResponse
   # TODO: Create MultiValueQuestionResponse, :responses
   # TODO: GroupQuestionResponse, :group_prompt, :question_responses
