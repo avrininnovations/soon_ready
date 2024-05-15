@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.SingleSelectQuestion do
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.MultipleChoiceQuestion do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

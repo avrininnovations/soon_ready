@@ -8,8 +8,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
     Market,
     JobStep,
     SingleSelectQuestionWithCorrectOptions,
-    SingleSelectQuestion,
-    SingleSelectQuestion
+    MultipleChoiceQuestion,
+    MultipleChoiceQuestion
   }
 
   alias SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher
@@ -20,8 +20,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
     attribute :screening_questions, {:array, SingleSelectQuestionWithCorrectOptions}
-    attribute :demographic_questions, {:array, SingleSelectQuestion}
-    attribute :context_questions, {:array, SingleSelectQuestion}
+    attribute :demographic_questions, {:array, MultipleChoiceQuestion}
+    attribute :context_questions, {:array, MultipleChoiceQuestion}
   end
 
   policies do

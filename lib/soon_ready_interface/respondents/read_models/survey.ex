@@ -5,8 +5,8 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
     Market,
     JobStep,
     SingleSelectQuestionWithCorrectOptions,
-    SingleSelectQuestion,
-    SingleSelectQuestion
+    MultipleChoiceQuestion,
+    MultipleChoiceQuestion
   }
 
   attributes do
@@ -15,8 +15,8 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
     attribute :screening_questions, {:array, SingleSelectQuestionWithCorrectOptions}
-    attribute :demographic_questions, {:array, SingleSelectQuestion}
-    attribute :context_questions, {:array, SingleSelectQuestion}
+    attribute :demographic_questions, {:array, MultipleChoiceQuestion}
+    attribute :context_questions, {:array, MultipleChoiceQuestion}
     attribute :is_active, :boolean, allow_nil?: false, default: false
   end
 

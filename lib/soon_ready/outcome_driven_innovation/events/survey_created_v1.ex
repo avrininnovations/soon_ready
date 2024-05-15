@@ -5,8 +5,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreatedV1 do
     Market,
     JobStep,
     SingleSelectQuestionWithCorrectOptions,
-    SingleSelectQuestion,
-    SingleSelectQuestion
+    MultipleChoiceQuestion,
+    MultipleChoiceQuestion
   }
 
   attributes do
@@ -15,8 +15,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreatedV1 do
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
     attribute :screening_questions, {:array, SingleSelectQuestionWithCorrectOptions}
-    attribute :demographic_questions, {:array, SingleSelectQuestion}
-    attribute :context_questions, {:array, SingleSelectQuestion}
+    attribute :demographic_questions, {:array, MultipleChoiceQuestion}
+    attribute :context_questions, {:array, MultipleChoiceQuestion}
   end
 
   actions do

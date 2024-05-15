@@ -96,18 +96,18 @@ defmodule SoonReady.SurveyManagementTest do
   @survey_details %{pages: [
     %{questions: [
       %{type: "short_answer_question", prompt: "The prompt"},
-      %{type: "long_answer_question", prompt: "The prompt"},
-      %{type: "single_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
-      %{type: "single_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}]},
+      %{type: "paragraph_question", prompt: "The prompt"},
+      %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+      %{type: "multiple_choice_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}]},
       # TODO: Test default :correct_answer_criteria
       # TODO: Avoid string wrapping
-      %{type: "multi_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
-      %{type: "multi_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:any_correct_option}"},
-      %{type: "multi_select_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:all_correct_options}"},
+      %{type: "checkbox_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
+      %{type: "checkbox_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:any_correct_option}"},
+      %{type: "checkbox_question", prompt: "The prompt", options: [%{type: "option_with_correct_flag", value: "Option 1", correct?: true}, %{type: "option_with_correct_flag", value: "Option 2", correct?: false}], correct_answer_criteria: "#{:all_correct_options}"},
 
       %{type: "question_group", prompt: "The group", questions: [
-        %{type: "single_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
-        %{type: "single_select_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+        %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+        %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
       ]},
     ]}
   ]}
