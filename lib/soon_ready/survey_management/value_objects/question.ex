@@ -5,7 +5,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.Question do
     MultipleChoiceQuestion,
     CheckboxQuestion,
   }
-  alias SoonReady.SurveyManagement.ValueObjects.QuestionGroup
+  alias SoonReady.SurveyManagement.ValueObjects.{MultipleChoiceQuestionGroup, ShortAnswerQuestionGroup}
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [
     # TODO: Should basic question have tag or just delegate?
@@ -14,6 +14,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.Question do
     {MultipleChoiceQuestion, [type: MultipleChoiceQuestion, tag: :type, tag_value: "multiple_choice_question"]},
     {CheckboxQuestion, [type: CheckboxQuestion, tag: :type, tag_value: "checkbox_question"]},
 
-    {QuestionGroup, [type: QuestionGroup, tag: :type, tag_value: "question_group"]},
+    {MultipleChoiceQuestionGroup, [type: MultipleChoiceQuestionGroup, tag: :type, tag_value: "multiple_choice_question_group"]},
+    {ShortAnswerQuestionGroup, [type: ShortAnswerQuestionGroup, tag: :type, tag_value: "short_answer_question_group"]},
   ]]
 end
