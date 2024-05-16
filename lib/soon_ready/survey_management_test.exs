@@ -278,7 +278,7 @@ defmodule SoonReady.SurveyManagementTest do
 
   end
 
-  test "GIVEN: A single-page survey expecting multi value responses has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+  test "GIVEN: A survey with a checkbox question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
     survey = %{pages: [
       %{questions: [
         %{type: "checkbox_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
@@ -293,7 +293,7 @@ defmodule SoonReady.SurveyManagementTest do
     survey_response = %{
       survey_id: survey_id,
       responses: [
-        %{question_id: checkbox_question.id, type: "multi_value_response", responses: ["Option 1", "Option 2"]},
+        %{question_id: checkbox_question.id, type: "checkbox_question_response", responses: ["Option 1", "Option 2"]},
       ]
     }
     {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)

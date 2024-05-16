@@ -1,9 +1,9 @@
 defmodule SoonReady.SurveyManagement.ValueObjects.SimpleResponse do
   alias SoonReady.SurveyManagement.ValueObjects.{
-    MultiValueResponse,
+    CheckboxQuestionResponse,
   }
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [
-    {MultiValueResponse, [type: MultiValueResponse, tag: :type, tag_value: "multi_value_response"]},
+    {CheckboxQuestionResponse, [type: CheckboxQuestionResponse, tag: :type, tag_value: "checkbox_question_response"]},
   ]]
 end

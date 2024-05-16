@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.MultiValueResponse do
+defmodule SoonReady.SurveyManagement.ValueObjects.CheckboxQuestionResponse do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do
