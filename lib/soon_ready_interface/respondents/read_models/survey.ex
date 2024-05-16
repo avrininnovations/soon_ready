@@ -4,9 +4,9 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{
     Market,
     JobStep,
-    SingleSelectQuestionWithCorrectOptions,
-    MultipleChoiceQuestion,
-    MultipleChoiceQuestion
+    ScreeningQuestion,
+    DemographicQuestion,
+    ContextQuestion,
   }
 
   attributes do
@@ -14,9 +14,9 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
-    attribute :screening_questions, {:array, SingleSelectQuestionWithCorrectOptions}
-    attribute :demographic_questions, {:array, MultipleChoiceQuestion}
-    attribute :context_questions, {:array, MultipleChoiceQuestion}
+    attribute :screening_questions, {:array, ScreeningQuestion}
+    attribute :demographic_questions, {:array, DemographicQuestion}
+    attribute :context_questions, {:array, ContextQuestion}
     attribute :is_active, :boolean, allow_nil?: false, default: false
   end
 

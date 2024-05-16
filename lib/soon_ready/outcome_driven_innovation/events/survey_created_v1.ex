@@ -4,9 +4,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreatedV1 do
   alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{
     Market,
     JobStep,
-    SingleSelectQuestionWithCorrectOptions,
-    MultipleChoiceQuestion,
-    MultipleChoiceQuestion
+    ScreeningQuestion,
+    DemographicQuestion,
+    ContextQuestion,
   }
 
   attributes do
@@ -14,9 +14,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreatedV1 do
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
-    attribute :screening_questions, {:array, SingleSelectQuestionWithCorrectOptions}
-    attribute :demographic_questions, {:array, MultipleChoiceQuestion}
-    attribute :context_questions, {:array, MultipleChoiceQuestion}
+    attribute :screening_questions, {:array, ScreeningQuestion}
+    attribute :demographic_questions, {:array, DemographicQuestion}
+    attribute :context_questions, {:array, ContextQuestion}
   end
 
   actions do
