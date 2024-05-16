@@ -1,8 +1,8 @@
-defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.JobStep do
+defmodule SoonReady.OutcomeDrivenInnovation.ValueObjects.JobStep do
   # TODO: GroupQuestion
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{JobStatement, OutcomeStatement}
+  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{JobStatement, OutcomeStatement}
 
   attributes do
     attribute :name, JobStatement, allow_nil?: false
