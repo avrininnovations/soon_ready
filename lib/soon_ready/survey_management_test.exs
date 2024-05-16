@@ -331,4 +331,57 @@ defmodule SoonReady.SurveyManagementTest do
 
     end
   end
+
+  test "GIVEN: A survey with three pages has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+    page_1_id = Ecto.UUID.generate()
+    page_2_id = Ecto.UUID.generate()
+    page_3_id = Ecto.UUID.generate()
+
+    survey = %{pages: [
+      %{
+        id: page_1_id,
+        actions: %{correct_response_action: %{type: "change_page", destination_page_id: page_2_id}, incorrect_response_action: %{type: "change_page", destination_page_id: page_2_id}},
+        questions: [
+          %{type: "short_answer_question", prompt: "The short answer prompt"},
+        ]
+      },
+      %{
+        id: page_2_id,
+        actions: %{correct_response_action: %{type: "change_page", destination_page_id: page_3_id}, incorrect_response_action: %{type: "change_page", destination_page_id: page_3_id}},
+        questions: [
+          %{type: "short_answer_question", prompt: "The short answer prompt"},
+        ]
+      },
+      %{
+        id: page_3_id,
+        actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+        questions: [
+          %{type: "short_answer_question", prompt: "The short answer prompt"},
+        ]
+      },
+    ]}
+
+    {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+    {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+
+    short_answer_question = get_question(survey, 0, 0)
+
+    survey_response = %{
+      survey_id: survey_id,
+      responses: [
+        %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
+      ]
+    }
+    {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
+
+
+    assert_receive_event(Application, SurveyResponseSubmittedV1,
+      fn event -> event.response_id == response_id end,
+      fn event ->
+        assert event.survey_id == survey_id
+        assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
+      end
+    )
+
+  end
 end
