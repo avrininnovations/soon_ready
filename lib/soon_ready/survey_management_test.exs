@@ -312,8 +312,8 @@ defmodule SoonReady.SurveyManagementTest do
     survey = %{pages: [
       %{questions: [
         %{type: "short_answer_question_group", prompt: "Multiple Choice Question Group", questions: [
-          %{type: "short_answer_question", prompt: "The prompt 1"},
-          %{type: "short_answer_question", prompt: "The prompt 2"},
+          %{prompt: "The prompt 1"},
+          %{prompt: "The prompt 2"},
         ]},
       ]}
     ]}
@@ -326,9 +326,9 @@ defmodule SoonReady.SurveyManagementTest do
     survey_response = %{
       survey_id: survey_id,
       responses: [
-        %{question_id: short_answer_question_group.id, type: "short_answer_question_group_response", response: [
-          %{question_id: short_answer_question_1.id, type: "short_answer_question_response", response: "The short answer 1"},
-          %{question_id: short_answer_question_2.id, type: "short_answer_question_response", response: "The short answer 2"},
+        %{question_id: short_answer_question_group.id, type: "short_answer_question_group_response", responses: [
+          %{question_id: short_answer_question_1.id, response: "The short answer 1"},
+          %{question_id: short_answer_question_2.id, response: "The short answer 2"},
         ]},
       ]
     }
@@ -345,50 +345,43 @@ defmodule SoonReady.SurveyManagementTest do
 
   end
 
-  # test "GIVEN: A single-page survey expecting a question group response has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-  #   survey = %{pages: [
-  #     %{questions: [
-  #       %{type: "short_answer_question_group", prompt: "Multiple Choice Question Group", questions: [
-  #         %{type: "short_answer_question", prompt: "The prompt 1"},
-  #         %{type: "short_answer_question", prompt: "The prompt 2"},
-  #       ]},
-  #       # %{type: "multiple_choice_question_group", prompt: "Multiple Choice Question Group",
-  #       #   statements: ["Statement 1", "Statement 2"], questions: [
-  #       #   %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
-  #       #   %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
-  #       # ]},
-  #     ]}
-  #   ]}
+  test "GIVEN: A survey with a multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+    survey = %{pages: [
+      %{questions: [
+        %{type: "multiple_choice_question_group",
+          prompts: ["Statement 1", "Statement 2"], questions: [
+          %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
+          %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
+        ]},
+      ]}
+    ]}
 
-  #   {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
-  #   {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+    {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+    {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
-  #   %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey, 0, 0)
-  #   # %{} = multiple_choice_question_group = get_question(survey, 0, 1)
+    %{prompts: [prompt_1, prompt_2], questions: [question_1, question_2]} = multiple_choice_question_group = get_question(survey, 0, 0)
 
-  #   survey_response = %{
-  #     survey_id: survey_id,
-  #     responses: [
-  #       %{question_id: short_answer_question_group.id, type: "short_answer_question_group_response", response: [
-  #         %{question_id: short_answer_question_1.id, type: "single_value_response", response: "The short answer 1"},
-  #         %{question_id: short_answer_question_2.id, type: "single_value_response", response: "The short answer 2"},
-  #       ]},
-  #       # %{question_id: multiple_choice_question_group.id, type: "short_answer_question_group_response", response: [
-  #       #   %{question_id: short_answer_question_1.id, type: "single_value_response", response: "Option 1"},
-  #       #   %{question_id: short_answer_question_2.id, type: "single_value_response", response: "Option 1"},
-  #       # ]},
-  #     ]
-  #   }
-  #   {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
+    survey_response = %{
+      survey_id: survey_id,
+      responses: [
+        %{question_id: multiple_choice_question_group.id, type: "multiple_choice_question_group_responses", responses: [
+          %{prompt_id: prompt_1.id, question_id: question_1.id, response: "Option 1"},
+          %{prompt_id: prompt_1.id, question_id: question_2.id, response: "Option 1"},
+          %{prompt_id: prompt_2.id, question_id: question_1.id, response: "Option 1"},
+          %{prompt_id: prompt_2.id, question_id: question_2.id, response: "Option 1"},
+        ]},
+      ]
+    }
+    {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-  #   assert_receive_event(Application, SurveyResponseSubmittedV1,
-  #     fn event -> event.response_id == response_id end,
-  #     fn event ->
-  #       assert event.survey_id == survey_id
-  #       assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
-  #     end
-  #   )
+    assert_receive_event(Application, SurveyResponseSubmittedV1,
+      fn event -> event.response_id == response_id end,
+      fn event ->
+        assert event.survey_id == survey_id
+        assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
+      end
+    )
 
-  # end
+  end
 end

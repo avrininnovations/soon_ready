@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestionGroupRespon
   alias SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestionResponse
 
   attributes do
-    attribute :question_id, :uuid, primary_key?: true, allow_nil?: false
-    attribute :response, {:array, ShortAnswerQuestionResponse}, allow_nil?: false
+    attribute :question_id, :uuid, allow_nil?: false
+    attribute :responses, {:array, ShortAnswerQuestionResponse}, allow_nil?: false
   end
 end
