@@ -24,16 +24,11 @@ defmodule SoonReady.SurveyManagement.Survey do
     SurveyPublishedV1.new(%{survey_id: survey_id})
   end
 
-  def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id} = command) do
+  def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, raw_responses_data: raw_responses_data} = command) do
     SurveyResponseSubmittedV1.new(%{
       response_id: response_id,
       survey_id: survey_id,
-      # participant: command.participant,
-      # screening_responses: command.screening_responses,
-      # demographic_responses: command.demographic_responses,
-      # context_responses: command.context_responses,
-      # comparison_responses: command.comparison_responses,
-      # desired_outcome_ratings: command.desired_outcome_ratings
+      responses: raw_responses_data,
     })
   end
 

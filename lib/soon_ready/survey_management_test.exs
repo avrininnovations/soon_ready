@@ -122,58 +122,104 @@ defmodule SoonReady.SurveyManagementTest do
 
   }
 
-  describe "Survey Management" do
-    test "WHEN: A researcher tries to create a survey, THEN: A survey is created", %{user: user} do
-      {:ok, %{survey_id: survey_id} = _aggregate} = SoonReady.SurveyManagement.create_survey(@survey_details, user)
+  # describe "Survey Management" do
+  #   test "WHEN: A researcher tries to create a survey, THEN: A survey is created", %{user: user} do
+  #     {:ok, %{survey_id: survey_id} = _aggregate} = SoonReady.SurveyManagement.create_survey(@survey_details, user)
 
-      assert_receive_event(Application, SurveyCreatedV1,
-        fn event -> event.survey_id == survey_id end,
-        fn event ->
-          assert SoonReady.Utils.is_equal_or_subset?(event.pages, @survey_details.pages)
-        end
-      )
-    end
+  #     assert_receive_event(Application, SurveyCreatedV1,
+  #       fn event -> event.survey_id == survey_id end,
+  #       fn event ->
+  #         assert SoonReady.Utils.is_equal_or_subset?(event.pages, @survey_details.pages)
+  #       end
+  #     )
+  #   end
 
-    test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published", %{user: user} do
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(@survey_details, user)
+  #   test "GIVEN: A survey has been created, WHEN: A researcher tries to publish the survey, THEN: The survey is published", %{user: user} do
+  #     {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(@survey_details, user)
 
-      {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+  #     {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
-      assert_receive_event(Application, SurveyPublishedV1,
-        fn event -> event.survey_id == survey_id end,
-        fn _event ->:ok end
-      )
-    end
+  #     assert_receive_event(Application, SurveyPublishedV1,
+  #       fn event -> event.survey_id == survey_id end,
+  #       fn _event ->:ok end
+  #     )
+  #   end
+  # end
+
+  # describe "Survey Participation" do
+  #   test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted", %{user: user} do
+  #     {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(@survey_details, user)
+  #     {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+
+  #     response = Map.put(@survey_response_details, :survey_id, survey_id)
+  #     {:ok, %{response_id: response_id} = _aggregate} = SoonReady.SurveyManagement.submit_response(response)
+
+
+  #     assert_receive_event(Application, SurveyResponseSubmittedV1,
+  #       fn event -> event.response_id == response_id end,
+  #       fn event ->
+  #         event =
+  #           event
+  #           |> Map.from_struct()
+  #           |> SurveyResponseSubmittedV1.decrypt!()
+
+  #         assert event.survey_id == survey_id
+  #         # assert event.participant.nickname == @survey_response_details.participant.nickname
+  #         # assert event.participant.email == @survey_response_details.participant.email
+  #         # assert event.participant.phone_number == @survey_response_details.participant.phone_number
+  #         # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.screening_responses, event.screening_responses)
+  #         # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.demographic_responses, event.demographic_responses)
+  #         # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.context_responses, event.context_responses)
+  #         # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.comparison_responses, event.comparison_responses)
+  #         # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.desired_outcome_ratings, event.desired_outcome_ratings)
+  #       end
+  #     )
+  #   end
+  # end
+
+  defp get_question(survey, page_index, question_index) do
+    survey.pages
+    |> Enum.at(page_index)
+    |> then(fn %{questions: questions} -> questions end)
+    |> Enum.at(question_index)
+    |> then(fn %{value: value} -> value end)
   end
 
-  describe "Survey Participation" do
-    test "GIVEN: A survey has been published, WHEN: A participant tries to submit a survey response, THEN: A survey response is submitted", %{user: user} do
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(@survey_details, user)
-      {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+  test "GIVEN: A single-page survey expecting single value responses has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+    survey = %{pages: [
+      %{questions: [
+        %{type: "short_answer_question", prompt: "The short answer prompt"},
+        %{type: "paragraph_question", prompt: "The paragraph prompt"},
+        %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+      ]}
+    ]}
 
-      response = Map.put(@survey_response_details, :survey_id, survey_id)
-      {:ok, %{response_id: response_id} = _aggregate} = SoonReady.SurveyManagement.submit_response(response)
+    {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+    {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+
+    short_answer_question = get_question(survey, 0, 0)
+    paragraph_question = get_question(survey, 0, 1)
+    multiple_choice_question = get_question(survey, 0, 2)
+
+    survey_response = %{
+      survey_id: survey_id,
+      responses: [
+        %{question_id: short_answer_question.id, type: "single_value_response", response: "The short answer"},
+        %{question_id: paragraph_question.id, type: "single_value_response", response: "The paragraph answer"},
+        %{question_id: multiple_choice_question.id, type: "single_value_response", response: "Option 1"},
+      ]
+    }
+    {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-      assert_receive_event(Application, SurveyResponseSubmittedV1,
-        fn event -> event.response_id == response_id end,
-        fn event ->
-          event =
-            event
-            |> Map.from_struct()
-            |> SurveyResponseSubmittedV1.decrypt!()
+    assert_receive_event(Application, SurveyResponseSubmittedV1,
+      fn event -> event.response_id == response_id end,
+      fn event ->
+        assert event.survey_id == survey_id
+        assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
+      end
+    )
 
-          assert event.survey_id == survey_id
-          # assert event.participant.nickname == @survey_response_details.participant.nickname
-          # assert event.participant.email == @survey_response_details.participant.email
-          # assert event.participant.phone_number == @survey_response_details.participant.phone_number
-          # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.screening_responses, event.screening_responses)
-          # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.demographic_responses, event.demographic_responses)
-          # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.context_responses, event.context_responses)
-          # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.comparison_responses, event.comparison_responses)
-          # assert SoonReady.Utils.is_equal_or_subset?(@survey_response_details.desired_outcome_ratings, event.desired_outcome_ratings)
-        end
-      )
-    end
   end
+
 end

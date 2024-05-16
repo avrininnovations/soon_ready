@@ -2,22 +2,27 @@ defmodule SoonReady.SurveyManagement.Commands.SubmitSurveyResponse do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.ValueObjects.{Participant, QuestionResponse, JobStepRating}
+  alias SoonReady.SurveyManagement.ValueObjects.Response
 
   attributes do
     uuid_primary_key :response_id
     attribute :survey_id, :uuid, allow_nil?: false
-    # attribute :participant, Participant, allow_nil?: false
-    # attribute :screening_responses, {:array, QuestionResponse}, allow_nil?: false, constraints: [min_length: 1]
-    # attribute :demographic_responses, {:array, QuestionResponse}, allow_nil?: false, constraints: [min_length: 1]
-    # attribute :context_responses, {:array, QuestionResponse}, allow_nil?: false, constraints: [min_length: 1]
-    # attribute :comparison_responses, {:array, QuestionResponse}, allow_nil?: false, constraints: [min_length: 1]
-    # attribute :desired_outcome_ratings, {:array, JobStepRating}, allow_nil?: false, constraints: [min_length: 1]
+    attribute :responses, {:array, Response}, allow_nil?: false
+    attribute :raw_responses_data, {:array, :map}, allow_nil?: false
   end
 
   actions do
     create :dispatch do
+      argument :responses, {:array, :map}, allow_nil?: false
+
       change fn changeset, context ->
+        responses = Ash.Changeset.get_argument(changeset, :responses)
+
+        changeset =
+          changeset
+          |> Ash.Changeset.change_attribute(:responses, responses)
+          |> Ash.Changeset.change_attribute(:raw_responses_data, responses)
+
         Ash.Changeset.after_action(changeset, fn changeset, command ->
           with :ok <- Application.dispatch(command) do
             {:ok, command}

@@ -4,6 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.MultipleChoiceQuestion do
   alias SoonReady.SurveyManagement.ValueObjects.Option
 
   attributes do
+    uuid_primary_key :id
     attribute :prompt, :ci_string, allow_nil?: false
     attribute :options, {:array, Option}, allow_nil?: false, constraints: [min_length: 2]
   end

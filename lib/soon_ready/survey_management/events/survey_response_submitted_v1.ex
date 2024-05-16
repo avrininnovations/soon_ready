@@ -2,6 +2,7 @@ defmodule SoonReady.SurveyManagement.Events.SurveyResponseSubmittedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   require Logger
+  alias SoonReady.SurveyManagement.ValueObjects.Response
 
   # alias SoonReady.SurveyManagement.ValueObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
   # alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
@@ -9,13 +10,8 @@ defmodule SoonReady.SurveyManagement.Events.SurveyResponseSubmittedV1 do
 
   attributes do
     attribute :response_id, :uuid, allow_nil?: false, primary_key?: true
-    attribute :survey_id, :uuid
-    # attribute :hashed_participant, HashedParticipant
-    # attribute :screening_responses, {:array, QuestionResponse}
-    # attribute :demographic_responses, {:array, QuestionResponse}
-    # attribute :context_responses, {:array, QuestionResponse}
-    # attribute :comparison_responses, {:array, QuestionResponse}
-    # attribute :desired_outcome_ratings, {:array, JobStepRating}
+    attribute :survey_id, :uuid, allow_nil?: false
+    attribute :responses, {:array, :map}
   end
 
   # calculations do
