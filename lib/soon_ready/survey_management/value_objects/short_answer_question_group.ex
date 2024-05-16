@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestionGroup do
   alias SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestion
 
   attributes do
-    attribute :prompt, :ci_string, allow_nil?: false
+    uuid_primary_key :id
     attribute :questions, {:array, ShortAnswerQuestion}, allow_nil?: false, constraints: [min_length: 2]
   end
 end
