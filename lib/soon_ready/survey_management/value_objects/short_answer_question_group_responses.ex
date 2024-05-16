@@ -1,0 +1,11 @@
+defmodule SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestionGroupResponses do
+  use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
+
+  alias __MODULE__.SingleResponse
+
+  attributes do
+    # TODO: group_id?
+    attribute :question_id, :uuid, allow_nil?: false
+    attribute :responses, {:array, SingleResponse}, allow_nil?: false
+  end
+end

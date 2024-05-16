@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.Response do
     ParagraphQuestionResponse,
     MultipleChoiceQuestionResponse,
     CheckboxQuestionResponse,
-    ShortAnswerQuestionGroupResponse,
+    ShortAnswerQuestionGroupResponses,
     MultipleChoiceQuestionGroupResponses,
   }
 
@@ -14,7 +14,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.Response do
     {MultipleChoiceQuestionResponse, [type: MultipleChoiceQuestionResponse, tag: :type, tag_value: "multiple_choice_question_response"]},
     {CheckboxQuestionResponse, [type: CheckboxQuestionResponse, tag: :type, tag_value: "checkbox_question_response"]},
 
-    {ShortAnswerQuestionGroupResponse, [type: ShortAnswerQuestionGroupResponse, tag: :type, tag_value: "short_answer_question_group_response"]},
+    {ShortAnswerQuestionGroupResponses, [type: ShortAnswerQuestionGroupResponses, tag: :type, tag_value: "short_answer_question_group_responses"]},
     {MultipleChoiceQuestionGroupResponses, [type: MultipleChoiceQuestionGroupResponses, tag: :type, tag_value: "multiple_choice_question_group_responses"]},
   ]]
 end

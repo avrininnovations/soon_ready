@@ -323,12 +323,17 @@ defmodule SoonReady.SurveyManagementTest do
 
     %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey, 0, 0)
 
+    batch_1_response_id = Ecto.UUID.generate()
+    batch_2_response_id = Ecto.UUID.generate()
+
     survey_response = %{
       survey_id: survey_id,
       responses: [
-        %{question_id: short_answer_question_group.id, type: "short_answer_question_group_response", responses: [
-          %{question_id: short_answer_question_1.id, response: "The short answer 1"},
-          %{question_id: short_answer_question_2.id, response: "The short answer 2"},
+        %{question_id: short_answer_question_group.id, type: "short_answer_question_group_responses", responses: [
+          %{batch_id: batch_1_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
+          %{batch_id: batch_1_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
+          %{batch_id: batch_2_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
+          %{batch_id: batch_2_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
         ]},
       ]
     }
