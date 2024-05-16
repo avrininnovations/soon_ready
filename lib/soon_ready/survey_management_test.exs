@@ -222,4 +222,35 @@ defmodule SoonReady.SurveyManagementTest do
 
   end
 
+  test "GIVEN: A single-page survey expecting multi value responses has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+    survey = %{pages: [
+      %{questions: [
+        %{type: "checkbox_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
+      ]}
+    ]}
+
+    {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+    {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+
+    checkbox_question = get_question(survey, 0, 0)
+
+    survey_response = %{
+      survey_id: survey_id,
+      responses: [
+        %{question_id: checkbox_question.id, type: "multi_value_response", responses: ["Option 1", "Option 2"]},
+      ]
+    }
+    {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
+
+
+    assert_receive_event(Application, SurveyResponseSubmittedV1,
+      fn event -> event.response_id == response_id end,
+      fn event ->
+        assert event.survey_id == survey_id
+        assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
+      end
+    )
+
+  end
+
 end
