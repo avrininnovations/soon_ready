@@ -104,9 +104,13 @@ defmodule SoonReady.SurveyManagementTest do
   describe "Test Each Question Type" do
     test "GIVEN: A survey with a short answer question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       survey = %{pages: [
-        %{questions: [
-          %{type: "short_answer_question", prompt: "The short answer prompt"},
-        ]}
+        %{
+          id: Ecto.UUID.generate(),
+          actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+          questions: [
+            %{type: "short_answer_question", prompt: "The short answer prompt"},
+          ]
+        }
       ]}
 
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
@@ -135,9 +139,13 @@ defmodule SoonReady.SurveyManagementTest do
 
     test "GIVEN: A survey with a paragraph question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       survey = %{pages: [
-        %{questions: [
-          %{type: "paragraph_question", prompt: "The paragraph prompt"},
-        ]}
+        %{
+          id: Ecto.UUID.generate(),
+          actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+          questions: [
+            %{type: "paragraph_question", prompt: "The paragraph prompt"},
+          ]
+        }
       ]}
 
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
@@ -166,9 +174,13 @@ defmodule SoonReady.SurveyManagementTest do
 
     test "GIVEN: A survey with a multiple choice question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       survey = %{pages: [
-        %{questions: [
-          %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
-        ]}
+        %{
+          id: Ecto.UUID.generate(),
+          actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+          questions: [
+            %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+          ]
+        }
       ]}
 
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
@@ -197,9 +209,13 @@ defmodule SoonReady.SurveyManagementTest do
 
     test "GIVEN: A survey with a checkbox question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       survey = %{pages: [
-        %{questions: [
-          %{type: "checkbox_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
-        ]}
+        %{
+          id: Ecto.UUID.generate(),
+          actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+          questions: [
+            %{type: "checkbox_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
+          ]
+        }
       ]}
 
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
@@ -227,12 +243,16 @@ defmodule SoonReady.SurveyManagementTest do
 
     test "GIVEN: A survey with a short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       survey = %{pages: [
-        %{questions: [
-          %{type: "short_answer_question_group", prompt: "Multiple Choice Question Group", questions: [
-            %{prompt: "The prompt 1"},
-            %{prompt: "The prompt 2"},
-          ]},
-        ]}
+        %{
+          id: Ecto.UUID.generate(),
+          actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+          questions: [
+            %{type: "short_answer_question_group", prompt: "Multiple Choice Question Group", questions: [
+              %{prompt: "The prompt 1"},
+              %{prompt: "The prompt 2"},
+            ]},
+          ]
+        }
       ]}
 
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
@@ -269,13 +289,17 @@ defmodule SoonReady.SurveyManagementTest do
 
     test "GIVEN: A survey with a multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       survey = %{pages: [
-        %{questions: [
-          %{type: "multiple_choice_question_group",
-            prompts: ["Statement 1", "Statement 2"], questions: [
-            %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
-            %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
-          ]},
-        ]}
+        %{
+          id: Ecto.UUID.generate(),
+          actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+          questions: [
+            %{type: "multiple_choice_question_group",
+              prompts: ["Statement 1", "Statement 2"], questions: [
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
+            ]},
+          ]
+        }
       ]}
 
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
