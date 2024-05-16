@@ -7,7 +7,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.Response do
 
     CheckboxQuestionResponse,
   }
-  alias SoonReady.SurveyManagement.ValueObjects.QuestionGroupResponse
+  alias SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestionGroupResponse
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [
     {ShortAnswerQuestionResponse, [type: ShortAnswerQuestionResponse, tag: :type, tag_value: "short_answer_question_response"]},
@@ -15,6 +15,6 @@ defmodule SoonReady.SurveyManagement.ValueObjects.Response do
     {MultipleChoiceQuestionResponse, [type: MultipleChoiceQuestionResponse, tag: :type, tag_value: "multiple_choice_question_response"]},
     {CheckboxQuestionResponse, [type: CheckboxQuestionResponse, tag: :type, tag_value: "checkbox_question_response"]},
 
-    {QuestionGroupResponse, [type: QuestionGroupResponse, tag: :type, tag_value: "question_group_response"]},
+    {ShortAnswerQuestionGroupResponse, [type: ShortAnswerQuestionGroupResponse, tag: :type, tag_value: "short_answer_question_group_response"]},
   ]]
 end

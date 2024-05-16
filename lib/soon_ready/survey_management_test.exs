@@ -308,6 +308,43 @@ defmodule SoonReady.SurveyManagementTest do
     )
   end
 
+  test "GIVEN: A survey with a short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+    survey = %{pages: [
+      %{questions: [
+        %{type: "short_answer_question_group", prompt: "Multiple Choice Question Group", questions: [
+          %{type: "short_answer_question", prompt: "The prompt 1"},
+          %{type: "short_answer_question", prompt: "The prompt 2"},
+        ]},
+      ]}
+    ]}
+
+    {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+    {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+
+    %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey, 0, 0)
+
+    survey_response = %{
+      survey_id: survey_id,
+      responses: [
+        %{question_id: short_answer_question_group.id, type: "short_answer_question_group_response", response: [
+          %{question_id: short_answer_question_1.id, type: "short_answer_question_response", response: "The short answer 1"},
+          %{question_id: short_answer_question_2.id, type: "short_answer_question_response", response: "The short answer 2"},
+        ]},
+      ]
+    }
+    {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
+
+
+    assert_receive_event(Application, SurveyResponseSubmittedV1,
+      fn event -> event.response_id == response_id end,
+      fn event ->
+        assert event.survey_id == survey_id
+        assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
+      end
+    )
+
+  end
+
   # test "GIVEN: A single-page survey expecting a question group response has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
   #   survey = %{pages: [
   #     %{questions: [
@@ -332,11 +369,11 @@ defmodule SoonReady.SurveyManagementTest do
   #   survey_response = %{
   #     survey_id: survey_id,
   #     responses: [
-  #       %{question_id: short_answer_question_group.id, type: "question_group_response", response: [
+  #       %{question_id: short_answer_question_group.id, type: "short_answer_question_group_response", response: [
   #         %{question_id: short_answer_question_1.id, type: "single_value_response", response: "The short answer 1"},
   #         %{question_id: short_answer_question_2.id, type: "single_value_response", response: "The short answer 2"},
   #       ]},
-  #       # %{question_id: multiple_choice_question_group.id, type: "question_group_response", response: [
+  #       # %{question_id: multiple_choice_question_group.id, type: "short_answer_question_group_response", response: [
   #       #   %{question_id: short_answer_question_1.id, type: "single_value_response", response: "Option 1"},
   #       #   %{question_id: short_answer_question_2.id, type: "single_value_response", response: "Option 1"},
   #       # ]},
