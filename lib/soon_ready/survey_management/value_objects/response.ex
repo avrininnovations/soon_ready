@@ -4,6 +4,7 @@ defmodule SoonReady.SurveyManagement.ValueObjects.Response do
     ParagraphQuestionResponse,
     MultipleChoiceQuestionResponse,
     CheckboxQuestionResponse,
+    
     ShortAnswerQuestionGroupResponses,
     MultipleChoiceQuestionGroupResponses,
   }
