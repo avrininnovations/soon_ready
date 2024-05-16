@@ -1,5 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.SingleValueResponse do
-  # TODO: :prompt vs :label
+defmodule SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestionResponse do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do
