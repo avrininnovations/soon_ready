@@ -1,7 +1,7 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.PageActions do
+defmodule SoonReady.SurveyManagement.DomainObjects.PageActions do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.ValueObjects.PageAction
+  alias SoonReady.SurveyManagement.DomainObjects.PageAction
 
   attributes do
     attribute :correct_response_action, PageAction, allow_nil?: false

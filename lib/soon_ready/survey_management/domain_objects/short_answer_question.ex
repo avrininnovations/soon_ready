@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.ParagraphQuestion do
+defmodule SoonReady.SurveyManagement.DomainObjects.ShortAnswerQuestion do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

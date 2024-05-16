@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.Commands.CreateSurvey do
     data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.ValueObjects.SurveyPage
+  alias SoonReady.SurveyManagement.DomainObjects.SurveyPage
 
   # alias SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher
 

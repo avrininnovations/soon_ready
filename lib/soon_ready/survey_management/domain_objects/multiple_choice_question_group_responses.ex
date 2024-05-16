@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.MultipleChoiceQuestionGroupResponses do
+defmodule SoonReady.SurveyManagement.DomainObjects.MultipleChoiceQuestionGroupResponses do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   alias __MODULE__.SingleResponse

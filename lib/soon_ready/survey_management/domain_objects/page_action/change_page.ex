@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.PageAction.ChangePage do
+defmodule SoonReady.SurveyManagement.DomainObjects.PageAction.ChangePage do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do

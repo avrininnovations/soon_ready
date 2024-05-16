@@ -1,7 +1,7 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.MultipleChoiceQuestionGroup do
+defmodule SoonReady.SurveyManagement.DomainObjects.MultipleChoiceQuestionGroup do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.ValueObjects.{MultipleChoiceQuestion, MultipleChoiceQuestionGroupPrompt}
+  alias SoonReady.SurveyManagement.DomainObjects.{MultipleChoiceQuestion, MultipleChoiceQuestionGroupPrompt}
 
   attributes do
     uuid_primary_key :id

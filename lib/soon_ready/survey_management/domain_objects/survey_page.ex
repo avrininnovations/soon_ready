@@ -1,7 +1,7 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.SurveyPage do
+defmodule SoonReady.SurveyManagement.DomainObjects.SurveyPage do
   # TODO: Rename to Page
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
-  alias SoonReady.SurveyManagement.ValueObjects.{Question, PageActions}
+  alias SoonReady.SurveyManagement.DomainObjects.{Question, PageActions}
 
   attributes do
     # TODO: Add restrictions that set and govern what question types are allowed on a page

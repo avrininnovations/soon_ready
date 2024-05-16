@@ -1,10 +1,10 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.Response do
-  alias SoonReady.SurveyManagement.ValueObjects.{
+defmodule SoonReady.SurveyManagement.DomainObjects.Response do
+  alias SoonReady.SurveyManagement.DomainObjects.{
     ShortAnswerQuestionResponse,
     ParagraphQuestionResponse,
     MultipleChoiceQuestionResponse,
     CheckboxQuestionResponse,
-    
+
     ShortAnswerQuestionGroupResponses,
     MultipleChoiceQuestionGroupResponses,
   }

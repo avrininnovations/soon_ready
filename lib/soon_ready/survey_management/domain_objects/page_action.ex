@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.PageAction do
+defmodule SoonReady.SurveyManagement.DomainObjects.PageAction do
   alias __MODULE__.{SubmitForm, ChangePage}
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [

@@ -1,7 +1,7 @@
-defmodule SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestionGroup do
+defmodule SoonReady.SurveyManagement.DomainObjects.ShortAnswerQuestionGroup do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.ValueObjects.ShortAnswerQuestion
+  alias SoonReady.SurveyManagement.DomainObjects.ShortAnswerQuestion
 
   attributes do
     uuid_primary_key :id
