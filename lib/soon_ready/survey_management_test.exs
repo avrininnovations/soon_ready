@@ -113,7 +113,7 @@ defmodule SoonReady.SurveyManagementTest do
         }
       ]}
 
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
       short_answer_question = get_question(survey, 0, 0)
@@ -148,7 +148,7 @@ defmodule SoonReady.SurveyManagementTest do
         }
       ]}
 
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
       paragraph_question = get_question(survey, 0, 0)
@@ -183,7 +183,7 @@ defmodule SoonReady.SurveyManagementTest do
         }
       ]}
 
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
       multiple_choice_question = get_question(survey, 0, 0)
@@ -218,7 +218,7 @@ defmodule SoonReady.SurveyManagementTest do
         }
       ]}
 
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
       checkbox_question = get_question(survey, 0, 0)
@@ -255,7 +255,7 @@ defmodule SoonReady.SurveyManagementTest do
         }
       ]}
 
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
       %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey, 0, 0)
@@ -302,7 +302,7 @@ defmodule SoonReady.SurveyManagementTest do
         }
       ]}
 
-      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+      {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
       {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
       %{prompts: [prompt_1, prompt_2], questions: [question_1, question_2]} = multiple_choice_question_group = get_question(survey, 0, 0)
@@ -361,7 +361,7 @@ defmodule SoonReady.SurveyManagementTest do
       },
     ]}
 
-    {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey, user)
+    {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
     {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
 
     short_answer_question = get_question(survey, 0, 0)
