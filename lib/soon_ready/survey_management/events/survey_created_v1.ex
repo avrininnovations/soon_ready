@@ -5,7 +5,7 @@ defmodule SoonReady.SurveyManagement.Events.SurveyCreatedV1 do
 
   attributes do
     attribute :survey_id, :uuid, allow_nil?: false, primary_key?: true
-    attribute :pages, {:array, SurveyPage}
+    attribute :pages, {:array, :map}
     attribute :trigger, Trigger
   end
 

@@ -1,7 +1,10 @@
 defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
   use SoonReady.DataCase
+  import Commanded.Assertions.EventAssertions
 
+  alias SoonReady.Application
   alias SoonReadyInterface.Respondents.ReadModels.Survey
+  alias SoonReady.OutcomeDrivenInnovation.Events.SurveyCreationSucceededV1
 
   @survey_params %{
     brand: "A Big Brand",
@@ -53,17 +56,15 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
     %{user: user}
   end
 
-  test "GIVEN: An ODI survey was publised, THEN: The survey is active", %{user: user} do
-    {:ok, %{survey_id: survey_id}} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user)
+  test "GIVEN: An ODI survey was created, THEN: The survey is active", %{user: user} do
+    {:ok, %{project_id: project_id}} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user)
 
-    # with {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user),
-    #       {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
-    # do
-    #   {:ok, survey} = Survey.get_active(survey_id)
-    #   assert survey.id == survey_id
-    # else
-    #   {:error, error} ->
-    #     flunk("Expected survey to be created and published but got: #{inspect(error)}")
-    # end
+    assert_receive_event(Application, SurveyCreationSucceededV1,
+      fn event -> event.project_id == project_id end,
+      fn event ->
+        {:ok, survey} = Survey.get_active(event.survey_id)
+        assert survey.id == event.survey_id
+      end
+    )
   end
 end

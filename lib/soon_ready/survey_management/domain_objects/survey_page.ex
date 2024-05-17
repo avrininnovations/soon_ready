@@ -9,4 +9,13 @@ defmodule SoonReady.SurveyManagement.DomainObjects.SurveyPage do
     attribute :questions, {:array, Question}, allow_nil?: false
     attribute :actions, PageActions, allow_nil?: false
   end
+
+  actions do
+    defaults [:create, :read]
+  end
+
+  code_interface do
+    define_for SoonReady.SurveyManagement
+    define :create
+  end
 end

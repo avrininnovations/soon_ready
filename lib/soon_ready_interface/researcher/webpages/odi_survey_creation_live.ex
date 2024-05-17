@@ -175,16 +175,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def handle_info({:handle_submission, ContextQuestionsForm}, socket) do
     normalized_params = normalize(socket.assigns.params)
 
-
-    with {:ok, %{survey_id: survey_id}} <- SoonReady.OutcomeDrivenInnovation.create_survey(normalized_params, socket.assigns.actor),
-          {:ok, _survey} <- SoonReady.OutcomeDrivenInnovation.publish_survey(%{survey_id: survey_id})
-    do
-      socket =
-        socket
-        |> push_redirect(to: ~p"/")
-        |> put_flash(:info, "Survey published successfully!")
-      {:noreply, socket}
-    else
+    case SoonReady.OutcomeDrivenInnovation.create_survey(normalized_params, socket.assigns.actor) do
+      {:ok, %{project_id: _project_id} = _command} ->
+        socket =
+          socket
+          |> push_redirect(to: ~p"/")
+          |> put_flash(:info, "Survey published successfully!")
+        {:noreply, socket}
       {:error, error} ->
         socket =
           socket
@@ -193,6 +190,8 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
           Logger.error("Survey publishing failed: #{inspect(error)}")
         {:noreply, socket}
     end
+
+    # TODO: Wait for SoonReady.OutcomeDrivenInnovation.Events.SurveyCreationSucceededV1 with this project_id to confirm?
   end
 
   defp normalize(params) do
