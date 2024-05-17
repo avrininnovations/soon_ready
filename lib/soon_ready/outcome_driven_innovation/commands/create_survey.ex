@@ -1,6 +1,5 @@
 defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
   use Ash.Resource,
-    authorizers: [Ash.Policy.Authorizer],
     data_layer: :embedded
 
   alias SoonReady.Application
@@ -14,10 +13,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
     ContextQuestion,
   }
 
-  alias SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher
-
   attributes do
-    uuid_primary_key :survey_id
+    uuid_primary_key :project_id
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}
@@ -25,13 +22,6 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
     attribute :demographic_questions, {:array, DemographicQuestion}
     attribute :context_questions, {:array, ContextQuestion}
   end
-
-  policies do
-    policy always() do
-      authorize_if ActorIsResearcher
-    end
-  end
-
 
   actions do
     defaults [:create, :read]

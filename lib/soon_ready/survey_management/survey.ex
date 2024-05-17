@@ -16,8 +16,8 @@ defmodule SoonReady.SurveyManagement.Survey do
   dispatch PublishSurvey, to: __MODULE__, identity: :survey_id
   dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
 
-  def execute(_aggregate_state, %CreateSurvey{survey_id: survey_id, pages: pages} = _command) do
-    SurveyCreatedV1.new(%{survey_id: survey_id, pages: pages})
+  def execute(_aggregate_state, %CreateSurvey{survey_id: survey_id, pages: pages, trigger: trigger} = _command) do
+    SurveyCreatedV1.new(%{survey_id: survey_id, pages: pages, trigger: trigger})
   end
 
   def execute(_aggregate_state, %PublishSurvey{survey_id: survey_id} = _command) do

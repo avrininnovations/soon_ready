@@ -4,13 +4,14 @@ defmodule SoonReady.SurveyManagement.Commands.CreateSurvey do
     data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.DomainObjects.SurveyPage
+  alias SoonReady.SurveyManagement.DomainObjects.{SurveyPage, Trigger}
 
   # alias SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher
 
   attributes do
     uuid_primary_key :survey_id
     attribute :pages, {:array, SurveyPage}, constraints: [min_length: 1]
+    attribute :trigger, Trigger
   end
 
   # policies do

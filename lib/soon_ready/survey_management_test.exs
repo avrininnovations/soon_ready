@@ -384,4 +384,6 @@ defmodule SoonReady.SurveyManagementTest do
     )
 
   end
+
+  # TODO: Test trigger
 end
