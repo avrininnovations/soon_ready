@@ -5,7 +5,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
 
   alias SoonReady.Application
   alias SoonReady.OutcomeDrivenInnovation.Events.{SurveyCreationRequestedV1, SurveyCreationSucceededV1}
-  alias SoonReady.SurveyManagement.Events.SurveyCreatedV1
+  alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1}
 
 
   @survey_details %{
@@ -119,15 +119,18 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
             %{event_name: ^expected_trigger_event_name, event_id: ^project_id} -> true
             _ -> false
           end
-          fn survey_created_event ->
-            :ok
-            # assert_receive_event(Application, SurveyCreationSucceededV1,
-            #   fn event -> event.project_id == project_id end,
-            #   fn event ->
-            #     assert event.survey_id == survey_created_event.survey_id
-            #   end
-            # )
-          end
+        end,
+        fn survey_created_event ->
+          assert_receive_event(Application, SurveyPublishedV1,
+            fn event -> event.survey_id == survey_created_event.survey_id end,
+            fn survey_created_event -> :ok end
+          )
+          assert_receive_event(Application, SurveyCreationSucceededV1,
+            fn event -> event.project_id == project_id end,
+            fn event ->
+              assert event.survey_id == survey_created_event.survey_id
+            end
+          )
         end
       )
     end
