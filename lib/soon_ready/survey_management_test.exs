@@ -103,7 +103,7 @@ defmodule SoonReady.SurveyManagementTest do
 
   describe "Test Each Question Type" do
     test "GIVEN: A survey with a short answer question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-      survey = %{pages: [
+      survey = %{survey_id: Ecto.UUID.generate(), pages: [
         %{
           id: Ecto.UUID.generate(),
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
@@ -138,7 +138,7 @@ defmodule SoonReady.SurveyManagementTest do
     end
 
     test "GIVEN: A survey with a paragraph question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-      survey = %{pages: [
+      survey = %{survey_id: Ecto.UUID.generate(), pages: [
         %{
           id: Ecto.UUID.generate(),
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
@@ -173,7 +173,7 @@ defmodule SoonReady.SurveyManagementTest do
     end
 
     test "GIVEN: A survey with a multiple choice question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-      survey = %{pages: [
+      survey = %{survey_id: Ecto.UUID.generate(), pages: [
         %{
           id: Ecto.UUID.generate(),
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
@@ -208,7 +208,7 @@ defmodule SoonReady.SurveyManagementTest do
     end
 
     test "GIVEN: A survey with a checkbox question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-      survey = %{pages: [
+      survey = %{survey_id: Ecto.UUID.generate(), pages: [
         %{
           id: Ecto.UUID.generate(),
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
@@ -242,7 +242,7 @@ defmodule SoonReady.SurveyManagementTest do
     end
 
     test "GIVEN: A survey with a short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-      survey = %{pages: [
+      survey = %{survey_id: Ecto.UUID.generate(), pages: [
         %{
           id: Ecto.UUID.generate(),
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
@@ -288,7 +288,7 @@ defmodule SoonReady.SurveyManagementTest do
     end
 
     test "GIVEN: A survey with a multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-      survey = %{pages: [
+      survey = %{survey_id: Ecto.UUID.generate(), pages: [
         %{
           id: Ecto.UUID.generate(),
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
@@ -337,7 +337,7 @@ defmodule SoonReady.SurveyManagementTest do
     page_2_id = Ecto.UUID.generate()
     page_3_id = Ecto.UUID.generate()
 
-    survey = %{pages: [
+    survey = %{survey_id: Ecto.UUID.generate(), pages: [
       %{
         id: page_1_id,
         actions: %{correct_response_action: %{type: "change_page", destination_page_id: page_2_id}, incorrect_response_action: %{type: "change_page", destination_page_id: page_2_id}},

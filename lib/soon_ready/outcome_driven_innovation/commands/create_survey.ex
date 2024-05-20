@@ -15,6 +15,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
 
   attributes do
     uuid_primary_key :project_id
+    attribute :survey_id, :uuid, allow_nil?: false
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}

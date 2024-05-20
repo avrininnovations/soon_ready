@@ -13,6 +13,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Events.SurveyCreationRequestedV1 do
 
   attributes do
     attribute :project_id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :survey_id, :uuid, allow_nil?: false
     attribute :brand, :string
     attribute :market, Market
     attribute :job_steps, {:array, JobStep}

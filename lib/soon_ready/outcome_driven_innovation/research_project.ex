@@ -19,6 +19,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   def execute(_aggregate_state, %CreateSurvey{} = command) do
     SurveyCreationRequestedV1.new(%{
       project_id: command.project_id,
+      survey_id: command.survey_id,
       brand: command.brand,
       market: command.market,
       job_steps: command.job_steps,
@@ -35,6 +36,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   def handle(%SurveyCreationRequestedV1{} = event, _metadata) do
     %{
       project_id: project_id,
+      survey_id: survey_id,
       brand: brand,
       market: market,
       job_steps: job_steps,
@@ -55,6 +57,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     # thank_you_page_id = Ecto.UUID.generate()
 
     survey = %{
+      survey_id: survey_id,
       trigger: %{event_name: SurveyCreationRequestedV1, event_id: project_id},
       pages: [
         %{

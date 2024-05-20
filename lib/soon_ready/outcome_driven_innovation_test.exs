@@ -9,6 +9,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
 
 
   @survey_details %{
+    survey_id: Ecto.UUID.generate(),
     brand: "A Big Brand",
     market: %{
       job_executor: "Persons",
