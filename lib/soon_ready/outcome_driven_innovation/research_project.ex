@@ -59,10 +59,12 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     survey = %{
       survey_id: survey_id,
       trigger: %{event_name: SurveyCreationRequestedV1, event_id: project_id},
+      starting_page_id: landing_page_id,
       pages: [
         %{
           id: landing_page_id,
           actions: %{correct_response_action: %{type: "change_page", destination_page_id: screening_page_id}, incorrect_response_action: %{type: "change_page", destination_page_id: screening_page_id}},
+          title: "Welcome to our Survey!",
           questions: [
             %{type: "short_answer_question", prompt: "Your nickname"},
           ]

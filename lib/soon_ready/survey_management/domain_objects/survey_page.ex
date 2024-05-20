@@ -6,6 +6,8 @@ defmodule SoonReady.SurveyManagement.DomainObjects.SurveyPage do
   attributes do
     # TODO: Add restrictions that set and govern what question types are allowed on a page
     attribute :id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :title, :ci_string, allow_nil?: false
+    attribute :description, :ci_string
     attribute :questions, {:array, Question}, allow_nil?: false
     attribute :actions, PageActions, allow_nil?: false
   end
