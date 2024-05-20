@@ -12,6 +12,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
 
   attributes do
     attribute :id, :uuid, allow_nil?: false, primary_key?: true
+    attribute :starting_page_id, :uuid, allow_nil?: false
     attribute :pages, {:array, SurveyPage}
     attribute :is_active, :boolean, allow_nil?: false, default: false
   end
@@ -58,11 +59,13 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   def handle(%SurveyCreatedV1{} = event, _metadata) do
     %{
       survey_id: survey_id,
+      starting_page_id: starting_page_id,
       pages: pages,
     } = event
 
     with {:ok, _active_odi_survey} <- __MODULE__.create(%{
       id: survey_id,
+      starting_page_id: starting_page_id,
       pages: pages,
     }) do
       :ok

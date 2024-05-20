@@ -133,6 +133,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
     # TODO: Make asyncronous
     {:ok, survey} = Survey.get_active(survey_id)
+    |> IO.inspect()
 
     {:ok, screening_form_view_model} = ScreeningForm.from_read_model(survey)
     {:ok, demographics_form_view_model} = DemographicsForm.from_read_model(survey)
