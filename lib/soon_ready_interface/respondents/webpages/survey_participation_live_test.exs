@@ -241,17 +241,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       assert destination_url == "/survey/participate/#{survey_id}/pages/#{starting_page_id}"
     end
 
-    # test "WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn, survey_id: survey_id, survey: survey} do
-    #   {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}")
-    #   # TODO: Test patch to page id
+    test "WHEN: Respondent tries to visit the survey participation url, THEN: The landing page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
 
-    #   # assert html =~ "Welcome to our Survey!"
-
-    #   path = assert_patch(view)
-    #   assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{survey.starting_page_id}"
-    #   assert has_element?(view, "h2", "Screening Questions")
-
-    # end
+      assert html =~ "Welcome to our Survey!"
+    end
 
     # test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn, survey_id: survey_id, survey: %{pages: pages}} do
     #   {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
