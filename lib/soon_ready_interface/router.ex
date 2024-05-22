@@ -50,14 +50,8 @@ defmodule SoonReadyInterface.Router do
   scope "/", SoonReadyInterface.Respondents.Webpages do
     pipe_through :browser
 
-    live "/survey/participate/:survey_id", SurveyParticipationLive, :landing_page
-    live "/survey/participate/:survey_id/screening-questions", SurveyParticipationLive, :screening_questions
-    live "/survey/participate/:survey_id/contact-details", SurveyParticipationLive, :contact_details
-    live "/survey/participate/:survey_id/demographics", SurveyParticipationLive, :demographics
-    live "/survey/participate/:survey_id/context", SurveyParticipationLive, :context
-    live "/survey/participate/:survey_id/comparison", SurveyParticipationLive, :comparison
-    live "/survey/participate/:survey_id/desired-outcome-ratings", SurveyParticipationLive, :desired_outcome_ratings
-    live "/survey/participate/:survey_id/thank-you", SurveyParticipationLive, :thank_you
+    live "/survey/participate/:survey_id", SurveyParticipationLive
+    live "/survey/participate/:survey_id/pages/:page_id", SurveyParticipationLive
   end
 
   scope "/" do

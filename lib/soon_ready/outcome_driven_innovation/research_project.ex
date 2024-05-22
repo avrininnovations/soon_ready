@@ -72,6 +72,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         %{
           id: screening_page_id,
           actions: %{correct_response_action: %{type: "change_page", destination_page_id: contact_details_page_id}, incorrect_response_action: :submit_form},
+          title: "Screening Questions",
           questions: Enum.map(screening_questions, fn %{prompt: prompt, options: options} = _screening_question ->
             options = Enum.map(options, fn %{value: value, is_correct: is_correct} = _option -> %{type: "option_with_correct_flag", value: value, correct?: is_correct} end)
             %{type: "multiple_choice_question", prompt: prompt, options: options}
