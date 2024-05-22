@@ -155,48 +155,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     # TODO: Make asyncronous
     {:ok, %{starting_page_id: starting_page_id} = survey} = Survey.get_active(survey_id)
 
-    current_page =
-      survey
-      |> get_page(starting_page_id)
-
-    view_model =
-      current_page
-      |> create_response_view_model()
-      # |> IO.inspect()
-
-    socket =
-      socket
-      |> assign(:survey, survey)
-      |> assign(:current_page, current_page)
-      # TODO: Remove
-      |> assign(:view_model, view_model)
-      |> assign(:form, AshPhoenix.Form.for_update(view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
-        questions: [
-          type: :list,
-          data: view_model.questions,
-          update_action: :update,
-          transform_params: fn form, params, _arg3 ->
-            params
-            |> Map.put("id", form.data.id)
-            |> Map.put("type", form.data.type)
-            |> Map.put("prompt", form.data.prompt)
-            |> Map.put("options", form.data.options)
-            # TODO: Response/Responses fields that are not used
-          end
-        ]
-      ]))
-
-    {:ok, socket}
+    {:ok, assign(socket, :survey, survey)}
   end
 
-  def handle_params(params, url, socket) do
-    # URI.parse(url)
-    # |> IO.inspect()
+  def handle_params(params, url, %{assigns: %{survey: survey}} = socket) do
     case Map.get(params, "page_id") do
       nil ->
-        current_page =
-          socket.assigns.survey
-          |> get_page(socket.assigns.survey.starting_page_id)
+        # TODO: Handle bad page id. redirect/flash
+        current_page = get_page(survey, survey.starting_page_id)
 
         socket =
           socket
@@ -205,34 +171,18 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
         {:noreply, socket}
       page_id ->
-        current_page =
-          socket.assigns.survey
-          |> get_page(page_id)
+        current_page = get_page(survey, page_id)
 
         {:noreply, assign(socket, params: params, current_page: current_page)}
     end
-    # |> IO.inspect()
-
-    # # current_page =
-    # #   survey
-    # #   |> get_page(starting_page_id)
-    # {:noreply, assign(socket, params: params)}
   end
 
-  # def handle_info({:update_params, %{"pages" => %{page_id => _}} = new_params}, socket) do
-  # def handle_info({:update_params, new_params}, socket) do
+  # TODO: Change message name
   def handle_info({:update_params, view_model}, socket) do
     params =
       view_model
-      |> IO.inspect()
       |> normalize_view_model()
       |> Map.merge(socket.assigns.params)
-
-    # params = Map.merge(socket.assigns.params, new_params)
-
-    # Validate response (failure or success)
-    # Then transition or submit
-    {:noreply, assign(socket, :params, params)}
 
     case view_model do
       %{next_action: %Ash.Union{value: %ChangePage{destination_page_id: next_page_id}}} ->
@@ -242,25 +192,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
           |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{next_page_id}?#{params}")
 
         {:noreply, socket}
-    end
-
-
-  end
-
-  def handle_info({:handle_submission, FormViewModel}, socket) do
-    # IO.inspect(socket.assigns)
-    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/screening-questions?#{socket.assigns.params}")}
-  end
-
-  def handle_info({:handle_submission, NicknameForm}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/screening-questions?#{socket.assigns.params}")}
-  end
-
-  def handle_info({:handle_submission, ScreeningForm, all_responses_are_correct}, socket) do
-    if all_responses_are_correct do
-      {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/contact-details?#{socket.assigns.params}")}
-    else
-      {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
+      # TODO: Submit
     end
   end
 
