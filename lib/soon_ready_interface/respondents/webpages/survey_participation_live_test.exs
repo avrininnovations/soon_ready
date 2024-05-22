@@ -218,6 +218,20 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     assert query_params == @landing_page_query_params
   end
 
+  def assert_page_response_in_query_params(path, page_id) do
+    %{query: query} = URI.parse(path)
+    %{"pages" => pages_query_params} = Plug.Conn.Query.decode(query)
+    assert Map.get(pages_query_params, page_id) != nil
+  end
+
+  def get_page_by_title(pages, title) do
+    pages
+    |> Enum.filter(fn page ->
+      to_string(page.title) == title
+    end)
+    |> Enum.at(0)
+  end
+
   setup do
     params = %{
       first_name: "John",
@@ -247,25 +261,19 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       assert html =~ "Welcome to our Survey!"
     end
 
-    # test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn, survey_id: survey_id, survey: %{pages: pages}} do
-    #   {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+    test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
 
-    #   _resulting_html = submit_nickname_form_response(view)
+      _resulting_html = submit_nickname_form_response(view)
 
-    #   page =
-    #     pages
-    #     |> Enum.filter(fn %{title: title} = _page ->
-    #       to_string(title) == "Screening Questions"
-    #     end)
-    #     |> Enum.at(0)
+      landing_page = get_page_by_title(pages, "Welcome to our Survey!")
+      screening_page = get_page_by_title(pages, "Screening Questions")
 
-    #   path = assert_patch(view)
-    #   assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{page.id}"
-    #   assert has_element?(view, "h2", "Screening Questions")
-    #   "HELLO"
-    #   |> IO.inspect()
-    #   assert_landing_page_query_params(path)
-    # end
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{screening_page.id}"
+      assert has_element?(view, "h2", "Screening Questions")
+      assert_page_response_in_query_params(path, landing_page.id)
+    end
   end
 
   # describe "Screening Questions Form" do

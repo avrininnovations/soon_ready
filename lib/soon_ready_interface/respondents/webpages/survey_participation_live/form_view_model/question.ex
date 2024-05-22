@@ -1,11 +1,11 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.Question do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReady.SurveyManagement.DomainObjects.ShortAnswerQuestion
+  alias SoonReady.SurveyManagement.DomainObjects.{ShortAnswerQuestion, MultipleChoiceQuestion}
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false
-    attribute :type, :atom, constraints: [one_of: [ShortAnswerQuestion]]
+    attribute :type, :atom, constraints: [one_of: [ShortAnswerQuestion, MultipleChoiceQuestion]]
     attribute :prompt, :string, allow_nil?: false
     attribute :options, {:array, :string}, allow_nil?: false
     # TODO: nil is always allowed. Resolve.

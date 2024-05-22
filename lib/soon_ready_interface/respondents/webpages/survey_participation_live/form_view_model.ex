@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   use Ash.Resource, data_layer: :embedded
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
 
-  alias SoonReady.SurveyManagement.DomainObjects.{SurveyPage, PageAction, ShortAnswerQuestion, MultipleChoiceQuestion}
+  alias SoonReady.SurveyManagement.DomainObjects.{SurveyPage, PageAction, ShortAnswerQuestion, MultipleChoiceQuestion, OptionWithCorrectFlag}
 
   alias __MODULE__.Question
 
@@ -34,11 +34,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
 
   @impl true
   def render(assigns) do
-    # <.radio_group
-    #         field={ff[:response]}
-    #         label={ff.data.prompt}
-    #         options={Enum.map(ff.data.options, fn option -> {option, option} end)}
-    #       />
+          # <.radio_group
+          #   field={ff[:response]}
+          #   label={ff.data.prompt}
+          #   options={Enum.map(ff.data.options, fn option -> {option, option} end)}
+          # />
     ~H"""
     <div>
       <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
@@ -49,6 +49,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 field={ff[:response]}
                 label={ff.data.prompt}
                 class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+              />
+            <% MultipleChoiceQuestion -> %>
+              <.radio_group
+                field={ff[:response]}
+                label={ff.data.prompt}
+                options={Enum.map(ff.data.options, fn option -> {option, option} end)}
               />
           <% end %>
         </.inputs_for>
@@ -65,8 +71,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       |> Enum.map(fn
         %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} ->
           %{type: ShortAnswerQuestion, id: id, prompt: prompt}
-        # %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
-        #   %{type: MultipleChoiceQuestion, id: id, prompt: prompt}
+        %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
+          options = Enum.map(options, fn
+            %Ash.Union{value: %OptionWithCorrectFlag{value: value}} ->
+              value
+          end)
+
+          %{type: MultipleChoiceQuestion, id: id, prompt: prompt, options: options}
       end)
 
     __MODULE__.create!(%{page: page, questions: questions})
@@ -115,7 +126,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
         # IO.inspect(view_model, label: "View Model")
         # send(self(), {:update_params, normalize(view_model)})
         send(self(), {:update_params, view_model})
-        send(self(), {:handle_submission, __MODULE__})
+        # send(self(), {:handle_submission, __MODULE__})
 
         {:noreply, socket}
 
