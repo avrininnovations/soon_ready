@@ -81,6 +81,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         %{
           id: contact_details_page_id,
           actions: %{correct_response_action: %{type: "change_page", destination_page_id: demographics_page_id}, incorrect_response_action: %{type: "change_page", destination_page_id: demographics_page_id}},
+          title: "Contact Details",
           questions: [
             %{type: "short_answer_question", prompt: "Email"},
             %{type: "short_answer_question", prompt: "Phone Number"},

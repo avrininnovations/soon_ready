@@ -276,32 +276,35 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     end
   end
 
-  # describe "Screening Questions Form" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn, survey_id: survey_id} do
-  #     {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-  #     _ = submit_nickname_form_response(view)
-  #     _ = assert_patch(view)
+  describe "Screening Questions Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
 
-  #     _resulting_html = submit_screening_form_response(view, @correct_screening_form_params)
+      _resulting_html = submit_screening_form_response(view, @correct_screening_form_params)
 
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/survey/participate/#{survey_id}/contact-details"
-  #     assert has_element?(view, "h2", "Contact Details")
-  #     assert_screening_page_query_params(path)
-  #   end
+      screening_page = get_page_by_title(pages, "Screening Questions")
+      contact_details_page = get_page_by_title(pages, "Contact Details")
 
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id} do
-  #     {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-  #     _ = submit_nickname_form_response(view)
-  #     _ = assert_patch(view)
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{contact_details_page.id}"
+      assert has_element?(view, "h2", "Contact Details")
+      assert_page_response_in_query_params(path, screening_page.id)
+    end
 
-  #     _resulting_html = submit_screening_form_response(view, @incorrect_screening_form_params)
+    # test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id} do
+    #   {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+    #   _ = submit_nickname_form_response(view)
+    #   _ = assert_patch(view)
 
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
-  #     assert has_element?(view, "h2", "Thank You!")
-  #   end
-  # end
+    #   _resulting_html = submit_screening_form_response(view, @incorrect_screening_form_params)
+
+    #   path = assert_patch(view)
+    #   assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
+    #   assert has_element?(view, "h2", "Thank You!")
+    # end
+  end
 
   # describe "Contact Details Form" do
   #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn, survey_id: survey_id} do

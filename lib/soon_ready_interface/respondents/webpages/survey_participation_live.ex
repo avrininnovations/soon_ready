@@ -177,12 +177,18 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     end
   end
 
+  defp deep_merge(map1, map2) do
+    Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
+  end
+
   # TODO: Change message name
   def handle_info({:update_params, view_model}, socket) do
+    socket.assigns.params
+
     params =
       view_model
       |> normalize_view_model()
-      |> Map.merge(socket.assigns.params)
+      |> deep_merge(socket.assigns.params)
 
     case view_model do
       %{next_action: %Ash.Union{value: %ChangePage{destination_page_id: next_page_id}}} ->
