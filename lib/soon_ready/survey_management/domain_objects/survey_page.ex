@@ -8,8 +8,8 @@ defmodule SoonReady.SurveyManagement.DomainObjects.SurveyPage do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false
     attribute :title, :ci_string, allow_nil?: false
     attribute :description, :ci_string
-    attribute :questions, {:array, Question}, allow_nil?: false
-    attribute :actions, PageActions, allow_nil?: false
+    attribute :questions, {:array, Question}
+    attribute :actions, PageActions
   end
 
   actions do

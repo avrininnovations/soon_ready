@@ -53,8 +53,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     context_page_id = Ecto.UUID.generate()
     comparison_page_id = Ecto.UUID.generate()
     desired_outcome_rating_page_id = Ecto.UUID.generate()
-    # TODO:
-    # thank_you_page_id = Ecto.UUID.generate()
+    thank_you_page_id = Ecto.UUID.generate()
 
     survey = %{
       survey_id: survey_id,
@@ -140,7 +139,11 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
               },
             ]}
           end)
-        }
+        },
+        %{
+          id: thank_you_page_id,
+          title: "Thank You!",
+        },
       ]
     }
 
