@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   use Ash.Resource, data_layer: :embedded
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
 
-  alias SoonReady.SurveyManagement.DomainObjects.{SurveyPage, PageAction, ShortAnswerQuestion, MultipleChoiceQuestion, OptionWithCorrectFlag}
+  alias SoonReady.SurveyManagement.DomainObjects.{SurveyPage, Transition, ShortAnswerQuestion, MultipleChoiceQuestion, OptionWithCorrectFlag}
 
   alias __MODULE__.Question
 
@@ -13,13 +13,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   calculations do
-    # calculate :next_action, PageAction, fn resource, _context ->
-    #   # TODO: Actually calculate
-    #   {:ok, resource.page.actions.correct_response_action}
-    # end
-    calculate :next_action, :string, fn resource, _context ->
+    calculate :transition, Transition, fn resource, _context ->
       # TODO: Actually calculate
-      {:ok, "Hello"}
+      [transition | _] = resource.page.transitions
+      {:ok, transition}
     end
   end
 
@@ -27,7 +24,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     defaults [:create, :read, :update]
 
     update :submit do
-      change load(:next_action)
+      change load(:transition)
     end
   end
 
