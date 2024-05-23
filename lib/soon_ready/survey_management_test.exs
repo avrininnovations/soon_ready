@@ -342,28 +342,32 @@ defmodule SoonReady.SurveyManagementTest do
     page_1_id = Ecto.UUID.generate()
     page_2_id = Ecto.UUID.generate()
     page_3_id = Ecto.UUID.generate()
+    final_page_id = Ecto.UUID.generate()
 
     survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_1_id, pages: [
       %{
         id: page_1_id,
-        actions: %{correct_response_action: %{type: "change_page", destination_page_id: page_2_id}, incorrect_response_action: %{type: "change_page", destination_page_id: page_2_id}},
+        transitions: [%{condition: :always, destination_page_id: page_2_id}],
         questions: [
           %{type: "short_answer_question", prompt: "The short answer prompt"},
         ]
       },
       %{
         id: page_2_id,
-        actions: %{correct_response_action: %{type: "change_page", destination_page_id: page_3_id}, incorrect_response_action: %{type: "change_page", destination_page_id: page_3_id}},
+        transitions: [%{condition: :always, destination_page_id: page_3_id}],
         questions: [
           %{type: "short_answer_question", prompt: "The short answer prompt"},
         ]
       },
       %{
         id: page_3_id,
-        actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+        transitions: [%{condition: :always, destination_page_id: final_page_id, submit_form?: true}],
         questions: [
           %{type: "short_answer_question", prompt: "The short answer prompt"},
         ]
+      },
+      %{
+        id: final_page_id,
       },
     ]}
 

@@ -13,9 +13,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   calculations do
-    calculate :next_action, PageAction, fn resource, _context ->
+    # calculate :next_action, PageAction, fn resource, _context ->
+    #   # TODO: Actually calculate
+    #   {:ok, resource.page.actions.correct_response_action}
+    # end
+    calculate :next_action, :string, fn resource, _context ->
       # TODO: Actually calculate
-      {:ok, resource.page.actions.correct_response_action}
+      {:ok, "Hello"}
     end
   end
 

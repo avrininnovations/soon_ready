@@ -190,16 +190,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       |> normalize_view_model()
       |> deep_merge(socket.assigns.params)
 
-    case view_model do
-      %{next_action: %Ash.Union{value: %ChangePage{destination_page_id: next_page_id}}} ->
-        socket =
-          socket
-          |> assign(:params, params)
-          |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{next_page_id}?#{params}")
+    # case view_model do
+    #   %{next_action: %Ash.Union{value: %ChangePage{destination_page_id: next_page_id}}} ->
+    #     socket =
+    #       socket
+    #       |> assign(:params, params)
+    #       |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{next_page_id}?#{params}")
 
-        {:noreply, socket}
-      # TODO: Submit
-    end
+    #     {:noreply, socket}
+    #   # TODO: Submit
+    # end
   end
 
   def handle_info({:handle_submission, DesiredOutcomeRatingForm}, socket) do
