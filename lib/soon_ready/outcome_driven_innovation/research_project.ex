@@ -55,6 +55,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     desired_outcome_rating_page_id = Ecto.UUID.generate()
     thank_you_page_id = Ecto.UUID.generate()
 
+    screening_questions = Enum.map(screening_questions, fn question -> Map.put(question, :id, Ash.UUID.generate()) end)
+
     survey = %{
       survey_id: survey_id,
       trigger: %{event_name: SurveyCreationRequestedV1, event_id: project_id},
@@ -62,7 +64,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
       pages: [
         %{
           id: landing_page_id,
-          actions: %{correct_response_action: %{type: "change_page", destination_page_id: screening_page_id}, incorrect_response_action: %{type: "change_page", destination_page_id: screening_page_id}},
+          transitions: [%{condition: :always, destination_page_id: screening_page_id}],
           title: "Welcome to our Survey!",
           questions: [
             %{type: "short_answer_question", prompt: "Your nickname"},
@@ -70,16 +72,26 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: screening_page_id,
-          actions: %{correct_response_action: %{type: "change_page", destination_page_id: contact_details_page_id}, incorrect_response_action: :submit_form},
           title: "Screening Questions",
           questions: Enum.map(screening_questions, fn %{prompt: prompt, options: options} = _screening_question ->
             options = Enum.map(options, fn %{value: value, is_correct: is_correct} = _option -> %{type: "option_with_correct_flag", value: value, correct?: is_correct} end)
             %{type: "multiple_choice_question", prompt: prompt, options: options}
-          end)
+          end),
+          transitions: [
+            %{destination_page_id: contact_details_page_id, condition: %{type: "all_true", conditions:
+              Enum.map(screening_questions, fn %{id: question_id, options: options} = _screening_question ->
+                correct_options = Enum.filter(options, fn option -> option.is_correct end)
+                question_conditions = Enum.map(correct_options, fn %{value: value} = _option -> %{type: "response_equals", question_id: question_id, value: value} end)
+                %{type: "any_true", conditions: question_conditions}
+              end)
+            }},
+            %{destination_page_id: thank_you_page_id, submit_form?: true, condition: :always},
+          ],
+          actions: %{correct_response_action: %{type: "change_page", destination_page_id: contact_details_page_id}, incorrect_response_action: :submit_form},
         },
         %{
           id: contact_details_page_id,
-          actions: %{correct_response_action: %{type: "change_page", destination_page_id: demographics_page_id}, incorrect_response_action: %{type: "change_page", destination_page_id: demographics_page_id}},
+          transitions: [%{condition: :always, destination_page_id: demographics_page_id}],
           title: "Contact Details",
           questions: [
             %{type: "short_answer_question", prompt: "Email"},
@@ -88,21 +100,21 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: demographics_page_id,
-          actions: %{correct_response_action: %{type: "change_page", destination_page_id: context_page_id}, incorrect_response_action: %{type: "change_page", destination_page_id: context_page_id}},
+          transitions: [%{condition: :always, destination_page_id: context_page_id}],
           questions: Enum.map(demographic_questions, fn %{prompt: prompt, options: options} = _demographic_question ->
             %{type: "multiple_choice_question", prompt: prompt, options: options}
           end)
         },
         %{
           id: context_page_id,
-          actions: %{correct_response_action: %{type: "change_page", destination_page_id: comparison_page_id}, incorrect_response_action: %{type: "change_page", destination_page_id: comparison_page_id}},
+          transitions: [%{condition: :always, destination_page_id: comparison_page_id}],
           questions: Enum.map(context_questions, fn %{prompt: prompt, options: options} = _context_question ->
             %{type: "multiple_choice_question", prompt: prompt, options: options}
           end)
         },
         %{
           id: comparison_page_id,
-          actions: %{correct_response_action: %{type: "change_page", destination_page_id: desired_outcome_rating_page_id}, incorrect_response_action: %{type: "change_page", destination_page_id: desired_outcome_rating_page_id}},
+          transitions: [%{condition: :always, destination_page_id: desired_outcome_rating_page_id}],
           questions: [
             %{type: "paragraph_question", prompt: "What products, services or platforms have you used to #{String.downcase(market.job_to_be_done)}?"},
             %{type: "paragraph_question", prompt: "What additional things do you usually use/require when you're using any of the above?"},
@@ -113,7 +125,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: desired_outcome_rating_page_id,
-          actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
+          transitions: [%{destination_page_id: thank_you_page_id, submit_form?: true, condition: :always}],
           questions: Enum.map(job_steps, fn job_step ->
             %{type: "multiple_choice_question_group",
               prompts: job_step.desired_outcomes, questions: [

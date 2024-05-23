@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagement.DomainObjects.MultipleChoiceQuestion do
   alias SoonReady.SurveyManagement.DomainObjects.Option
 
   attributes do
-    uuid_primary_key :id
+    attribute :id, :uuid, primary_key?: true, allow_nil?: false, default: &Ash.UUID.generate/0
     attribute :prompt, :ci_string, allow_nil?: false
     attribute :options, {:array, Option}, allow_nil?: false, constraints: [min_length: 2]
   end
