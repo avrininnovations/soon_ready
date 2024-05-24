@@ -31,7 +31,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         <%= @current_page.description %>
       </:subtitle>
 
-      <.live_component module={FormViewModel} current_page={@current_page} id="form_view_model" />
+      <%= if @current_page.questions do %>
+        <.live_component module={FormViewModel} current_page={@current_page} id="form_view_model" />
+      <% end %>
     </.page>
     """
   end
@@ -187,7 +189,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     params =
       view_model
-      # |> IO.inspect()
       |> normalize_view_model()
       |> deep_merge(socket.assigns.params)
 
@@ -196,8 +197,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     if submit_form? do
       socket.assigns.params
-      |> normalize()
+      |> normalize(socket.assigns.survey)
       |> SoonReady.SurveyManagement.submit_response()
+      # |> IO.inspect()
       |> case do
         {:ok, _aggregate} ->
           socket =
@@ -222,24 +224,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
   end
 
-  def handle_info({:handle_submission, DesiredOutcomeRatingForm}, socket) do
-    socket.assigns.params
-    |> normalize()
-    |> SoonReady.OutcomeDrivenInnovation.submit_response()
-    |> case do
-      {:ok, _aggregate} ->
-        socket =
-          socket
-          |> put_flash(:info, "Thank you for participating in our survey!")
-          |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")
-        {:noreply, socket}
-      {:error, error} ->
-        Logger.error("DEBUG: #{inspect(error)}")
-        socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
-        {:noreply, socket}
-    end
-  end
-
   def normalize_view_model(%{__struct__: FormViewModel, page: %{id: page_id}, questions: questions}) do
     questions =
       questions
@@ -251,21 +235,34 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     %{"pages" => %{page_id => %{"questions" => questions}}}
   end
 
-  def normalize(params) do
-    # %{
-    #   survey_id: params["survey_id"],
-    #   participant: %{
-    #     nickname: params["nickname_form"]["nickname"],
-    #     email: params["contact_details_form"]["email"],
-    #     phone_number: params["contact_details_form"]["phone_number"]
-    #   },
-    #   screening_responses: params["screening_form"],
-    #   demographic_responses: params["demographics_form"],
-    #   context_responses: params["context_form"],
-    #   comparison_responses: params["comparison_form"],
-    #   desired_outcome_ratings: params["desired_outcome_rating_form"]
-    # }
-    params
-    # |> IO.inspect()
+  def normalize(params, survey) do
+    questions =
+      Enum.reduce(survey.pages, [], fn
+        %{questions: nil}, acc ->
+          acc
+        %{questions: questions}, acc ->
+          Enum.reduce(questions, acc, fn %Ash.Union{value: question} = _question, acc ->
+            [question | acc]
+          end)
+      end)
+
+    responses =
+      Enum.reduce(params["pages"], [], fn {_page_id, %{"questions" => page_questions}}, acc ->
+        Enum.reduce(page_questions, acc, fn {question_id, response}, acc ->
+          question = Enum.find(questions, fn question -> question.id == question_id end)
+
+          response =
+            case question do
+              %ShortAnswerQuestion{} ->
+                response =
+                  response
+                  |> Map.put("question_id", question_id)
+                  |> Map.put("type", "short_answer_question_response")
+            end
+          [response | acc]
+        end)
+      end)
+
+    %{"survey_id" => params["survey_id"], "responses" => responses}
   end
 end

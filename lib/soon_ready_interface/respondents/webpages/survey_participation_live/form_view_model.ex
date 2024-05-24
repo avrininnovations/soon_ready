@@ -18,21 +18,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   def transition_condition_fulfilled(%{questions: questions} = _resource, %{type: ResponseEquals, value: %{question_id: question_id, value: value}}) do
-    Enum.any?(questions, fn question ->
-      # IO.inspect(%{question_id: question_id, value: value})
-      # IO.inspect(%{a_question_id: question.id, a_value: question.response})
-
-      question.id == question_id && to_string(question.response) == to_string(value)
-    end)
+    Enum.any?(questions, fn question -> question.id == question_id && to_string(question.response) == to_string(value) end)
   end
 
   def transition_condition_fulfilled(resource, %{type: AnyTrue, value: %{conditions: conditions}}) do
-    # IO.inspect(conditions)
     Enum.any?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
   end
 
   def transition_condition_fulfilled(resource, %{type: AllTrue, value: %{conditions: conditions}}) do
-    # IO.inspect(conditions)
     Enum.all?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
   end
 
@@ -58,11 +51,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
 
   @impl true
   def render(assigns) do
-          # <.radio_group
-          #   field={ff[:response]}
-          #   label={ff.data.prompt}
-          #   options={Enum.map(ff.data.options, fn option -> {option, option} end)}
-          # />
     ~H"""
     <div>
       <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
@@ -146,11 +134,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   def handle_event("submit", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.form, params: form_params) do
       {:ok, view_model} ->
-        # TODO: No need for separate messages anymore
-        # IO.inspect(view_model, label: "View Model")
-        # send(self(), {:update_params, normalize(view_model)})
+        # TODO: Rename message
         send(self(), {:update_params, view_model})
-        # send(self(), {:handle_submission, __MODULE__})
 
         {:noreply, socket}
 
@@ -167,6 +152,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
           "response" => question.response
         })
       end)
+      
     %{"pages" => %{page_id => %{"questions" => questions}}}
   end
 end
