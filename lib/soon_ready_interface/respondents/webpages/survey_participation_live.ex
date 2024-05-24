@@ -187,16 +187,39 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     params =
       view_model
+      # |> IO.inspect()
       |> normalize_view_model()
       |> deep_merge(socket.assigns.params)
 
     # TODO: Handle submission
-    socket =
-      socket
-      |> assign(:params, params)
-      |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{view_model.transition.destination_page_id}?#{params}")
+    %{destination_page_id: destination_page_id, submit_form?: submit_form?} = view_model.transition
 
-    {:noreply, socket}
+    if submit_form? do
+      socket.assigns.params
+      |> normalize()
+      |> SoonReady.SurveyManagement.submit_response()
+      |> case do
+        {:ok, _aggregate} ->
+          socket =
+            socket
+            |> put_flash(:info, "Thank you for participating in our survey!")
+            |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}")
+
+            {:noreply, socket}
+        {:error, error} ->
+          Logger.error("DEBUG: #{inspect(error)}")
+          socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
+          {:noreply, socket}
+      end
+    else
+      socket =
+        socket
+        |> assign(:params, params)
+        |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}?#{params}")
+
+      {:noreply, socket}
+    end
+
   end
 
   def handle_info({:handle_submission, DesiredOutcomeRatingForm}, socket) do
@@ -229,18 +252,20 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   end
 
   def normalize(params) do
-    %{
-      survey_id: params["survey_id"],
-      participant: %{
-        nickname: params["nickname_form"]["nickname"],
-        email: params["contact_details_form"]["email"],
-        phone_number: params["contact_details_form"]["phone_number"]
-      },
-      screening_responses: params["screening_form"],
-      demographic_responses: params["demographics_form"],
-      context_responses: params["context_form"],
-      comparison_responses: params["comparison_form"],
-      desired_outcome_ratings: params["desired_outcome_rating_form"]
-    }
+    # %{
+    #   survey_id: params["survey_id"],
+    #   participant: %{
+    #     nickname: params["nickname_form"]["nickname"],
+    #     email: params["contact_details_form"]["email"],
+    #     phone_number: params["contact_details_form"]["phone_number"]
+    #   },
+    #   screening_responses: params["screening_form"],
+    #   demographic_responses: params["demographics_form"],
+    #   context_responses: params["context_form"],
+    #   comparison_responses: params["comparison_form"],
+    #   desired_outcome_ratings: params["desired_outcome_rating_form"]
+    # }
+    params
+    # |> IO.inspect()
   end
 end

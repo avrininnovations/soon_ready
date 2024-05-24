@@ -73,9 +73,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         %{
           id: screening_page_id,
           title: "Screening Questions",
-          questions: Enum.map(screening_questions, fn %{prompt: prompt, options: options} = _screening_question ->
+          questions: Enum.map(screening_questions, fn %{id: question_id, prompt: prompt, options: options} = _screening_question ->
             options = Enum.map(options, fn %{value: value, is_correct: is_correct} = _option -> %{type: "option_with_correct_flag", value: value, correct?: is_correct} end)
-            %{type: "multiple_choice_question", prompt: prompt, options: options}
+            %{type: "multiple_choice_question", id: question_id, prompt: prompt, options: options}
           end),
           transitions: [
             %{destination_page_id: contact_details_page_id, condition: %{type: "all_true", conditions:

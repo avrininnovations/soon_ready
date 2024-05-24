@@ -5,6 +5,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
 
   alias SoonReady.SurveyManagement.DomainObjects.{SurveyPage, Transition, ShortAnswerQuestion, MultipleChoiceQuestion, OptionWithCorrectFlag}
 
+  alias SoonReady.SurveyManagement.DomainObjects.Transition.{Always, ResponseEquals, AnyTrue, AllTrue}
   alias __MODULE__.Question
 
   attributes do
@@ -12,10 +13,32 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     attribute :questions, {:array, Question}, allow_nil?: false
   end
 
+  def transition_condition_fulfilled(_resource, %{type: Always}) do
+    true
+  end
+
+  def transition_condition_fulfilled(%{questions: questions} = _resource, %{type: ResponseEquals, value: %{question_id: question_id, value: value}}) do
+    Enum.any?(questions, fn question ->
+      # IO.inspect(%{question_id: question_id, value: value})
+      # IO.inspect(%{a_question_id: question.id, a_value: question.response})
+
+      question.id == question_id && to_string(question.response) == to_string(value)
+    end)
+  end
+
+  def transition_condition_fulfilled(resource, %{type: AnyTrue, value: %{conditions: conditions}}) do
+    # IO.inspect(conditions)
+    Enum.any?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
+  end
+
+  def transition_condition_fulfilled(resource, %{type: AllTrue, value: %{conditions: conditions}}) do
+    # IO.inspect(conditions)
+    Enum.all?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
+  end
+
   calculations do
     calculate :transition, Transition, fn resource, _context ->
-      # TODO: Actually calculate
-      [transition | _] = resource.page.transitions
+      transition = Enum.find(resource.page.transitions, fn transition -> transition_condition_fulfilled(resource, transition.condition) end)
       {:ok, transition}
     end
   end
