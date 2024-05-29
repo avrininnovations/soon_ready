@@ -179,6 +179,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     end
   end
 
+  # TODO: Avoid collision
   defp deep_merge(map1, map2) do
     Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
   end

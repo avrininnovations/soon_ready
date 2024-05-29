@@ -98,8 +98,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
   def text_field(assigns) do
     ~H"""
     <div>
-      <p><%= @label %></p>
-      <%= text_input(@field.form, @field.field, Keyword.new(@rest)) %>
+    <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><%= @label %></p>
+    <%= text_input(@field.form, @field.field, Keyword.new(@rest)) %>
       <.errors field={@field} />
     </div>
     """

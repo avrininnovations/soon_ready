@@ -3,7 +3,15 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   use Ash.Resource, data_layer: :embedded
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
 
-  alias SoonReady.SurveyManagement.DomainObjects.{SurveyPage, Transition, ShortAnswerQuestion, MultipleChoiceQuestion, OptionWithCorrectFlag}
+  alias SoonReady.SurveyManagement.DomainObjects.{
+    SurveyPage,
+    Transition,
+    ShortAnswerQuestion,
+    MultipleChoiceQuestion,
+    OptionWithCorrectFlag,
+    ParagraphQuestion,
+    MultipleChoiceQuestionGroup,
+  }
 
   alias SoonReady.SurveyManagement.DomainObjects.Transition.{Always, ResponseEquals, AnyTrue, AllTrue}
   alias __MODULE__.Question
@@ -68,6 +76,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 label={ff.data.prompt}
                 options={Enum.map(ff.data.options, fn option -> {option, option} end)}
               />
+            <% ParagraphQuestion -> %>
+              <.textarea
+                field={ff[:response]}
+                label={ff.data.prompt}
+                class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+              />
           <% end %>
         </.inputs_for>
 
@@ -85,11 +99,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
           %{type: ShortAnswerQuestion, id: id, prompt: prompt}
         %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
           options = Enum.map(options, fn
-            %Ash.Union{value: %OptionWithCorrectFlag{value: value}} ->
+            %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
+              value
+            %Ash.Union{type: :ci_string, value: value} ->
               value
           end)
-
           %{type: MultipleChoiceQuestion, id: id, prompt: prompt, options: options}
+        %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
+          %{type: ParagraphQuestion, id: id, prompt: prompt}
+        %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, prompts: prompts, questions: questions}} ->
+          %{type: ParagraphQuestion, id: id, prompt: prompt}
+
       end)
 
     __MODULE__.create!(%{page: page, questions: questions})
@@ -152,7 +172,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
           "response" => question.response
         })
       end)
-      
+
     %{"pages" => %{page_id => %{"questions" => questions}}}
   end
 end
