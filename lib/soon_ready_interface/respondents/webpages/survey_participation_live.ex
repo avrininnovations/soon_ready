@@ -144,14 +144,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     |> Enum.at(0)
   end
 
-  def create_response_view_model(%{questions: questions} = page) do
-    questions =
-      questions
-      |> Enum.map(fn
-        %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} -> %{type: ShortAnswerQuestion, id: id, prompt: prompt}
-      end)
-    FormViewModel.create!(%{page: page, questions: questions})
-  end
+  # def create_response_view_model(%{questions: questions} = page) do
+  #   questions =
+  #     questions
+  #     |> Enum.map(fn
+  #       %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} -> %{type: ShortAnswerQuestion, id: id, prompt: prompt}
+  #     end)
+  #   FormViewModel.create!(%{page: page, questions: questions})
+  # end
 
   def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
     # TODO: Make asyncronous
@@ -228,10 +228,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   def normalize_view_model(%{__struct__: FormViewModel, page: %{id: page_id}, questions: questions}) do
     questions =
       questions
-      |> Enum.reduce(%{}, fn %{id: question_id} = question, questions ->
-        Map.put(questions, question_id, %{
-          "response" => question.response
-        })
+      |> IO.inspect()
+      |> Enum.reduce(%{}, fn
+        %{type: FormViewModel.ShortAnswerQuestion, value: %{id: question_id, response: response}} = question, questions ->
+          Map.put(questions, question_id, %{
+            "response" => response
+          })
       end)
     %{"pages" => %{page_id => %{"questions" => questions}}}
   end
