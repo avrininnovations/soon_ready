@@ -15,6 +15,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     attribute :options, {:array, :string}, allow_nil?: false
     # TODO: nil is always allowed. Resolve.
     attribute :response, :string, allow_nil?: true
+
+    # MCQ Group fields
+    attribute :prompts, {:array, :string}, allow_nil?: false
+    attribute :mcq_group_sub_questions, {:array, McqGroupSubQuestion}
   end
 
   actions do

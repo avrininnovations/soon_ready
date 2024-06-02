@@ -108,7 +108,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
         %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
           %{type: ParagraphQuestion, id: id, prompt: prompt}
         %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, prompts: prompts, questions: questions}} ->
-          %{type: ParagraphQuestion, id: id, prompt: prompt}
+          prompts = Enum.map(prompts, fn %{prompt: prompt} -> prompt end)
+          IO.inspect(questions)
+          %{type: MultipleChoiceQuestionGroup, id: id, prompts: prompts, questions: questions}
 
       end)
 
