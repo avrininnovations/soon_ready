@@ -64,17 +64,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
         <.inputs_for :let={ff} field={f[:questions]}>
           <%= case ff.data.value.type do %>
-            <% SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestion -> %>
+            <% __MODULE__.ShortAnswerQuestion -> %>
               <.text_field
                 field={ff[:response]}
                 label={ff.data.value.value.prompt}
                 class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
               />
-            <% MultipleChoiceQuestion -> %>
+            <% __MODULE__.MultipleChoiceQuestion -> %>
               <.radio_group
                 field={ff[:response]}
-                label={ff.data.prompt}
-                options={Enum.map(ff.data.options, fn option -> {option, option} end)}
+                label={ff.data.value.value.prompt}
+                options={Enum.map(ff.data.value.value.options, fn option -> {option, option} end)}
               />
             <% ParagraphQuestion -> %>
               <.textarea
@@ -98,14 +98,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       |> Enum.map(fn
         %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} ->
           %{type: "short_answer_question", id: id, prompt: prompt}
-        # %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
-        #   options = Enum.map(options, fn
-        #     %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
-        #       value
-        #     %Ash.Union{type: :ci_string, value: value} ->
-        #       value
-        #   end)
-        #   %{type: MultipleChoiceQuestion, id: id, prompt: prompt, options: options}
+        %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
+          options = Enum.map(options, fn
+            %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
+              value
+            %Ash.Union{type: :ci_string, value: value} ->
+              value
+          end)
+          %{type: "multiple_choice_question", id: id, prompt: prompt, options: options}
         # %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
         #   %{type: ParagraphQuestion, id: id, prompt: prompt}
         # %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, prompts: prompts, questions: questions}} ->
@@ -116,6 +116,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       end)
 
       __MODULE__.create!(%{page: page, questions: questions})
+      |> IO.inspect()
   end
 
   @impl true
@@ -136,16 +137,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
             case form.data.value do
               %Ash.Union{type: __MODULE__.ShortAnswerQuestion, value: %{id: id, prompt: prompt}} ->
                 params
-                |> Map.put("id", id)
                 |> Map.put("type", "short_answer_question")
+                |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
+              %Ash.Union{type: __MODULE__.MultipleChoiceQuestion, value: %{id: id, prompt: prompt, options: options}} ->
+                params
+                |> Map.put("type", "short_answer_question")
+                |> Map.put("id", id)
+                |> Map.put("prompt", prompt)
+                |> Map.put("options", options)
 
             end
-            # params
-            # |> Map.put("id", form.data.id)
-            # |> Map.put("type", form.data.type)
-            # |> Map.put("prompt", form.data.prompt)
-            # |> Map.put("options", form.data.options)
             # # TODO: Response/Responses fields that are not used
           end
         ]
