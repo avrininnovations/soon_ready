@@ -26,7 +26,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   def transition_condition_fulfilled(%{questions: questions} = _resource, %{type: ResponseEquals, value: %{question_id: question_id, value: value}}) do
-    Enum.any?(questions, fn question -> question.id == question_id && to_string(question.response) == to_string(value) end)
+    Enum.any?(questions, fn question -> question.value.id == question_id && to_string(question.value.response) == to_string(value) end)
   end
 
   def transition_condition_fulfilled(resource, %{type: AnyTrue, value: %{conditions: conditions}}) do
@@ -76,10 +76,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 label={ff.data.value.value.prompt}
                 options={Enum.map(ff.data.value.value.options, fn option -> {option, option} end)}
               />
-            <% ParagraphQuestion -> %>
+            <% __MODULE__.ParagraphQuestion -> %>
               <.textarea
                 field={ff[:response]}
-                label={ff.data.prompt}
+                label={ff.data.value.value.prompt}
                 class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
               />
           <% end %>
@@ -106,8 +106,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
               value
           end)
           %{type: "multiple_choice_question", id: id, prompt: prompt, options: options}
-        # %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
-        #   %{type: ParagraphQuestion, id: id, prompt: prompt}
+        %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
+          %{type: "paragraph_question", id: id, prompt: prompt}
         # %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, prompts: prompts, questions: questions}} ->
         #   prompts = Enum.map(prompts, fn %{prompt: prompt} -> prompt end)
         #   IO.inspect(questions)
@@ -116,7 +116,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       end)
 
       __MODULE__.create!(%{page: page, questions: questions})
-      |> IO.inspect()
+      # |> IO.inspect()
   end
 
   @impl true
@@ -146,7 +146,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
                 |> Map.put("options", options)
-
+              %Ash.Union{type: __MODULE__.ParagraphQuestion, value: %{id: id, prompt: prompt}} ->
+                params
+                |> Map.put("type", "paragraph_question")
+                |> Map.put("id", id)
+                |> Map.put("prompt", prompt)
             end
             # # TODO: Response/Responses fields that are not used
           end
