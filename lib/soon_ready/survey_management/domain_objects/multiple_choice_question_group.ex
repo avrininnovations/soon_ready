@@ -5,8 +5,9 @@ defmodule SoonReady.SurveyManagement.DomainObjects.MultipleChoiceQuestionGroup d
 
   attributes do
     uuid_primary_key :id
-    attribute :prompts, {:array, MultipleChoiceQuestionGroupPrompt}, allow_nil?: false, constraints: [min_length: 2]
-    attribute :questions, {:array, MultipleChoiceQuestion}, allow_nil?: false, constraints: [min_length: 2]
+    attribute :title, :ci_string, allow_nil?: false
+    attribute :prompts, {:array, MultipleChoiceQuestionGroupPrompt}, allow_nil?: false
+    attribute :questions, {:array, MultipleChoiceQuestion}, allow_nil?: false
   end
 
   actions do
@@ -15,7 +16,7 @@ defmodule SoonReady.SurveyManagement.DomainObjects.MultipleChoiceQuestionGroup d
     create :create do
       primary? true
 
-      argument :prompts, {:array, :ci_string}, allow_nil?: false, constraints: [min_length: 2]
+      argument :prompts, {:array, :ci_string}, allow_nil?: false
 
       change fn changeset, _context ->
         case Ash.Changeset.get_argument(changeset, :prompts) do

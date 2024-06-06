@@ -228,12 +228,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   def normalize_view_model(%{__struct__: FormViewModel, page: %{id: page_id}, questions: questions}) do
     questions =
       questions
-      # |> IO.inspect()
       |> Enum.reduce(%{}, fn
-        %{type: FormViewModel.ShortAnswerQuestion, value: %{id: question_id, response: response}} = question, questions ->
-          Map.put(questions, question_id, %{
-            "response" => response
-          })
+        %{type: type, value: %{id: question_id, response: response}} = question, questions when type in [
+          FormViewModel.ShortAnswerQuestion,
+          FormViewModel.ParagraphQuestion,
+        ] ->
+          Map.put(questions, question_id, response)
       end)
     %{"pages" => %{page_id => %{"questions" => questions}}}
   end

@@ -141,6 +141,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
     """
   end
 
+  attr :questions, :list, required: true
+
+
   attr :desired_outcomes, :list, required: true
   attr :importance_options, :list, required: true
   attr :satisfaction_options, :list, required: true
@@ -148,26 +151,39 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
   slot :satisfaction_prompt, required: true
 
   def rating_section_header(assigns) do
+
+    # <div class="lg:col-span-3 px-4 lg:px-3 py-4 font-medium text-gray-900 dark:text-gray-200">
+    # <%= render_slot(@importance_prompt) %>
+    # </div>
+    # <div class="lg:col-span-3 px-4 lg:px-3 py-4 font-medium text-gray-900 dark:text-gray-200">
+    # <%= render_slot(@satisfaction_prompt) %>
+    # </div>
+
+
+
+    # <.header_option_labels options={@importance_options} />
+    # <.header_option_labels options={@satisfaction_options} />
     ~H"""
     <div class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 
+      <%!-- TODO: Remove the assumption that there will always be 2 question columns --%>
       <div class="grid grid-cols-2 lg:grid-cols-8 px-2">
           <div class="hidden lg:block col-span-2 px-6 py-4 font-medium text-gray-900 dark:text-white">
           </div>
-          <div class="lg:col-span-3 px-4 lg:px-3 py-4 font-medium text-gray-900 dark:text-gray-200">
-          <%= render_slot(@importance_prompt) %>
-          </div>
-          <div class="lg:col-span-3 px-4 lg:px-3 py-4 font-medium text-gray-900 dark:text-gray-200">
-          <%= render_slot(@satisfaction_prompt) %>
-          </div>
+          <%= for question <- @questions do %>
+            <div class="lg:col-span-3 px-4 lg:px-3 py-4 font-medium text-gray-900 dark:text-gray-200">
+              <%= question.prompt %>
+            </div>
+          <% end %>
       </div>
 
       <div class="hidden break-words lg:grid lg:grid-cols-8 lg:gap-2 px-2 text-center border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
           <%!-- TODO: Remove the need for this empty div --%>
           <div class="col-span-2">
           </div>
-          <.header_option_labels options={@importance_options} />
-          <.header_option_labels options={@satisfaction_options} />
+          <%= for question <- @questions do %>
+            <.header_option_labels options={question.options} />
+          <% end %>
       </div>
 
     </div>
@@ -197,7 +213,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
   end
 
   attr :desired_outcome, :string, required: true
-  slot :radio_group, required: true do
+  slot :radio_group do
     attr :field, Phoenix.HTML.FormField, required: true
     attr :options, :list, required: true
   end
@@ -215,6 +231,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
           <%= @desired_outcome %>
       </div>
 
+      <%= render_slot(@inner_block) %>
+
       <%= for radio_group <- @radio_group do %>
       <div class="lg:col-span-3 lg:grid lg:items-center px-4 lg:px-0 py-4">
         <ul class="lg:grid lg:grid-cols-5 px-3 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -228,6 +246,22 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
       </div>
 
       <% end %>
+    </div>
+    """
+  end
+
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :options, :list, required: true
+  def rating_radio_group(assigns) do
+    ~H"""
+    <div class="lg:col-span-3 lg:grid lg:items-center px-4 lg:px-0 py-4">
+      <ul class="lg:grid lg:grid-cols-5 px-3 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+        <%= for option_value <- @options do %>
+          <.radio_button field={@field} value={option_value} label={atom_to_sentence_case_string(option_value)} checked={@field.value == option_value} />
+        <% end %>
+      </ul>
+
+      <.errors field={@field} />
     </div>
     """
   end

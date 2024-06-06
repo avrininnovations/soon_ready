@@ -128,28 +128,32 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
           transitions: [%{destination_page_id: thank_you_page_id, submit_form?: true, condition: :always}],
           questions: Enum.map(job_steps, fn job_step ->
             %{type: "multiple_choice_question_group",
-              prompts: job_step.desired_outcomes, questions: [
-              %{
-                prompt: "When you #{String.downcase(job_step.name)}, how important is it to you to:",
-                options: [
-                  "Not At All Important",
-                  "Somewhat Important",
-                  "Important",
-                  "Very Important",
-                  "Extremely Important"
-                ]
-              },
-              %{
-                prompt: "Given the solutions you currently have, how satisfied are you with your ability to:",
-                options: [
-                  "Not At All Satisfied",
-                  "Somewhat Satisfied",
-                  "Satisfied",
-                  "Very Satisfied",
-                  "Extremely Satisfied"
-                ]
-              },
-            ]}
+              # TODO: Wrap in "Step #{index}: #{job_step.name}"
+              title: job_step.name,
+              prompts: job_step.desired_outcomes,
+              questions: [
+                %{
+                  prompt: "When you #{String.downcase(job_step.name)}, how important is it to you to:",
+                  options: [
+                    "Not At All Important",
+                    "Somewhat Important",
+                    "Important",
+                    "Very Important",
+                    "Extremely Important"
+                  ]
+                },
+                %{
+                  prompt: "Given the solutions you currently have, how satisfied are you with your ability to:",
+                  options: [
+                    "Not At All Satisfied",
+                    "Somewhat Satisfied",
+                    "Satisfied",
+                    "Very Satisfied",
+                    "Extremely Satisfied"
+                  ]
+                },
+              ]
+            }
           end)
         },
         %{

@@ -2,6 +2,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   use SoonReadyInterface, :live_component
   use Ash.Resource, data_layer: :embedded
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
+  import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Layout
+
 
   alias SoonReady.SurveyManagement.DomainObjects.{
     SurveyPage,
@@ -82,12 +84,88 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 label={ff.data.value.value.prompt}
                 class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
               />
+            <% __MODULE__.MultipleChoiceQuestionGroup -> %>
+              <.mcq_group
+                form={ff}
+                index={ff.index}
+                title={ff.data.value.value.title}
+                questions={ff.data.value.value.questions}
+              />
           <% end %>
         </.inputs_for>
 
         <button type="submit" name="submit" class="mt-4 py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed</button>
       </.form>
     </div>
+    """
+  end
+
+  def mcq_group(assigns) do
+
+
+    # <.inputs_for :let={job_step_form} field={f[:job_steps]}>
+    #   <.accordion index={job_step_form.index}>
+    #   ...
+    # </.inputs_for>
+
+    # TODO: Where should the accordion_section be? Wrapping the entire page?
+    # TODO: How do I handle index?
+
+
+
+
+  #   <.rating_section_header importance_options={@importance_values} satisfaction_options={@satisfaction_values}>
+  #   <:importance_prompt>When you <%= job_step_form.data.name %>, how important is it to you to:</:importance_prompt>
+  #   <:satisfaction_prompt>Given the solutions you currently have, how satisfied are you with your ability to:</:satisfaction_prompt>
+  # </.rating_section_header>
+
+  # <.rating_section_body>
+  #   <.inputs_for :let={desired_outcome_form} field={job_step_form[:desired_outcomes]}>
+  #     <.outcome_rating desired_outcome={desired_outcome_form.data.name}>
+  #       <:radio_group field={desired_outcome_form[:importance]} options={@importance_values} />
+  #       <:radio_group field={desired_outcome_form[:satisfaction]} options={@satisfaction_values} />
+  #     </.outcome_rating>
+  #   </.inputs_for>
+  # </.rating_section_body>
+
+
+  # <.rating_section_body>
+  #     <.inputs_for :let={prompt_form} field={@form[:prompt_responses]}>
+  #       <.outcome_rating desired_outcome={prompt_form.data.prompt.prompt}>
+  #         <.inputs_for :let={question_form} field={@prompt_form[:question_responses]}>
+  #           <:radio_group field={question_form[:response]} options={question_form.data.question.options} />
+  #         </.inputs_for>
+  #       </.outcome_rating>
+  #     </.inputs_for>
+  #   </.rating_section_body>
+  # </.rating_section>
+
+  # <:radio_group field={question_form[:response]} options={question_form.data.question.options} />
+
+
+
+    # TODO: Rename ODI related component, attr and slot names
+    ~H"""
+    <.accordion_section>
+      <.accordion index={@index}>
+        <:title><%= @title %></:title>
+
+        <.rating_section>
+          <.rating_section_header questions={@questions} />
+
+          <.rating_section_body>
+            <.inputs_for :let={prompt_form} field={@form[:prompt_responses]}>
+              <.outcome_rating desired_outcome={prompt_form.data.prompt}>
+                <.inputs_for :let={question_form} field={prompt_form[:question_responses]}>
+                  <.rating_radio_group field={question_form[:response]} options={question_form.data.options} />
+                </.inputs_for>
+              </.outcome_rating>
+            </.inputs_for>
+          </.rating_section_body>
+        </.rating_section>
+
+      </.accordion>
+    </.accordion_section>
     """
   end
 
@@ -108,15 +186,30 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
           %{type: "multiple_choice_question", id: id, prompt: prompt, options: options}
         %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
           %{type: "paragraph_question", id: id, prompt: prompt}
-        # %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, prompts: prompts, questions: questions}} ->
-        #   prompts = Enum.map(prompts, fn %{prompt: prompt} -> prompt end)
-        #   IO.inspect(questions)
-        #   %{type: MultipleChoiceQuestionGroup, id: id, prompts: prompts, questions: questions}
+        %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, title: title, prompts: prompts, questions: questions}} ->
+          prompt_responses = Enum.map(prompts, fn %{id: id, prompt: prompt} ->
+            question_responses = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} ->
+              options = Enum.map(options, fn
+                %Ash.Union{value: option, type: :ci_string} -> option
+              end)
+              %{id: id, prompt: prompt, options: options}
+            end)
+            %{id: id, prompt: prompt, question_responses: question_responses}
+          end)
+
+          prompts = Enum.map(prompts, fn %{id: id, prompt: prompt} = _prompt -> %{id: id, prompt: prompt} end)
+          questions = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} = _question ->
+            options = Enum.map(options, fn
+              %Ash.Union{value: option, type: :ci_string} -> option
+            end)
+            %{id: id, prompt: prompt, options: options}
+          end)
+          %{type: "multiple_choice_question_group", id: id, title: title, prompts: prompts, questions: questions, prompt_responses: prompt_responses}
+          |> IO.inspect(label: "MCQ INSPECT")
 
       end)
 
       __MODULE__.create!(%{page: page, questions: questions})
-      # |> IO.inspect()
   end
 
   @impl true
@@ -133,6 +226,23 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
           type: :list,
           data: view_model.questions,
           update_action: :update,
+          forms: [
+            prompt_responses: [
+              type: :list,
+              data: fn
+                %AshPhoenix.Form.WrappedValue{value: %{type: __MODULE__.MultipleChoiceQuestionGroup}} = question -> question.value.value.prompt_responses
+                _question -> []
+              end,
+              update_action: :update,
+              forms: [
+                question_responses: [
+                  type: :list,
+                  data: fn prompt_response -> prompt_response.question_responses end,
+                  update_action: :update,
+                ]
+              ],
+            ]
+          ],
           transform_params: fn form, params, _arg3 ->
             case form.data.value do
               %Ash.Union{type: __MODULE__.ShortAnswerQuestion, value: %{id: id, prompt: prompt}} ->
@@ -151,6 +261,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 |> Map.put("type", "paragraph_question")
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
+              %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroup, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
+                params
+                |> Map.put("type", "multiple_choice_question_group")
+                |> Map.put("id", id)
+                |> Map.put("title", title)
+                |> Map.put("prompts", prompts)
+                |> Map.put("questions", questions)
             end
             # # TODO: Response/Responses fields that are not used
           end
