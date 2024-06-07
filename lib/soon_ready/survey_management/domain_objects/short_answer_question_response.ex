@@ -3,6 +3,6 @@ defmodule SoonReady.SurveyManagement.DomainObjects.ShortAnswerQuestionResponse d
 
   attributes do
     attribute :question_id, :uuid, allow_nil?: false
-    attribute :response, :ci_string, allow_nil?: false
+    attribute :response, :ci_string
   end
 end

@@ -4,6 +4,6 @@ defmodule SoonReady.SurveyManagement.DomainObjects.CheckboxQuestionResponse do
 
   attributes do
     attribute :question_id, :uuid, allow_nil?: false
-    attribute :responses, {:array, :ci_string}, allow_nil?: false
+    attribute :responses, {:array, :ci_string}
   end
 end

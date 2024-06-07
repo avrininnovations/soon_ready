@@ -16,7 +16,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   alias SoonReadyInterface.Respondents.ReadModels.Survey
 
 
-  alias SoonReady.SurveyManagement.DomainObjects.ShortAnswerQuestion
+  alias SoonReady.SurveyManagement.DomainObjects.{
+    ShortAnswerQuestion,
+    MultipleChoiceQuestion,
+    ParagraphQuestion,
+  }
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel
   alias SoonReady.SurveyManagement.DomainObjects.PageAction.ChangePage
 
@@ -229,11 +233,19 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     questions =
       questions
       |> Enum.reduce(%{}, fn
-        %{type: type, value: %{id: question_id, response: response}} = question, questions when type in [
+        %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
           FormViewModel.ShortAnswerQuestion,
           FormViewModel.ParagraphQuestion,
         ] ->
-          Map.put(questions, question_id, response)
+          Map.put(question_params, question_id, response)
+        %{type: FormViewModel.MultipleChoiceQuestionGroup, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
+          response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
+            prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->
+              Map.put(question_response_params, question_response_id, response)
+            end)
+            Map.put(prompt_response_params, prompt_id, prompt_response)
+          end)
+          Map.put(question_params, question_id, response)
       end)
     %{"pages" => %{page_id => %{"questions" => questions}}}
   end
@@ -254,15 +266,24 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         Enum.reduce(page_questions, acc, fn {question_id, response}, acc ->
           question = Enum.find(questions, fn question -> question.id == question_id end)
 
-          response =
+          normalized_response =
             case question do
               %ShortAnswerQuestion{} ->
-                response =
-                  response
-                  |> Map.put("question_id", question_id)
-                  |> Map.put("type", "short_answer_question_response")
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "short_answer_question_response")
+              %MultipleChoiceQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "multiple_choice_question_response")
+              %ParagraphQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "paragraph_question_response")
+                |> IO.inspect()
+
             end
-          [response | acc]
+          [normalized_response | acc]
         end)
       end)
 
