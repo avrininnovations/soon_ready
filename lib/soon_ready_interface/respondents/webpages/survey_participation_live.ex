@@ -20,6 +20,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ShortAnswerQuestion,
     MultipleChoiceQuestion,
     ParagraphQuestion,
+    MultipleChoiceQuestionGroup,
   }
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel
   alias SoonReady.SurveyManagement.DomainObjects.PageAction.ChangePage
@@ -31,10 +32,27 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     {:ok, assign(socket, :survey, survey)}
   end
 
+  def handle_params(params, url, %{assigns: %{survey: survey}} = socket) do
+    {page_id, socket} =
+      case Map.get(params, "page_id") do
+        nil ->
+          socket = push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/pages/#{survey.starting_page_id}")
+          {survey.starting_page_id, socket}
+        page_id ->
+          {page_id, socket}
+      end
+
+    current_page = get_page(survey, page_id)
+
+    page_is_wide? = Enum.any?(current_page.questions, fn question -> question.type == MultipleChoiceQuestionGroup end)
+
+    {:noreply, assign(socket, params: params, current_page: current_page, page_is_wide?: page_is_wide?)}
+  end
+
   def render(assigns) do
     # <.live_component module={NicknameForm} id="nickname_form" />
     ~H"""
-    <.page>
+    <.page is_wide={@page_is_wide?}>
       <:title>
         <%= @current_page.title %>
       </:title>
@@ -53,25 +71,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     pages
     |> Enum.filter(fn %{id: id} = _page -> page_id == id end)
     |> Enum.at(0)
-  end
-
-  def handle_params(params, url, %{assigns: %{survey: survey}} = socket) do
-    case Map.get(params, "page_id") do
-      nil ->
-        # TODO: Handle bad page id. redirect/flash
-        current_page = get_page(survey, survey.starting_page_id)
-
-        socket =
-          socket
-          |> push_patch(to: ~p"/survey/participate/#{params["survey_id"]}/pages/#{current_page.id}")
-          |> assign(params: params, current_page: current_page)
-
-        {:noreply, socket}
-      page_id ->
-        current_page = get_page(survey, page_id)
-
-        {:noreply, assign(socket, params: params, current_page: current_page)}
-    end
   end
 
   # TODO: Avoid collision

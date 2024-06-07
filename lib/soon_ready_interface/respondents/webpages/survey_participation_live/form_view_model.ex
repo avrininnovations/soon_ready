@@ -58,6 +58,69 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   @impl true
+  def update(assigns, socket) do
+    view_model = create_response_view_model(assigns.current_page)
+
+    socket =
+      socket
+      |> assign(:current_page, assigns.current_page)
+      |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
+        responses: [
+          type: :list,
+          data: view_model.responses,
+          update_action: :update,
+          forms: [
+            prompt_responses: [
+              type: :list,
+              data: fn
+                %AshPhoenix.Form.WrappedValue{value: %{type: __MODULE__.MultipleChoiceQuestionGroup}} = question -> question.value.value.prompt_responses
+                _question -> []
+              end,
+              update_action: :update,
+              forms: [
+                question_responses: [
+                  type: :list,
+                  data: fn prompt_response -> prompt_response.question_responses end,
+                  update_action: :update,
+                ]
+              ],
+            ]
+          ],
+          transform_params: fn form, params, _arg3 ->
+            case form.data.value do
+              %Ash.Union{type: __MODULE__.ShortAnswerQuestion, value: %{id: id, prompt: prompt}} ->
+                params
+                |> Map.put("type", "short_answer_question")
+                |> Map.put("id", id)
+                |> Map.put("prompt", prompt)
+              %Ash.Union{type: __MODULE__.MultipleChoiceQuestion, value: %{id: id, prompt: prompt, options: options}} ->
+                params
+                |> Map.put("type", "short_answer_question")
+                |> Map.put("id", id)
+                |> Map.put("prompt", prompt)
+                |> Map.put("options", options)
+              %Ash.Union{type: __MODULE__.ParagraphQuestion, value: %{id: id, prompt: prompt}} ->
+                params
+                |> Map.put("type", "paragraph_question")
+                |> Map.put("id", id)
+                |> Map.put("prompt", prompt)
+              %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroup, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
+                params
+                |> Map.put("type", "multiple_choice_question_group")
+                |> Map.put("id", id)
+                |> Map.put("title", title)
+                |> Map.put("prompts", prompts)
+                |> Map.put("questions", questions)
+            end
+            # # TODO: Response/Responses fields that are not used
+          end
+        ]
+      ]))
+
+    {:ok, socket}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <div>
@@ -127,7 +190,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     """
   end
 
-  def create_response_view_model(%{questions: questions, transitions: page_transitions}) do
+  def create_response_view_model(%{questions: questions, transitions: page_transitions} = _survey_page) do
     responses =
       questions
       |> Enum.map(fn
@@ -162,76 +225,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
             %{id: id, prompt: prompt, options: options}
           end)
           %{type: "multiple_choice_question_group", id: id, title: title, prompts: prompts, questions: questions, prompt_responses: prompt_responses}
-          |> IO.inspect(label: "MCQ INSPECT")
-
       end)
 
       __MODULE__.create!(%{page_transitions: page_transitions, responses: responses})
-  end
-
-  @impl true
-  def update(assigns, socket) do
-    view_model =
-      assigns.current_page
-      |> create_response_view_model()
-
-    socket =
-      socket
-      |> assign(:current_page, assigns.current_page)
-      |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
-        responses: [
-          type: :list,
-          data: view_model.responses,
-          update_action: :update,
-          forms: [
-            prompt_responses: [
-              type: :list,
-              data: fn
-                %AshPhoenix.Form.WrappedValue{value: %{type: __MODULE__.MultipleChoiceQuestionGroup}} = question -> question.value.value.prompt_responses
-                _question -> []
-              end,
-              update_action: :update,
-              forms: [
-                question_responses: [
-                  type: :list,
-                  data: fn prompt_response -> prompt_response.question_responses end,
-                  update_action: :update,
-                ]
-              ],
-            ]
-          ],
-          transform_params: fn form, params, _arg3 ->
-            case form.data.value do
-              %Ash.Union{type: __MODULE__.ShortAnswerQuestion, value: %{id: id, prompt: prompt}} ->
-                params
-                |> Map.put("type", "short_answer_question")
-                |> Map.put("id", id)
-                |> Map.put("prompt", prompt)
-              %Ash.Union{type: __MODULE__.MultipleChoiceQuestion, value: %{id: id, prompt: prompt, options: options}} ->
-                params
-                |> Map.put("type", "short_answer_question")
-                |> Map.put("id", id)
-                |> Map.put("prompt", prompt)
-                |> Map.put("options", options)
-              %Ash.Union{type: __MODULE__.ParagraphQuestion, value: %{id: id, prompt: prompt}} ->
-                params
-                |> Map.put("type", "paragraph_question")
-                |> Map.put("id", id)
-                |> Map.put("prompt", prompt)
-              %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroup, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
-                params
-                |> Map.put("type", "multiple_choice_question_group")
-                |> Map.put("id", id)
-                |> Map.put("title", title)
-                |> Map.put("prompts", prompts)
-                |> Map.put("questions", questions)
-            end
-            # # TODO: Response/Responses fields that are not used
-          end
-        ]
-      ]))
-
-    {:ok, socket}
   end
 
   @impl true
