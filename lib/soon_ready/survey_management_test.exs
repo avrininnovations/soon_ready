@@ -361,7 +361,7 @@ defmodule SoonReady.SurveyManagementTest do
       },
       %{
         id: page_3_id,
-        transitions: [%{condition: :always, destination_page_id: final_page_id, submit_form?: true}],
+        transitions: [%{condition: :always, destination_page_id: final_page_id, submit_response?: true}],
         questions: [
           %{type: "short_answer_question", prompt: "The short answer prompt"},
         ]

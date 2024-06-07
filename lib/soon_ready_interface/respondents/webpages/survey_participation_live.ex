@@ -24,6 +24,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel
   alias SoonReady.SurveyManagement.DomainObjects.PageAction.ChangePage
 
+  def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
+    # TODO: Make asyncronous
+    {:ok, %{starting_page_id: starting_page_id} = survey} = Survey.get_active(survey_id)
+
+    {:ok, assign(socket, :survey, survey)}
+  end
+
   def render(assigns) do
     # <.live_component module={NicknameForm} id="nickname_form" />
     ~H"""
@@ -42,126 +49,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     """
   end
 
-  def render(%{live_action: :landing_page} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Welcome to our Survey!
-      </:title>
-      <:subtitle>
-        Buckle your belts! It'll be a great (and somewhat long) ride! 😎
-      </:subtitle>
-
-      <.live_component module={NicknameForm} id="nickname_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :screening_questions} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Screening Questions
-      </:title>
-
-      <.live_component module={ScreeningForm} survey={@survey} id="screening_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :contact_details} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Contact Details
-      </:title>
-
-      <.live_component module={ContactDetailsForm} survey={@survey} id="contact_details_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :demographics} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Demographics
-      </:title>
-
-      <.live_component module={DemographicsForm} survey={@survey} id="demographics_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :context} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Context
-      </:title>
-
-      <.live_component module={ContextForm} survey={@survey} id="context_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :comparison} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Comparison
-      </:title>
-
-      <.live_component module={ComparisonForm} survey={@survey} id="comparison_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :desired_outcome_ratings} = assigns) do
-    ~H"""
-    <.page is_wide={true}>
-      <:title>
-        Desired Outcome Ratings
-      </:title>
-
-      <.live_component module={DesiredOutcomeRatingForm} survey={@survey} id="desired_outcome_rating_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :thank_you} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Thank You!
-      </:title>
-      <:subtitle>
-        We appreciate your input to our journey! 💯🚀
-      </:subtitle>
-    </.page>
-    """
-  end
-
   def get_page(%{pages: pages} = _survey, page_id) do
     pages
     |> Enum.filter(fn %{id: id} = _page -> page_id == id end)
     |> Enum.at(0)
-  end
-
-  # def create_response_view_model(%{questions: questions} = page) do
-  #   questions =
-  #     questions
-  #     |> Enum.map(fn
-  #       %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} -> %{type: ShortAnswerQuestion, id: id, prompt: prompt}
-  #     end)
-  #   FormViewModel.create!(%{page: page, questions: questions})
-  # end
-
-  def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
-    # TODO: Make asyncronous
-    {:ok, %{starting_page_id: starting_page_id} = survey} = Survey.get_active(survey_id)
-
-    {:ok, assign(socket, :survey, survey)}
   end
 
   def handle_params(params, url, %{assigns: %{survey: survey}} = socket) do
@@ -188,48 +79,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
   end
 
-  # TODO: Change message name
-  def handle_info({:update_params, view_model}, socket) do
-    socket.assigns.params
-
-    params =
-      view_model
-      |> normalize_view_model()
-      |> deep_merge(socket.assigns.params)
-
-    # TODO: Handle submission
-    %{destination_page_id: destination_page_id, submit_form?: submit_form?} = view_model.transition
-
-    if submit_form? do
-      socket.assigns.params
-      |> normalize(socket.assigns.survey)
-      |> SoonReady.SurveyManagement.submit_response()
-      # |> IO.inspect()
-      |> case do
-        {:ok, _aggregate} ->
-          socket =
-            socket
-            |> put_flash(:info, "Thank you for participating in our survey!")
-            |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}")
-
-            {:noreply, socket}
-        {:error, error} ->
-          Logger.error("DEBUG: #{inspect(error)}")
-          socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
-          {:noreply, socket}
-      end
-    else
-      socket =
-        socket
-        |> assign(:params, params)
-        |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}?#{params}")
-
-      {:noreply, socket}
-    end
-
-  end
-
-  def normalize_view_model(%{__struct__: FormViewModel, page: %{id: page_id}, questions: questions}) do
+  def extract_query_params(%FormViewModel{page: %{id: page_id}, questions: questions}) do
     questions =
       questions
       |> Enum.reduce(%{}, fn
@@ -250,7 +100,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     %{"pages" => %{page_id => %{"questions" => questions}}}
   end
 
-  def normalize(params, survey) do
+  def normalize_response(params, survey) do
     questions =
       Enum.reduce(survey.pages, [], fn
         %{questions: nil}, acc ->
@@ -280,7 +130,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
                 %{"response" => response}
                 |> Map.put("question_id", question_id)
                 |> Map.put("type", "paragraph_question_response")
-                |> IO.inspect()
 
             end
           [normalized_response | acc]
@@ -288,5 +137,40 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       end)
 
     %{"survey_id" => params["survey_id"], "responses" => responses}
+  end
+
+  def handle_info({:transition_from_page, %{transition: %{destination_page_id: destination_page_id, submit_response?: submit_response?}} = view_model}, socket) do
+    socket.assigns.params
+
+    params =
+      view_model
+      |> extract_query_params()
+      |> deep_merge(socket.assigns.params)
+
+    if submit_response? do
+      socket.assigns.params
+      |> normalize_response(socket.assigns.survey)
+      |> SoonReady.SurveyManagement.submit_response()
+      |> case do
+        {:ok, _aggregate} ->
+          socket =
+            socket
+            |> put_flash(:info, "Thank you for participating in our survey!")
+            |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}")
+
+            {:noreply, socket}
+        {:error, error} ->
+          Logger.error("DEBUG: #{inspect(error)}")
+          socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
+          {:noreply, socket}
+      end
+    else
+      socket =
+        socket
+        |> assign(:params, params)
+        |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}?#{params}")
+
+      {:noreply, socket}
+    end
   end
 end

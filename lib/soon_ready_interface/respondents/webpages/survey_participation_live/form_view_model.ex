@@ -101,48 +101,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   def mcq_group(assigns) do
-
-
-    # <.inputs_for :let={job_step_form} field={f[:job_steps]}>
-    #   <.accordion index={job_step_form.index}>
-    #   ...
-    # </.inputs_for>
-
     # TODO: Where should the accordion_section be? Wrapping the entire page?
     # TODO: How do I handle index?
-
-
-
-
-  #   <.rating_section_header importance_options={@importance_values} satisfaction_options={@satisfaction_values}>
-  #   <:importance_prompt>When you <%= job_step_form.data.name %>, how important is it to you to:</:importance_prompt>
-  #   <:satisfaction_prompt>Given the solutions you currently have, how satisfied are you with your ability to:</:satisfaction_prompt>
-  # </.rating_section_header>
-
-  # <.rating_section_body>
-  #   <.inputs_for :let={desired_outcome_form} field={job_step_form[:desired_outcomes]}>
-  #     <.outcome_rating desired_outcome={desired_outcome_form.data.name}>
-  #       <:radio_group field={desired_outcome_form[:importance]} options={@importance_values} />
-  #       <:radio_group field={desired_outcome_form[:satisfaction]} options={@satisfaction_values} />
-  #     </.outcome_rating>
-  #   </.inputs_for>
-  # </.rating_section_body>
-
-
-  # <.rating_section_body>
-  #     <.inputs_for :let={prompt_form} field={@form[:prompt_responses]}>
-  #       <.outcome_rating desired_outcome={prompt_form.data.prompt.prompt}>
-  #         <.inputs_for :let={question_form} field={@prompt_form[:question_responses]}>
-  #           <:radio_group field={question_form[:response]} options={question_form.data.question.options} />
-  #         </.inputs_for>
-  #       </.outcome_rating>
-  #     </.inputs_for>
-  #   </.rating_section_body>
-  # </.rating_section>
-
-  # <:radio_group field={question_form[:response]} options={question_form.data.question.options} />
-
-
 
     # TODO: Rename ODI related component, attr and slot names
     ~H"""
@@ -288,8 +248,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   def handle_event("submit", %{"form" => form_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.form, params: form_params) do
       {:ok, view_model} ->
-        # TODO: Rename message
-        send(self(), {:update_params, view_model})
+        send(self(), {:transition_from_page, view_model})
 
         {:noreply, socket}
 

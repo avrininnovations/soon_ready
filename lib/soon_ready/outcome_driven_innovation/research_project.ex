@@ -85,7 +85,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
                 %{type: "any_true", conditions: question_conditions}
               end)
             }},
-            %{destination_page_id: thank_you_page_id, submit_form?: true, condition: :always},
+            %{destination_page_id: thank_you_page_id, submit_response?: true, condition: :always},
           ],
           actions: %{correct_response_action: %{type: "change_page", destination_page_id: contact_details_page_id}, incorrect_response_action: :submit_form},
         },
@@ -125,7 +125,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: desired_outcome_rating_page_id,
-          transitions: [%{destination_page_id: thank_you_page_id, submit_form?: true, condition: :always}],
+          transitions: [%{destination_page_id: thank_you_page_id, submit_response?: true, condition: :always}],
           questions: Enum.map(job_steps, fn job_step ->
             %{type: "multiple_choice_question_group",
               # TODO: Wrap in "Step #{index}: #{job_step.name}"

@@ -6,6 +6,6 @@ defmodule SoonReady.SurveyManagement.DomainObjects.Transition do
   attributes do
     attribute :condition, Condition, allow_nil?: false
     attribute :destination_page_id, :uuid, allow_nil?: false
-    attribute :submit_form?, :boolean, allow_nil?: false, default: false
+    attribute :submit_response?, :boolean, allow_nil?: false, default: false
   end
 end
