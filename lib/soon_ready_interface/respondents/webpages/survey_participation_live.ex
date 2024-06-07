@@ -79,9 +79,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
   end
 
-  def extract_query_params(%FormViewModel{page: %{id: page_id}, questions: questions}) do
-    questions =
-      questions
+  def extract_query_params(%FormViewModel{responses: responses}, %{id: page_id} = _current_page) do
+    responses =
+      responses
       |> Enum.reduce(%{}, fn
         %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
           FormViewModel.ShortAnswerQuestion,
@@ -97,7 +97,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
           end)
           Map.put(question_params, question_id, response)
       end)
-    %{"pages" => %{page_id => %{"questions" => questions}}}
+    %{"pages" => %{page_id => %{"responses" => responses}}}
   end
 
   def normalize_response(params, survey) do
@@ -112,8 +112,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       end)
 
     responses =
-      Enum.reduce(params["pages"], [], fn {_page_id, %{"questions" => page_questions}}, acc ->
-        Enum.reduce(page_questions, acc, fn {question_id, response}, acc ->
+      Enum.reduce(params["pages"], [], fn {_page_id, %{"responses" => page_responses}}, acc ->
+        Enum.reduce(page_responses, acc, fn {question_id, response}, acc ->
           question = Enum.find(questions, fn question -> question.id == question_id end)
 
           normalized_response =
@@ -144,7 +144,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     params =
       view_model
-      |> extract_query_params()
+      |> extract_query_params(socket.assigns.current_page)
       |> deep_merge(socket.assigns.params)
 
     if submit_response? do

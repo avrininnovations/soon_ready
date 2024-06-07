@@ -4,9 +4,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Layout
 
-
   alias SoonReady.SurveyManagement.DomainObjects.{
-    SurveyPage,
     Transition,
     ShortAnswerQuestion,
     MultipleChoiceQuestion,
@@ -16,32 +14,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   }
 
   alias SoonReady.SurveyManagement.DomainObjects.Transition.{Always, ResponseEquals, AnyTrue, AllTrue}
-  alias __MODULE__.Question
+  alias __MODULE__.Response
 
   attributes do
-    attribute :page, SurveyPage, allow_nil?: false
-    attribute :questions, {:array, Question}, allow_nil?: false
-  end
-
-  def transition_condition_fulfilled(_resource, %{type: Always}) do
-    true
-  end
-
-  def transition_condition_fulfilled(%{questions: questions} = _resource, %{type: ResponseEquals, value: %{question_id: question_id, value: value}}) do
-    Enum.any?(questions, fn question -> question.value.id == question_id && to_string(question.value.response) == to_string(value) end)
-  end
-
-  def transition_condition_fulfilled(resource, %{type: AnyTrue, value: %{conditions: conditions}}) do
-    Enum.any?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
-  end
-
-  def transition_condition_fulfilled(resource, %{type: AllTrue, value: %{conditions: conditions}}) do
-    Enum.all?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
+    attribute :responses, {:array, Response}
+    attribute :page_transitions, {:array, Transition}
   end
 
   calculations do
     calculate :transition, Transition, fn resource, _context ->
-      transition = Enum.find(resource.page.transitions, fn transition -> transition_condition_fulfilled(resource, transition.condition) end)
+      transition = Enum.find(resource.page_transitions, fn transition -> transition_condition_fulfilled(resource, transition.condition) end)
       {:ok, transition}
     end
   end
@@ -59,12 +41,28 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     define :create
   end
 
+  def transition_condition_fulfilled(_resource, %{type: Always}) do
+    true
+  end
+
+  def transition_condition_fulfilled(%{responses: responses} = _resource, %{type: ResponseEquals, value: %{question_id: question_id, value: value}}) do
+    Enum.any?(responses, fn response -> response.value.id == question_id && to_string(response.value.response) == to_string(value) end)
+  end
+
+  def transition_condition_fulfilled(resource, %{type: AnyTrue, value: %{conditions: conditions}}) do
+    Enum.any?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
+  end
+
+  def transition_condition_fulfilled(resource, %{type: AllTrue, value: %{conditions: conditions}}) do
+    Enum.all?(conditions, fn condition -> transition_condition_fulfilled(resource, condition) end)
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
     <div>
       <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
-        <.inputs_for :let={ff} field={f[:questions]}>
+        <.inputs_for :let={ff} field={f[:responses]}>
           <%= case ff.data.value.type do %>
             <% __MODULE__.ShortAnswerQuestion -> %>
               <.text_field
@@ -129,9 +127,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     """
   end
 
-  def create_response_view_model(%{questions: questions} = page) do
-
-    questions =
+  def create_response_view_model(%{questions: questions, transitions: page_transitions}) do
+    responses =
       questions
       |> Enum.map(fn
         %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} ->
@@ -169,7 +166,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
 
       end)
 
-      __MODULE__.create!(%{page: page, questions: questions})
+      __MODULE__.create!(%{page_transitions: page_transitions, responses: responses})
   end
 
   @impl true
@@ -182,9 +179,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       socket
       |> assign(:current_page, assigns.current_page)
       |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
-        questions: [
+        responses: [
           type: :list,
-          data: view_model.questions,
+          data: view_model.responses,
           update_action: :update,
           forms: [
             prompt_responses: [
@@ -255,17 +252,5 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       {:error, form_with_error} ->
         {:noreply, assign(socket, form: form_with_error)}
     end
-  end
-
-  def normalize(%{__struct__: __MODULE__, page: %{id: page_id}, questions: questions}) do
-    questions =
-      questions
-      |> Enum.reduce(%{}, fn %{id: question_id} = question, questions ->
-        Map.put(questions, question_id, %{
-          "response" => question.response
-        })
-      end)
-
-    %{"pages" => %{page_id => %{"questions" => questions}}}
   end
 end

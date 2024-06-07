@@ -1,4 +1,5 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.Question do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.Response do
+  # TODO: Rename these guys and their tags. Suffix with "response"
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.{
     ShortAnswerQuestion,
     MultipleChoiceQuestion,
