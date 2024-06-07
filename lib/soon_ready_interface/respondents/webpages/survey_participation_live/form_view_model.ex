@@ -63,6 +63,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
 
     socket =
       socket
+      |> assign(:has_mcq_group_question, assigns.has_mcq_group_question)
       |> assign(:current_page, assigns.current_page)
       |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
         responses: [
@@ -122,38 +123,48 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
 
   @impl true
   def render(assigns) do
+    # <div id="accordion-open" data-accordion="open">
+    accordion_attrs =
+      if assigns.has_mcq_group_question do
+        %{id: "accordion-open", "data-accordion": "open"}
+      else
+        %{}
+      end
+    assigns = assign(assigns, :accordion_attrs, accordion_attrs)
     ~H"""
     <div>
       <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
-        <.inputs_for :let={ff} field={f[:responses]}>
-          <%= case ff.data.value.type do %>
-            <% __MODULE__.ShortAnswerQuestion -> %>
-              <.text_field
-                field={ff[:response]}
-                label={ff.data.value.value.prompt}
-                class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-              />
-            <% __MODULE__.MultipleChoiceQuestion -> %>
-              <.radio_group
-                field={ff[:response]}
-                label={ff.data.value.value.prompt}
-                options={Enum.map(ff.data.value.value.options, fn option -> {option, option} end)}
-              />
-            <% __MODULE__.ParagraphQuestion -> %>
-              <.textarea
-                field={ff[:response]}
-                label={ff.data.value.value.prompt}
-                class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-              />
-            <% __MODULE__.MultipleChoiceQuestionGroup -> %>
-              <.mcq_group
-                form={ff}
-                index={ff.index}
-                title={ff.data.value.value.title}
-                questions={ff.data.value.value.questions}
-              />
-          <% end %>
-        </.inputs_for>
+        <div {@accordion_attrs}>
+          <.inputs_for :let={ff} field={f[:responses]}>
+            <%= case ff.data.value.type do %>
+              <% __MODULE__.ShortAnswerQuestion -> %>
+                <.text_field
+                  field={ff[:response]}
+                  label={ff.data.value.value.prompt}
+                  class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                />
+              <% __MODULE__.MultipleChoiceQuestion -> %>
+                <.radio_group
+                  field={ff[:response]}
+                  label={ff.data.value.value.prompt}
+                  options={Enum.map(ff.data.value.value.options, fn option -> {option, option} end)}
+                />
+              <% __MODULE__.ParagraphQuestion -> %>
+                <.textarea
+                  field={ff[:response]}
+                  label={ff.data.value.value.prompt}
+                  class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                />
+              <% __MODULE__.MultipleChoiceQuestionGroup -> %>
+                <.mcq_group
+                  form={ff}
+                  index={ff.index}
+                  title={ff.data.value.value.title}
+                  questions={ff.data.value.value.questions}
+                />
+            <% end %>
+          </.inputs_for>
+        </div>
 
         <button type="submit" name="submit" class="mt-4 py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed</button>
       </.form>
@@ -162,31 +173,27 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   def mcq_group(assigns) do
-    # TODO: Where should the accordion_section be? Wrapping the entire page?
     # TODO: How do I handle index?
 
     # TODO: Rename ODI related component, attr and slot names
     ~H"""
-    <.accordion_section>
-      <.accordion index={@index}>
-        <:title><%= @title %></:title>
+    <.accordion index={@index}>
+      <:title><%= @title %></:title>
 
-        <.rating_section>
-          <.rating_section_header questions={@questions} />
+      <.rating_section>
+        <.rating_section_header questions={@questions} />
 
-          <.rating_section_body>
-            <.inputs_for :let={prompt_form} field={@form[:prompt_responses]}>
-              <.outcome_rating desired_outcome={prompt_form.data.prompt}>
-                <.inputs_for :let={question_form} field={prompt_form[:question_responses]}>
-                  <.rating_radio_group field={question_form[:response]} options={question_form.data.options} />
-                </.inputs_for>
-              </.outcome_rating>
-            </.inputs_for>
-          </.rating_section_body>
-        </.rating_section>
-
-      </.accordion>
-    </.accordion_section>
+        <.rating_section_body>
+          <.inputs_for :let={prompt_form} field={@form[:prompt_responses]}>
+            <.outcome_rating desired_outcome={prompt_form.data.prompt}>
+              <.inputs_for :let={question_form} field={prompt_form[:question_responses]}>
+                <.rating_radio_group field={question_form[:response]} options={question_form.data.options} />
+              </.inputs_for>
+            </.outcome_rating>
+          </.inputs_for>
+        </.rating_section_body>
+      </.rating_section>
+    </.accordion>
     """
   end
 

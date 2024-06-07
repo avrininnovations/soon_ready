@@ -44,15 +44,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     current_page = get_page(survey, page_id)
 
-    page_is_wide? = Enum.any?(current_page.questions, fn question -> question.type == MultipleChoiceQuestionGroup end)
+    has_mcq_group_question = Enum.any?(current_page.questions, fn question -> question.type == MultipleChoiceQuestionGroup end)
 
-    {:noreply, assign(socket, params: params, current_page: current_page, page_is_wide?: page_is_wide?)}
+    {:noreply, assign(socket, params: params, current_page: current_page, has_mcq_group_question: has_mcq_group_question)}
   end
 
   def render(assigns) do
-    # <.live_component module={NicknameForm} id="nickname_form" />
     ~H"""
-    <.page is_wide={@page_is_wide?}>
+    <.page is_wide={@has_mcq_group_question}>
       <:title>
         <%= @current_page.title %>
       </:title>
@@ -61,7 +60,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       </:subtitle>
 
       <%= if @current_page.questions do %>
-        <.live_component module={FormViewModel} current_page={@current_page} id="form_view_model" />
+        <.live_component module={FormViewModel} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
       <% end %>
     </.page>
     """
