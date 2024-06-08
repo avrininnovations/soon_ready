@@ -44,7 +44,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
     current_page = get_page(survey, page_id)
 
-    has_mcq_group_question = Enum.any?(current_page.questions, fn question -> question.type == MultipleChoiceQuestionGroup end)
+    has_mcq_group_question = Enum.any?(current_page.questions || [], fn question -> question.type == MultipleChoiceQuestionGroup end)
 
     {:noreply, assign(socket, params: params, current_page: current_page, has_mcq_group_question: has_mcq_group_question)}
   end
@@ -72,71 +72,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     |> Enum.at(0)
   end
 
-  # TODO: Avoid collision
-  defp deep_merge(map1, map2) do
-    Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
-  end
-
-  def extract_query_params(%FormViewModel{responses: responses}, %{id: page_id} = _current_page) do
-    responses =
-      responses
-      |> Enum.reduce(%{}, fn
-        %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
-          FormViewModel.ShortAnswerQuestion,
-          FormViewModel.ParagraphQuestion,
-        ] ->
-          Map.put(question_params, question_id, response)
-        %{type: FormViewModel.MultipleChoiceQuestionGroup, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
-          response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
-            prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->
-              Map.put(question_response_params, question_response_id, response)
-            end)
-            Map.put(prompt_response_params, prompt_id, prompt_response)
-          end)
-          Map.put(question_params, question_id, response)
-      end)
-    %{"pages" => %{page_id => %{"responses" => responses}}}
-  end
-
-  def normalize_response(params, survey) do
-    questions =
-      Enum.reduce(survey.pages, [], fn
-        %{questions: nil}, acc ->
-          acc
-        %{questions: questions}, acc ->
-          Enum.reduce(questions, acc, fn %Ash.Union{value: question} = _question, acc ->
-            [question | acc]
-          end)
-      end)
-
-    responses =
-      Enum.reduce(params["pages"], [], fn {_page_id, %{"responses" => page_responses}}, acc ->
-        Enum.reduce(page_responses, acc, fn {question_id, response}, acc ->
-          question = Enum.find(questions, fn question -> question.id == question_id end)
-
-          normalized_response =
-            case question do
-              %ShortAnswerQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "short_answer_question_response")
-              %MultipleChoiceQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "multiple_choice_question_response")
-              %ParagraphQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "paragraph_question_response")
-
-            end
-          [normalized_response | acc]
-        end)
-      end)
-
-    %{"survey_id" => params["survey_id"], "responses" => responses}
-  end
-
   def handle_info({:transition_from_page, %{transition: %{destination_page_id: destination_page_id, submit_response?: submit_response?}} = view_model}, socket) do
     socket.assigns.params
 
@@ -146,7 +81,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       |> deep_merge(socket.assigns.params)
 
     if submit_response? do
-      socket.assigns.params
+      params
       |> normalize_response(socket.assigns.survey)
       |> SoonReady.SurveyManagement.submit_response()
       |> case do
@@ -170,5 +105,83 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
 
       {:noreply, socket}
     end
+  end
+
+  def extract_query_params(%FormViewModel{responses: responses}, %{id: page_id} = _current_page) do
+    responses =
+      responses
+      |> Enum.reduce(%{}, fn
+        %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
+          FormViewModel.ShortAnswerQuestion,
+          FormViewModel.ParagraphQuestion,
+        ] ->
+          Map.put(question_params, question_id, response)
+        %{type: FormViewModel.MultipleChoiceQuestionGroup, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
+          response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
+            prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->
+              Map.put(question_response_params, question_response_id, response)
+            end)
+            Map.put(prompt_response_params, prompt_id, prompt_response)
+          end)
+          Map.put(question_params, question_id, response)
+      end)
+    %{"pages" => %{page_id => %{"responses" => responses}}}
+    # %{"page_responses" => %{page_id => %{"questions" => responses}}}
+  end
+
+  # TODO: Avoid collision
+  defp deep_merge(map1, map2) do
+    Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
+  end
+
+  def normalize_response(params, survey) do
+    questions =
+      Enum.reduce(survey.pages, [], fn
+        %{questions: nil}, acc ->
+          acc
+        %{questions: questions}, acc ->
+          Enum.reduce(questions, acc, fn %Ash.Union{value: question} = _question, acc ->
+            [question | acc]
+          end)
+      end)
+
+    responses =
+      Enum.reduce(params["pages"], [], fn {_page_id, %{"responses" => page_responses}}, acc ->
+        Enum.reduce(page_responses, acc, fn {question_id, response}, acc ->
+          question = Enum.find(questions, fn question -> question.id == question_id end)
+
+          normalized_response =
+            case question do
+              # TODO: Simplify to simple maps
+              %ShortAnswerQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "short_answer_question_response")
+              %MultipleChoiceQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "multiple_choice_question_response")
+              %ParagraphQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "paragraph_question_response")
+              %MultipleChoiceQuestionGroup{} ->
+                responses = Enum.reduce(response, [], fn {prompt_id, prompt_response}, responses ->
+                  Enum.reduce(prompt_response, responses, fn {question_id, question_response}, responses ->
+                    [%{"prompt_id" => prompt_id, "question_id" => question_id, "response" => question_response} | responses]
+                  end)
+                end)
+                %{
+                  "type" => "multiple_choice_question_group_responses",
+                  "group_id" => question_id,
+                  "responses" => responses,
+                }
+
+            end
+          [normalized_response | acc]
+        end)
+      end)
+
+    %{"survey_id" => params["survey_id"], "responses" => responses}
   end
 end
