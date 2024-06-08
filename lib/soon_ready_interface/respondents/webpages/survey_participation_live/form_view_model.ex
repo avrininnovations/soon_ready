@@ -91,23 +91,23 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
             case form.data.value do
               %Ash.Union{type: __MODULE__.ShortAnswerQuestion, value: %{id: id, prompt: prompt}} ->
                 params
-                |> Map.put("type", "short_answer_question")
+                |> Map.put("type", "short_answer_question_response")
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
               %Ash.Union{type: __MODULE__.MultipleChoiceQuestion, value: %{id: id, prompt: prompt, options: options}} ->
                 params
-                |> Map.put("type", "short_answer_question")
+                |> Map.put("type", "short_answer_question_response")
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
                 |> Map.put("options", options)
               %Ash.Union{type: __MODULE__.ParagraphQuestion, value: %{id: id, prompt: prompt}} ->
                 params
-                |> Map.put("type", "paragraph_question")
+                |> Map.put("type", "paragraph_question_response")
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
               %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroup, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
                 params
-                |> Map.put("type", "multiple_choice_question_group")
+                |> Map.put("type", "multiple_choice_question_group_response")
                 |> Map.put("id", id)
                 |> Map.put("title", title)
                 |> Map.put("prompts", prompts)
@@ -202,7 +202,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       questions
       |> Enum.map(fn
         %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} ->
-          %{type: "short_answer_question", id: id, prompt: prompt}
+          %{type: "short_answer_question_response", id: id, prompt: prompt}
         %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
           options = Enum.map(options, fn
             %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
@@ -210,9 +210,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
             %Ash.Union{type: :ci_string, value: value} ->
               value
           end)
-          %{type: "multiple_choice_question", id: id, prompt: prompt, options: options}
+          %{type: "multiple_choice_question_response", id: id, prompt: prompt, options: options}
         %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
-          %{type: "paragraph_question", id: id, prompt: prompt}
+          %{type: "paragraph_question_response", id: id, prompt: prompt}
         %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, title: title, prompts: prompts, questions: questions}} ->
           prompt_responses = Enum.map(prompts, fn %{id: id, prompt: prompt} ->
             question_responses = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} ->
@@ -231,7 +231,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
             end)
             %{id: id, prompt: prompt, options: options}
           end)
-          %{type: "multiple_choice_question_group", id: id, title: title, prompts: prompts, questions: questions, prompt_responses: prompt_responses}
+          %{type: "multiple_choice_question_group_response", id: id, title: title, prompts: prompts, questions: questions, prompt_responses: prompt_responses}
       end)
 
       __MODULE__.create!(%{page_transitions: page_transitions, responses: responses})

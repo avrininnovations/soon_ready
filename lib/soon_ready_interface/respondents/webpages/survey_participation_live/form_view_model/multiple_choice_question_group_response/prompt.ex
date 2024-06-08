@@ -1,10 +1,9 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroup.Question do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroupResponse.Prompt do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false
     attribute :prompt, :string, allow_nil?: false
-    attribute :options, {:array, :string}, allow_nil?: false
   end
 
   actions do

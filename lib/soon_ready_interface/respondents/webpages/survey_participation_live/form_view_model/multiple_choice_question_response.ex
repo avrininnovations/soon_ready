@@ -1,9 +1,10 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestion do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionResponse do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false
     attribute :prompt, :string, allow_nil?: false
+    attribute :options, {:array, :string}, allow_nil?: false
     # TODO: nil is always allowed. Resolve.
     attribute :response, :string, allow_nil?: true
   end

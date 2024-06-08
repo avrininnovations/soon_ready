@@ -1,16 +1,15 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.Response do
-  # TODO: Rename these guys and their tags. Suffix with "response"
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.{
-    ShortAnswerQuestion,
-    MultipleChoiceQuestion,
-    ParagraphQuestion,
-    MultipleChoiceQuestionGroup,
+    ShortAnswerQuestionResponse,
+    MultipleChoiceQuestionResponse,
+    ParagraphQuestionResponse,
+    MultipleChoiceQuestionGroupResponse,
   }
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [
-    {ShortAnswerQuestion, [type: ShortAnswerQuestion, tag: :type, tag_value: "short_answer_question"]},
-    {MultipleChoiceQuestion, [type: MultipleChoiceQuestion, tag: :type, tag_value: "multiple_choice_question"]},
-    {ParagraphQuestion, [type: ParagraphQuestion, tag: :type, tag_value: "paragraph_question"]},
-    {MultipleChoiceQuestionGroup, [type: MultipleChoiceQuestionGroup, tag: :type, tag_value: "multiple_choice_question_group"]},
+    {ShortAnswerQuestionResponse, [type: ShortAnswerQuestionResponse, tag: :type, tag_value: "short_answer_question_response"]},
+    {MultipleChoiceQuestionResponse, [type: MultipleChoiceQuestionResponse, tag: :type, tag_value: "multiple_choice_question_response"]},
+    {ParagraphQuestionResponse, [type: ParagraphQuestionResponse, tag: :type, tag_value: "paragraph_question_response"]},
+    {MultipleChoiceQuestionGroupResponse, [type: MultipleChoiceQuestionGroupResponse, tag: :type, tag_value: "multiple_choice_question_group_response"]},
   ]]
 end

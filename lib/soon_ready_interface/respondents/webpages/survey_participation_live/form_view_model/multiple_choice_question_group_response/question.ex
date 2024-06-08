@@ -1,15 +1,10 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroup.QuestionResponse do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroupResponse.Question do
   use Ash.Resource, data_layer: :embedded
-
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroup.Question
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false
     attribute :prompt, :string, allow_nil?: false
     attribute :options, {:array, :string}, allow_nil?: false
-    # attribute :question, Question, allow_nil?: false
-    # TODO: Nilable?
-    attribute :response, :string
   end
 
   actions do

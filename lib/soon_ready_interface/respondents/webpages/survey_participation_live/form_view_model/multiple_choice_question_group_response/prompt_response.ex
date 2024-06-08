@@ -1,7 +1,7 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroup.PromptResponse do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroupResponse.PromptResponse do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroup.{Prompt, QuestionResponse}
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroupResponse.{Prompt, QuestionResponse}
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false
