@@ -100,6 +100,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: demographics_page_id,
+          title: "Demographics",
           transitions: [%{condition: :always, destination_page_id: context_page_id}],
           questions: Enum.map(demographic_questions, fn %{prompt: prompt, options: options} = _demographic_question ->
             %{type: "multiple_choice_question", prompt: prompt, options: options}
@@ -107,6 +108,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: context_page_id,
+          title: "Context",
           transitions: [%{condition: :always, destination_page_id: comparison_page_id}],
           questions: Enum.map(context_questions, fn %{prompt: prompt, options: options} = _context_question ->
             %{type: "multiple_choice_question", prompt: prompt, options: options}
@@ -114,6 +116,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: comparison_page_id,
+          title: "Comparison",
           transitions: [%{condition: :always, destination_page_id: desired_outcome_rating_page_id}],
           questions: [
             %{type: "paragraph_question", prompt: "What products, services or platforms have you used to #{String.downcase(market.job_to_be_done)}?"},
@@ -125,6 +128,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         },
         %{
           id: desired_outcome_rating_page_id,
+          title: "Desired Outcome Ratings",
           transitions: [%{destination_page_id: thank_you_page_id, submit_response?: true, condition: :always}],
           questions: Enum.map(job_steps, fn job_step ->
             %{type: "multiple_choice_question_group",
