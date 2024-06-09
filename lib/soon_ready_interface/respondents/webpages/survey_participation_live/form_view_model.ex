@@ -89,23 +89,23 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
           ],
           transform_params: fn form, params, _arg3 ->
             case form.data.value do
-              %Ash.Union{type: __MODULE__.ShortAnswerQuestion, value: %{id: id, prompt: prompt}} ->
+              %Ash.Union{type: __MODULE__.ShortAnswerQuestionResponse, value: %{id: id, prompt: prompt}} ->
                 params
                 |> Map.put("type", "short_answer_question_response")
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
-              %Ash.Union{type: __MODULE__.MultipleChoiceQuestion, value: %{id: id, prompt: prompt, options: options}} ->
+              %Ash.Union{type: __MODULE__.MultipleChoiceQuestionResponse, value: %{id: id, prompt: prompt, options: options}} ->
                 params
                 |> Map.put("type", "short_answer_question_response")
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
                 |> Map.put("options", options)
-              %Ash.Union{type: __MODULE__.ParagraphQuestion, value: %{id: id, prompt: prompt}} ->
+              %Ash.Union{type: __MODULE__.ParagraphQuestionResponse, value: %{id: id, prompt: prompt}} ->
                 params
                 |> Map.put("type", "paragraph_question_response")
                 |> Map.put("id", id)
                 |> Map.put("prompt", prompt)
-              %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroup, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
+              %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroupResponse, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
                 params
                 |> Map.put("type", "multiple_choice_question_group_response")
                 |> Map.put("id", id)
@@ -113,7 +113,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 |> Map.put("prompts", prompts)
                 |> Map.put("questions", questions)
             end
-            # # TODO: Response/Responses fields that are not used
           end
         ]
       ]))
@@ -137,25 +136,25 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
         <div {@accordion_attrs}>
           <.inputs_for :let={ff} field={f[:responses]}>
             <%= case ff.data.value.type do %>
-              <% __MODULE__.ShortAnswerQuestion -> %>
+              <% __MODULE__.ShortAnswerQuestionResponse -> %>
                 <.text_field
                   field={ff[:response]}
                   label={ff.data.value.value.prompt}
                   class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                 />
-              <% __MODULE__.MultipleChoiceQuestion -> %>
+              <% __MODULE__.MultipleChoiceQuestionResponse -> %>
                 <.radio_group
                   field={ff[:response]}
                   label={ff.data.value.value.prompt}
                   options={Enum.map(ff.data.value.value.options, fn option -> {option, option} end)}
                 />
-              <% __MODULE__.ParagraphQuestion -> %>
+              <% __MODULE__.ParagraphQuestionResponse -> %>
                 <.textarea
                   field={ff[:response]}
                   label={ff.data.value.value.prompt}
                   class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                 />
-              <% __MODULE__.MultipleChoiceQuestionGroup -> %>
+              <% __MODULE__.MultipleChoiceQuestionGroupResponse -> %>
                 <.mcq_group
                   form={ff}
                   index={ff.index}

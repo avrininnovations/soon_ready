@@ -75,7 +75,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   }
 
   @context_form_params %{
-    "questions" => %{
+    "responses" => %{
       "0" => %{"response" => "Option 1"},
       "1" => %{"response" => "Option 1"}
     }
@@ -87,7 +87,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   }
 
   @demographics_form_params %{
-    "questions" => %{
+    "responses" => %{
       "0" => %{"response" => "Option 1"},
       "1" => %{"response" => "Option 1"}
     }
@@ -99,8 +99,10 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   }
 
   @contact_details_form_params %{
-    email: "hello@example.com",
-    phone_number: "1234567890",
+    "responses" => %{
+      "0" => %{"response" => "hello@example.com"},
+      "1" => %{"response" => "1234567890"}
+    }
   }
 
   @contact_details_page_query_params %{
@@ -109,14 +111,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   }
 
   @correct_screening_form_params %{
-    "questions" => %{
+    "responses" => %{
       "0" => %{"response" => "Option 1"},
       "1" => %{"response" => "Option 1"}
     }
   }
 
   @incorrect_screening_form_params %{
-    "questions" => %{
+    "responses" => %{
       "0" => %{"response" => "Option 1"},
       "1" => %{"response" => "Option 2"}
     }
@@ -128,7 +130,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   }
 
   @nickname_form_params %{
-    "questions" => %{"0" => %{"response" => "A Nickname"}},
+    "responses" => %{"0" => %{"response" => "A Nickname"}},
   }
 
   @landing_page_query_params %{"nickname" => "A Nickname"}
@@ -308,22 +310,25 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     end
   end
 
-  # describe "Contact Details Form" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn, survey_id: survey_id} do
-  #     {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-  #     _ = submit_nickname_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_screening_form_response(view)
-  #     _ = assert_patch(view)
+  describe "Contact Details Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
 
-  #     _resulting_html = submit_contact_details_form_response(view)
+      _resulting_html = submit_contact_details_form_response(view)
 
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/survey/participate/#{survey_id}/demographics"
-  #     assert has_element?(view, "h2", "Demographics")
-  #     assert_contact_details_page_query_params(path)
-  #   end
-  # end
+      contact_details_page = get_page_by_title(pages, "Contact Details")
+      demographics_page = get_page_by_title(pages, "Demographics")
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{demographics_page.id}"
+      assert has_element?(view, "h2", "Demographics")
+      assert_page_response_in_query_params(path, contact_details_page.id)
+    end
+  end
 
   # describe "Demographics Form" do
   #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn, survey_id: survey_id} do

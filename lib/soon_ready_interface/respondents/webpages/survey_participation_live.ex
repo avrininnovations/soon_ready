@@ -112,11 +112,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
       responses
       |> Enum.reduce(%{}, fn
         %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
-          FormViewModel.ShortAnswerQuestion,
-          FormViewModel.ParagraphQuestion,
+          FormViewModel.ShortAnswerQuestionResponse,
+          FormViewModel.ParagraphQuestionResponse,
         ] ->
           Map.put(question_params, question_id, response)
-        %{type: FormViewModel.MultipleChoiceQuestionGroup, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
+        %{type: FormViewModel.MultipleChoiceQuestionGroupResponse, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
           response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
             prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->
               Map.put(question_response_params, question_response_id, response)

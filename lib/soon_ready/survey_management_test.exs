@@ -250,6 +250,7 @@ defmodule SoonReady.SurveyManagementTest do
       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id, pages: [
         %{
           id: page_id,
+          # TODO: Fix everything actions
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
           questions: [
             %{type: "short_answer_question_group", prompt: "Multiple Choice Question Group", questions: [
@@ -299,7 +300,7 @@ defmodule SoonReady.SurveyManagementTest do
           id: page_id,
           actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
           questions: [
-            %{type: "multiple_choice_question_group",
+            %{type: "multiple_choice_question_group", title: "Question Group 1",
               prompts: ["Statement 1", "Statement 2"], questions: [
               %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
               %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
