@@ -58,14 +58,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     }
   }
 
-  @comparison_form_params %{
-    alternatives_used: "Product 1, Service 2, Platform 3",
-    additional_resources_used: "Thing 1, Thing 2",
-    amount_spent_annually_in_naira: "1000",
-    is_willing_to_pay_more: "Yes",
-    extra_amount_willing_to_pay_in_naira: "1000",
-  }
-
   @comparison_page_query_params %{
     "0" => %{"prompt" => "What products, services or platforms have you used to do what persons do?", "response" => "Product 1, Service 2, Platform 3"},
     "1" => %{"prompt" => "What additional things do you usually use/require when you're using any of the above?", "response" => "Thing 1, Thing 2"},
@@ -102,6 +94,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     "responses" => %{
       "0" => %{"response" => "hello@example.com"},
       "1" => %{"response" => "1234567890"}
+    }
+  }
+
+  @comparison_form_params %{
+    "responses" => %{
+      "0" => %{"response" => "Product 1, Service 2, Platform 3"},
+      "1" => %{"response" => "Thing 1, Thing 2"},
+      "2" => %{"response" => "1000"},
+      "3" => %{"response" => "Yes"},
+      "4" => %{"response" => "1000"},
     }
   }
 
@@ -377,8 +379,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   end
 
   describe "Comparison Form" do
-    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn, survey_id: survey_id} do
-      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
       _ = submit_nickname_form_response(view)
       _ = assert_patch(view)
       _ = submit_screening_form_response(view)
@@ -392,10 +394,13 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
 
       _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
 
+      comparison_page = get_page_by_title(pages, "Comparison")
+      desired_outcome_ratings_page = get_page_by_title(pages, "Desired Outcome Ratings")
+
       path = assert_patch(view)
-      assert path =~ ~p"/survey/participate/#{survey_id}/desired-outcome-ratings"
+      assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{desired_outcome_ratings_page.id}"
       assert has_element?(view, "h2", "Desired Outcome Ratings")
-      assert_comparison_page_query_params(path)
+      assert_page_response_in_query_params(path, comparison_page.id)
     end
   end
 
