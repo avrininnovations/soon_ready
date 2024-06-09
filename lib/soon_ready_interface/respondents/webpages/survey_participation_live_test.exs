@@ -330,24 +330,27 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     end
   end
 
-  # describe "Demographics Form" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn, survey_id: survey_id} do
-  #     {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-  #     _ = submit_nickname_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_screening_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_contact_details_form_response(view)
-  #     _ = assert_patch(view)
+  describe "Demographics Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
 
-  #     _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
+      _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
 
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/survey/participate/#{survey_id}/context"
-  #     assert has_element?(view, "h2", "Context")
-  #     assert_demographics_page_query_params(path)
-  #   end
-  # end
+      demographics_page = get_page_by_title(pages, "Demographics")
+      context_page = get_page_by_title(pages, "Context")
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{context_page.id}"
+      assert has_element?(view, "h2", "Context")
+      assert_page_response_in_query_params(path, demographics_page.id)
+    end
+  end
 
   # describe "Context Form" do
   #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn, survey_id: survey_id} do
