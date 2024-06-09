@@ -352,49 +352,52 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     end
   end
 
-  # describe "Context Form" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn, survey_id: survey_id} do
-  #     {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-  #     _ = submit_nickname_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_screening_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_contact_details_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_demographics_form_response(view)
-  #     _ = assert_patch(view)
+  describe "Context Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_demographics_form_response(view)
+      _ = assert_patch(view)
 
-  #     _resulting_html = submit_context_form_response(view, @context_form_params)
+      _resulting_html = submit_context_form_response(view, @context_form_params)
 
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/survey/participate/#{survey_id}/comparison"
-  #     assert has_element?(view, "h2", "Comparison")
-  #     assert_context_page_query_params(path)
-  #   end
-  # end
+      demographics_page = get_page_by_title(pages, "Demographics")
+      comparison_page = get_page_by_title(pages, "Comparison")
 
-  # describe "Comparison Form" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn, survey_id: survey_id} do
-  #     {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-  #     _ = submit_nickname_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_screening_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_contact_details_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_demographics_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_context_form_response(view)
-  #     _ = assert_patch(view)
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{comparison_page.id}"
+      assert has_element?(view, "h2", "Comparison")
+      assert_page_response_in_query_params(path, demographics_page.id)
+    end
+  end
 
-  #     _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
+  describe "Comparison Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn, survey_id: survey_id} do
+      {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_demographics_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_context_form_response(view)
+      _ = assert_patch(view)
 
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/survey/participate/#{survey_id}/desired-outcome-ratings"
-  #     assert has_element?(view, "h2", "Desired Outcome Ratings")
-  #     assert_comparison_page_query_params(path)
-  #   end
-  # end
+      _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
+
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/desired-outcome-ratings"
+      assert has_element?(view, "h2", "Desired Outcome Ratings")
+      assert_comparison_page_query_params(path)
+    end
+  end
 
   # describe "Desired Outcome Rating Form" do
   #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id} do
