@@ -3,11 +3,11 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
     data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.{
+  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
     Market,
     JobStep,
   }
-  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{
+  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.Survey.{
     ScreeningQuestion,
     DemographicQuestion,
     ContextQuestion,

@@ -2,7 +2,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.SubmitSurveyResponse do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{Participant, QuestionResponse, JobStepRating}
+  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.Survey.{Participant, QuestionResponse, JobStepRating}
 
   attributes do
     uuid_primary_key :response_id
