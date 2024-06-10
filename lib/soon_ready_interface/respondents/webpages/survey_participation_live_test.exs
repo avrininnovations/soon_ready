@@ -42,17 +42,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
   }
 
   @desired_outcome_form_params %{
-    "job_steps" => %{
+    "responses" => %{
       "0" => %{
-        "desired_outcomes" => %{
-          "0" => %{"importance" => "Very Important", "satisfaction" => "Very Satisfied"},
-          "1" => %{"importance" => "Somewhat Important", "satisfaction" => "Satisfied"},
+        "prompt_responses" => %{
+          "0" => %{"question_responses" => %{"0" => "Very Important", "1" => "Very Satisfied"}},
+          "1" => %{"question_responses" => %{"0" => "Somewhat Important", "1" => "Satisfied"}},
         }
       },
       "1" => %{
-        "desired_outcomes" => %{
-          "0" => %{"importance" => "Not At All Important", "satisfaction" => "Extremely Satisfied"},
-          "1" => %{"importance" => "Important", "satisfaction" => "Somewhat Satisfied"},
+        "prompt_responses" => %{
+          "0" => %{"question_responses" => %{"0" => "Not At All Important", "1" => "Extremely Satisfied"}},
+          "1" => %{"question_responses" => %{"0" => "Important", "1" => "Somewhat Satisfied"}},
         }
       },
     }
@@ -248,7 +248,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     {:ok, %{user: user}} = SoonReady.IdentityAndAccessManagement.get_researcher(researcher_id)
 
     {:ok, %{survey_id: survey_id}} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params, user)
-
     %{survey_id: survey_id, survey: Survey.get_active!(survey_id)}
   end
 
@@ -404,27 +403,27 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
     end
   end
 
-  # describe "Desired Outcome Rating Form" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id} do
-  #     {:ok, view, _html} = live(conn, ~p"/survey/participate/#{survey_id}")
-  #     _ = submit_nickname_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_screening_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_contact_details_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_demographics_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_context_form_response(view)
-  #     _ = assert_patch(view)
-  #     _ = submit_comparison_form_response(view)
-  #     _ = assert_patch(view)
+  describe "Desired Outcome Rating Form" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
+      {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
+      _ = submit_nickname_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_screening_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_contact_details_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_demographics_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_context_form_response(view)
+      _ = assert_patch(view)
+      _ = submit_comparison_form_response(view)
+      _ = assert_patch(view)
 
-  #     _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
+      _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
 
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
-  #     assert has_element?(view, "h2", "Thank You!")
-  #   end
-  # end
+      path = assert_patch(view)
+      assert path =~ ~p"/survey/participate/#{survey_id}/thank-you"
+      assert has_element?(view, "h2", "Thank You!")
+    end
+  end
 end
