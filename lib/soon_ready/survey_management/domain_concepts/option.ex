@@ -1,5 +1,5 @@
-defmodule SoonReady.SurveyManagement.DomainObjects.Option do
-  alias SoonReady.SurveyManagement.DomainObjects.OptionWithCorrectFlag
+defmodule SoonReady.SurveyManagement.DomainConcepts.Option do
+  alias SoonReady.SurveyManagement.DomainConcepts.OptionWithCorrectFlag
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [
     {:ci_string, [type: :ci_string]},

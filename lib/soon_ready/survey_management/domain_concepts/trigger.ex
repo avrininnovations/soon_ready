@@ -1,6 +1,6 @@
-defmodule SoonReady.SurveyManagement.DomainObjects.Trigger do
+defmodule SoonReady.SurveyManagement.DomainConcepts.Trigger do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
-  alias SoonReady.SurveyManagement.DomainObjects.{Question, PageActions}
+  alias SoonReady.SurveyManagement.DomainConcepts.{Question, PageActions}
 
   attributes do
     attribute :event_name, :atom, allow_nil?: false

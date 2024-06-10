@@ -1,5 +1,5 @@
-defmodule SoonReady.SurveyManagement.DomainObjects.Response do
-  alias SoonReady.SurveyManagement.DomainObjects.{
+defmodule SoonReady.SurveyManagement.DomainConcepts.Response do
+  alias SoonReady.SurveyManagement.DomainConcepts.{
     ShortAnswerQuestionResponse,
     ParagraphQuestionResponse,
     MultipleChoiceQuestionResponse,

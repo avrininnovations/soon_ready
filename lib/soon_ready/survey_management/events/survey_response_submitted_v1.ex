@@ -2,9 +2,9 @@ defmodule SoonReady.SurveyManagement.Events.SurveyResponseSubmittedV1 do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   require Logger
-  alias SoonReady.SurveyManagement.DomainObjects.Response
+  alias SoonReady.SurveyManagement.DomainConcepts.Response
 
-  # alias SoonReady.SurveyManagement.DomainObjects.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
+  # alias SoonReady.SurveyManagement.DomainConcepts.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
   # alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
 
 

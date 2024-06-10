@@ -1,7 +1,7 @@
-defmodule SoonReady.SurveyManagement.DomainObjects.CheckboxQuestion do
+defmodule SoonReady.SurveyManagement.DomainConcepts.CheckboxQuestion do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.DomainObjects.Option
+  alias SoonReady.SurveyManagement.DomainConcepts.Option
 
   attributes do
     uuid_primary_key :id

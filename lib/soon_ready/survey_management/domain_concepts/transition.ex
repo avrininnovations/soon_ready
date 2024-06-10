@@ -1,7 +1,7 @@
-defmodule SoonReady.SurveyManagement.DomainObjects.Transition do
+defmodule SoonReady.SurveyManagement.DomainConcepts.Transition do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.DomainObjects.Transition.Condition
+  alias SoonReady.SurveyManagement.DomainConcepts.Transition.Condition
 
   attributes do
     attribute :condition, Condition, allow_nil?: false

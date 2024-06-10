@@ -1,5 +1,5 @@
-defmodule SoonReady.SurveyManagement.DomainObjects.Transition.Condition do
-  alias SoonReady.SurveyManagement.DomainObjects.Transition.{Always, ResponseEquals, AnyTrue, AllTrue}
+defmodule SoonReady.SurveyManagement.DomainConcepts.Transition.Condition do
+  alias SoonReady.SurveyManagement.DomainConcepts.Transition.{Always, ResponseEquals, AnyTrue, AllTrue}
 
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [

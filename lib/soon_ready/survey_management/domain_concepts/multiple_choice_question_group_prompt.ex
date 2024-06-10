@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.DomainObjects.ShortAnswerQuestion do
+defmodule SoonReady.SurveyManagement.DomainConcepts.MultipleChoiceQuestionGroupPrompt do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do
