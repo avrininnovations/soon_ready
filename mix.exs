@@ -57,7 +57,7 @@ defmodule SoonReady.MixProject do
       {:ash, "~> 2.16"},
       {:ash_phoenix, "~> 1.3"},
       {:ash_postgres, "~> 1.5"},
-      {:commanded, "~> 1.4"},
+      {:commanded, "~> 1.4.3"},
       {:commanded_eventstore_adapter, "~> 1.4"},
       {:cloak, "~> 1.1"},
       {:doggo, "~> 0.4"},
