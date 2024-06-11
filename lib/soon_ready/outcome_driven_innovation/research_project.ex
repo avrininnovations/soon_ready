@@ -72,6 +72,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   def execute(aggregate_state, %CreateSurvey{} = command) do
     params = %{
       project_id: command.project_id,
+      survey_id: command.survey_id,
       market: aggregate_state.market,
       job_steps: aggregate_state.job_steps,
       screening_questions: command.raw_screening_questions,
@@ -91,6 +92,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   defp create_and_publish_survey(params) do
     %{
       project_id: project_id,
+      survey_id: survey_id,
       market: market,
       job_steps: job_steps,
       screening_questions: screening_questions,
@@ -109,6 +111,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     thank_you_page_id = Ecto.UUID.generate()
 
     survey = %{
+      survey_id: survey_id,
       trigger: trigger,
       starting_page_id: landing_page_id,
       pages: [

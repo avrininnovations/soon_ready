@@ -11,6 +11,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
 
   attributes do
     attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :survey_id, :uuid, allow_nil?: false, default: &Ash.UUID.generate/0
     attribute :screening_questions, {:array, Question}
     attribute :demographic_questions, {:array, Question}
     attribute :context_questions, {:array, Question}
