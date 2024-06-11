@@ -158,19 +158,13 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
       )
 
       assert_receive_event(Application, SurveyCreatedV1,
-        fn event ->
-          %{trigger: trigger} = event
-          expected_trigger_event_name = "#{SurveyCreationRequestedV1}"
-          case trigger do
-            %{event_name: ^expected_trigger_event_name, event_id: ^project_id} -> true
-            _ -> false
-          end
-        end,
+        fn event -> event.survey_id == survey_id end,
         fn survey_created_event ->
           assert_receive_event(Application, SurveyPublishedV1,
-            fn event -> event.survey_id == survey_created_event.survey_id end,
-            fn survey_created_event -> :ok end
+            fn event -> event.survey_id == survey_id end,
+            fn _event -> :ok end
           )
+          IO.inspect("Survey Created")
           assert_receive_event(Application, SurveyCreationSucceededV1,
             fn event -> event.project_id == project_id end,
             fn event ->
