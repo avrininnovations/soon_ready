@@ -26,6 +26,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     JobStep,
   }
 
+  alias SoonReady.SurveyManagement.Events.SurveyPublishedV1
+
   attributes do
     attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
     attribute :market, Market
@@ -218,6 +220,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   end
 
   def execute(_aggregate_state, %MarkSurveyCreationAsSuccessful{project_id: project_id, survey_id: survey_id} = command) do
+    IO.inspect("INSIDE MarkSurveyCreationAsSuccessful")
     SurveyCreationSucceededV1.new(%{project_id: project_id, survey_id: survey_id})
   end
 
@@ -234,12 +237,27 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   end
 
   def apply(state, _event) do
+    IO.inspect("INSIDE Apply, #{inspect(_event)}")
+
     state
   end
 
-  # # TODO
-  # def handle(%SurveyCreationRequestedV1{} = event, _metadata) do
-  #   {:ok, _command} = MarkSurveyCreationAsSuccessful.dispatch(%{project_id: project_id, survey_id: survey_id})
+  # TODO
+  def handle(%SurveyPublishedV1{survey_id: survey_id, trigger: trigger} = event, _metadata) do
+    case trigger do
+      %{name: trigger_name, id: trigger_id} ->
+        if trigger_name == "#{CreateSurvey}" do
+          # {:ok, _command} = MarkSurveyCreationAsSuccessful.dispatch(%{project_id: trigger_id, survey_id: survey_id})
+          # |> IO.inspect()
+          :ok
+        else
+          :ok
+        end
+      _ -> :ok
+    end
+  end
+
+  # def handle(_event, _metadata) do
   #   :ok
   # end
 end
