@@ -247,8 +247,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     case trigger do
       %{name: trigger_name, id: trigger_id} ->
         if trigger_name == "#{CreateSurvey}" do
-          # {:ok, _command} = MarkSurveyCreationAsSuccessful.dispatch(%{project_id: trigger_id, survey_id: survey_id})
-          # |> IO.inspect()
+          {:ok, _command} = MarkSurveyCreationAsSuccessful.dispatch(%{project_id: trigger_id, survey_id: survey_id})
           :ok
         else
           :ok
