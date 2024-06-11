@@ -77,6 +77,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
       screening_questions: command.raw_screening_questions,
       demographic_questions: command.raw_demographic_questions,
       context_questions: command.raw_context_questions,
+      trigger: %{name: CreateSurvey, id: command.project_id}
     }
 
     with {:ok, %{survey_id: survey_id}} <- create_and_publish_survey(params) do
@@ -94,7 +95,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
       job_steps: job_steps,
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
-      context_questions: context_questions
+      context_questions: context_questions,
+      trigger: trigger,
     } = params
 
     landing_page_id = Ecto.UUID.generate()
@@ -107,8 +109,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     thank_you_page_id = Ecto.UUID.generate()
 
     survey = %{
-      # TODO: Change this
-      trigger: %{event_name: SurveyCreationRequestedV1, event_id: project_id},
+      trigger: trigger,
       starting_page_id: landing_page_id,
       pages: [
         %{

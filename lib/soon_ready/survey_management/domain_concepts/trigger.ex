@@ -3,7 +3,7 @@ defmodule SoonReady.SurveyManagement.DomainConcepts.Trigger do
   alias SoonReady.SurveyManagement.DomainConcepts.{Question, PageActions}
 
   attributes do
-    attribute :event_name, :atom, allow_nil?: false
-    attribute :event_id, :uuid, allow_nil?: false
+    attribute :name, :atom, allow_nil?: false
+    attribute :id, :uuid, allow_nil?: false
   end
 end
