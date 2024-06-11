@@ -9,7 +9,7 @@ defmodule SoonReady.SurveyManagement.Commands.CreateSurvey do
   # alias SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher
 
   attributes do
-    attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false, default: &Ash.UUID.generate/0
     attribute :starting_page_id, :uuid, allow_nil?: false
     attribute :pages, {:array, SurveyPage}, constraints: [min_length: 1]
     attribute :raw_pages_data, {:array, :map}, constraints: [min_length: 1]

@@ -1,50 +1,101 @@
 defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
-  use Ash.Resource
+  use Ash.Resource, data_layer: :embedded
   use Commanded.Commands.Router
   use Commanded.Event.Handler,
     application: SoonReady.Application,
     name: "#{__MODULE__}",
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.OutcomeDrivenInnovation.Commands.{CreateSurvey, MarkSurveyCreationAsSuccessful}
-  alias SoonReady.OutcomeDrivenInnovation.Events.{SurveyCreationRequestedV1, SurveyCreationSucceededV1}
+  alias SoonReady.OutcomeDrivenInnovation.Commands.{
+    CreateProject,
+    DefineMarket,
+    DefineNeeds,
+    CreateSurvey,
+    MarkSurveyCreationAsSuccessful,
+  }
+  alias SoonReady.OutcomeDrivenInnovation.Events.{
+    ProjectCreatedV1,
+    MarketDefinedV1,
+    NeedsDefinedV1,
+    SurveyCreationRequestedV1,
+    SurveyCreationSucceededV1,
+  }
+
+  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
+    Market,
+    JobStep,
+  }
 
   attributes do
     attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :market, Market
+    attribute :job_steps, {:array, JobStep}
   end
 
+  actions do
+    defaults [:create, :read, :update]
+  end
+
+  code_interface do
+    define_for SoonReady.OutcomeDrivenInnovation
+    define :create
+    define :update
+  end
+
+  dispatch CreateProject, to: __MODULE__, identity: :project_id
+  dispatch DefineMarket, to: __MODULE__, identity: :project_id
+  dispatch DefineNeeds, to: __MODULE__, identity: :project_id
   dispatch CreateSurvey, to: __MODULE__, identity: :project_id
   dispatch MarkSurveyCreationAsSuccessful, to: __MODULE__, identity: :project_id
 
-  def execute(_aggregate_state, %CreateSurvey{} = command) do
-    SurveyCreationRequestedV1.new(%{
-      project_id: command.project_id,
-      survey_id: command.survey_id,
-      brand: command.brand,
-      market: command.market,
-      job_steps: command.job_steps,
-      screening_questions: command.screening_questions,
-      demographic_questions: command.demographic_questions,
-      context_questions: command.context_questions
+  def execute(_aggregate_state, %CreateProject{project_id: project_id, brand_name: brand_name} = _command) do
+    ProjectCreatedV1.new(%{
+      project_id: project_id,
+      brand_name: brand_name,
     })
   end
 
-  def execute(_aggregate_state, %MarkSurveyCreationAsSuccessful{project_id: project_id, survey_id: survey_id} = command) do
-    SurveyCreationSucceededV1.new(%{project_id: project_id, survey_id: survey_id})
+  def execute(_aggregate_state, %DefineMarket{project_id: project_id, market: market} = _command) do
+    MarketDefinedV1.new(%{
+      project_id: project_id,
+      market: market,
+    })
   end
 
-  def handle(%SurveyCreationRequestedV1{} = event, _metadata) do
+  def execute(_aggregate_state, %DefineNeeds{project_id: project_id, job_steps: job_steps} = _command) do
+    NeedsDefinedV1.new(%{
+      project_id: project_id,
+      job_steps: job_steps,
+    })
+  end
+
+  def execute(aggregate_state, %CreateSurvey{} = command) do
+    params = %{
+      project_id: command.project_id,
+      market: aggregate_state.market,
+      job_steps: aggregate_state.job_steps,
+      screening_questions: command.raw_screening_questions,
+      demographic_questions: command.raw_demographic_questions,
+      context_questions: command.raw_context_questions,
+    }
+
+    with {:ok, %{survey_id: survey_id}} <- create_and_publish_survey(params) do
+      SurveyCreationRequestedV1.new(%{
+        project_id: command.project_id,
+        survey_id: survey_id,
+      })
+    end
+  end
+
+  defp create_and_publish_survey(params) do
     %{
       project_id: project_id,
-      survey_id: survey_id,
-      brand: brand,
       market: market,
       job_steps: job_steps,
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions
-    } = event
-
+    } = params
 
     landing_page_id = Ecto.UUID.generate()
     screening_page_id = Ecto.UUID.generate()
@@ -55,10 +106,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     desired_outcome_rating_page_id = Ecto.UUID.generate()
     thank_you_page_id = Ecto.UUID.generate()
 
-    screening_questions = Enum.map(screening_questions, fn question -> Map.put(question, :id, Ash.UUID.generate()) end)
-
     survey = %{
-      survey_id: survey_id,
+      # TODO: Change this
       trigger: %{event_name: SurveyCreationRequestedV1, event_id: project_id},
       starting_page_id: landing_page_id,
       pages: [
@@ -73,21 +122,17 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
         %{
           id: screening_page_id,
           title: "Screening Questions",
-          questions: Enum.map(screening_questions, fn %{id: question_id, prompt: prompt, options: options} = _screening_question ->
-            options = Enum.map(options, fn %{value: value, is_correct: is_correct} = _option -> %{type: "option_with_correct_flag", value: value, correct?: is_correct} end)
-            %{type: "multiple_choice_question", id: question_id, prompt: prompt, options: options}
-          end),
+          questions: screening_questions,
           transitions: [
             %{destination_page_id: contact_details_page_id, condition: %{type: "all_true", conditions:
               Enum.map(screening_questions, fn %{id: question_id, options: options} = _screening_question ->
-                correct_options = Enum.filter(options, fn option -> option.is_correct end)
+                correct_options = Enum.filter(options, fn option -> option.correct? end)
                 question_conditions = Enum.map(correct_options, fn %{value: value} = _option -> %{type: "response_equals", question_id: question_id, value: value} end)
                 %{type: "any_true", conditions: question_conditions}
               end)
             }},
             %{destination_page_id: thank_you_page_id, submit_response?: true, condition: :always},
           ],
-          actions: %{correct_response_action: %{type: "change_page", destination_page_id: contact_details_page_id}, incorrect_response_action: :submit_form},
         },
         %{
           id: contact_details_page_id,
@@ -102,17 +147,13 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
           id: demographics_page_id,
           title: "Demographics",
           transitions: [%{condition: :always, destination_page_id: context_page_id}],
-          questions: Enum.map(demographic_questions, fn %{prompt: prompt, options: options} = _demographic_question ->
-            %{type: "multiple_choice_question", prompt: prompt, options: options}
-          end)
+          questions: demographic_questions
         },
         %{
           id: context_page_id,
           title: "Context",
           transitions: [%{condition: :always, destination_page_id: comparison_page_id}],
-          questions: Enum.map(context_questions, fn %{prompt: prompt, options: options} = _context_question ->
-            %{type: "multiple_choice_question", prompt: prompt, options: options}
-          end)
+          questions: context_questions
         },
         %{
           id: comparison_page_id,
@@ -170,12 +211,31 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     # TODO: Handle any that happens failure with its own event
     {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
     {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+  end
 
-    {:ok, _command} = MarkSurveyCreationAsSuccessful.dispatch(%{project_id: project_id, survey_id: survey_id})
-    :ok
+  def execute(_aggregate_state, %MarkSurveyCreationAsSuccessful{project_id: project_id, survey_id: survey_id} = command) do
+    SurveyCreationSucceededV1.new(%{project_id: project_id, survey_id: survey_id})
+  end
+
+  def apply(state, %ProjectCreatedV1{project_id: project_id}) do
+    __MODULE__.create!(%{project_id: project_id})
+  end
+
+  def apply(state, %MarketDefinedV1{market: market}) do
+    __MODULE__.update!(state, %{market: market})
+  end
+
+  def apply(state, %NeedsDefinedV1{job_steps: job_steps}) do
+    __MODULE__.update!(state, %{job_steps: job_steps})
   end
 
   def apply(state, _event) do
     state
   end
+
+  # # TODO
+  # def handle(%SurveyCreationRequestedV1{} = event, _metadata) do
+  #   {:ok, _command} = MarkSurveyCreationAsSuccessful.dispatch(%{project_id: project_id, survey_id: survey_id})
+  #   :ok
+  # end
 end

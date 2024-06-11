@@ -26,22 +26,22 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
       ]},
     ],
     screening_questions: [
-      %{prompt: "What is the answer to screening question 1?", options: [
-        %{value: "Option 1", is_correct: true},
-        %{value: "Option 2", is_correct: false},
+      %{type: "multiple_choice_question", prompt: "What is the answer to screening question 1?", options: [
+        %{type: "option_with_correct_flag",value: "Option 1", correct?: true},
+        %{type: "option_with_correct_flag",value: "Option 2", correct?: false},
       ]},
-      %{prompt: "What is the answer to screening question 2?", options: [
-        %{value: "Option 1", is_correct: true},
-        %{value: "Option 2", is_correct: false},
+      %{type: "multiple_choice_question", prompt: "What is the answer to screening question 2?", options: [
+        %{type: "option_with_correct_flag",value: "Option 1", correct?: true},
+        %{type: "option_with_correct_flag",value: "Option 2", correct?: false},
       ]}
     ],
     demographic_questions: [
-      %{prompt: "What is the answer to demographic question 1?", options: ["Option 1", "Option 2"]},
-      %{prompt: "What is the answer to demographic question 2?", options: ["Option 1", "Option 2"]}
+      %{type: "multiple_choice_question", prompt: "What is the answer to demographic question 1?", options: ["Option 1", "Option 2"]},
+      %{type: "multiple_choice_question", prompt: "What is the answer to demographic question 2?", options: ["Option 1", "Option 2"]}
     ],
     context_questions: [
-      %{prompt: "What is the answer to context question 1?", options: ["Option 1", "Option 2"]},
-      %{prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
+      %{type: "multiple_choice_question", prompt: "What is the answer to context question 1?", options: ["Option 1", "Option 2"]},
+      %{type: "multiple_choice_question", prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
     ]
   }
 
@@ -98,7 +98,50 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
 
   describe "Survey Management" do
     test "WHEN: A researcher tries to create a survey, THEN: A survey is created", %{user: user} do
-      {:ok, %{project_id: project_id} = _aggregate} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_details, user)
+      screening_questions = [
+        %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: "What is the answer to screening question 1?", options: [
+          %{type: "option_with_correct_flag",value: "Option 1", correct?: true},
+          %{type: "option_with_correct_flag",value: "Option 2", correct?: false},
+        ]},
+        %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: "What is the answer to screening question 2?", options: [
+          %{type: "option_with_correct_flag",value: "Option 1", correct?: true},
+          %{type: "option_with_correct_flag",value: "Option 2", correct?: false},
+        ]}
+      ]
+      demographic_questions = [
+        %{type: "multiple_choice_question", prompt: "What is the answer to demographic question 1?", options: ["Option 1", "Option 2"]},
+        %{type: "multiple_choice_question", prompt: "What is the answer to demographic question 2?", options: ["Option 1", "Option 2"]}
+      ]
+      context_questions = [
+        %{type: "multiple_choice_question", prompt: "What is the answer to context question 1?", options: ["Option 1", "Option 2"]},
+        %{type: "multiple_choice_question", prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
+      ]
+
+      {:ok, %{project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_project(%{brand_name: "A Big Brand"})
+      {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_market(%{project_id: project_id, market: %{job_executor: "Persons", job_to_be_done: "Do what persons do"}})
+      {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_needs(%{
+        project_id: project_id,
+        job_steps: [
+          %{name: "Job Step 1", desired_outcomes: [
+            "Minimize the time it takes to do A",
+            "Minimize the likelihood that B occurs"
+          ]},
+          %{name: "Job Step 2", desired_outcomes: [
+            "Minimize the time it takes to do C",
+            "Minimize the likelihood that D occurs"
+          ]},
+        ]
+      })
+      {:ok, _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
+        project_id: project_id,
+        screening_questions: screening_questions,
+        demographic_questions: demographic_questions,
+        context_questions: context_questions,
+        raw_screening_questions: screening_questions,
+        raw_demographic_questions: demographic_questions,
+        raw_context_questions: context_questions,
+      })
+      # |> IO.inspect()
 
       assert_receive_event(Application, SurveyCreationRequestedV1,
         fn event -> event.project_id == project_id end,

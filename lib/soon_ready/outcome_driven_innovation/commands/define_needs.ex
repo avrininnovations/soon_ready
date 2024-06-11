@@ -1,24 +1,13 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
+defmodule SoonReady.OutcomeDrivenInnovation.Commands.DefineNeeds do
   use Ash.Resource,
     data_layer: :embedded
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
-    Market,
-    JobStep,
-  }
-  alias SoonReady.SurveyManagement.DomainConcepts.Question
+  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.JobStep
 
   attributes do
     attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
-    attribute :screening_questions, {:array, Question}
-    attribute :demographic_questions, {:array, Question}
-    attribute :context_questions, {:array, Question}
-
-    # TODO: Change or eliminate this
-    attribute :raw_screening_questions, {:array, :map}
-    attribute :raw_demographic_questions, {:array, :map}
-    attribute :raw_context_questions, {:array, :map}
+    attribute :job_steps, {:array, JobStep}
   end
 
   actions do

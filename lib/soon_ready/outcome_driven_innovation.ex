@@ -1,9 +1,12 @@
 defmodule SoonReady.OutcomeDrivenInnovation do
   use Ash.Api
 
-  alias SoonReady.OutcomeDrivenInnovation.Commands.{CreateSurvey, PublishSurvey}
-  alias SoonReady.OutcomeDrivenInnovation.Commands.SubmitSurveyResponse
-  alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
+  alias SoonReady.OutcomeDrivenInnovation.Commands.{
+    CreateProject,
+    DefineMarket,
+    DefineNeeds,
+    CreateSurvey,
+  }
 
   resources do
 
@@ -13,7 +16,9 @@ defmodule SoonReady.OutcomeDrivenInnovation do
     authorize :by_default
   end
 
-  def create_survey(params, actor \\ nil), do: CreateSurvey.dispatch(params, [actor: actor])
-  defdelegate publish_survey(params), to: PublishSurvey, as: :dispatch
-  defdelegate submit_response(params), to: SubmitSurveyResponse, as: :dispatch
+  defdelegate create_project(params), to: CreateProject, as: :dispatch
+  defdelegate define_market(params), to: DefineMarket, as: :dispatch
+  defdelegate define_needs(params), to: DefineNeeds, as: :dispatch
+  defdelegate create_survey(params), to: CreateSurvey, as: :dispatch
+  # def create_survey(params, actor \\ nil), do: CreateSurvey.dispatch(params, [actor: actor])
 end

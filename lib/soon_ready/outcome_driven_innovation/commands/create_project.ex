@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
+defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateProject do
   use Ash.Resource,
     data_layer: :embedded
 
@@ -10,15 +10,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
   alias SoonReady.SurveyManagement.DomainConcepts.Question
 
   attributes do
-    attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
-    attribute :screening_questions, {:array, Question}
-    attribute :demographic_questions, {:array, Question}
-    attribute :context_questions, {:array, Question}
-
-    # TODO: Change or eliminate this
-    attribute :raw_screening_questions, {:array, :map}
-    attribute :raw_demographic_questions, {:array, :map}
-    attribute :raw_context_questions, {:array, :map}
+    uuid_primary_key :project_id
+    attribute :brand_name, :string
   end
 
   actions do
