@@ -112,6 +112,38 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     desired_outcome_rating_page_id = Ecto.UUID.generate()
     thank_you_page_id = Ecto.UUID.generate()
 
+    questions = Enum.map(job_steps, fn job_step ->
+      %{type: "multiple_choice_question_group",
+        # TODO: Wrap in "Step #{index}: #{job_step.name}"
+        title: job_step.name,
+        prompts: job_step.desired_outcomes,
+        questions: [
+          %{
+            type: "multiple_choice_question",
+            prompt: "When you #{String.downcase(job_step.name)}, how important is it to you to:",
+            options: [
+              "Not At All Important",
+              "Somewhat Important",
+              "Important",
+              "Very Important",
+              "Extremely Important"
+            ]
+          },
+          %{
+            prompt: "Given the solutions you currently have, how satisfied are you with your ability to:",
+            options: [
+              "Not At All Satisfied",
+              "Somewhat Satisfied",
+              "Satisfied",
+              "Very Satisfied",
+              "Extremely Satisfied"
+            ]
+          },
+        ]
+      }
+    end)
+    |> IO.inspect()
+
     survey = %{
       survey_id: survey_id,
       trigger: trigger,
@@ -177,35 +209,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
           id: desired_outcome_rating_page_id,
           title: "Desired Outcome Ratings",
           transitions: [%{destination_page_id: thank_you_page_id, submit_response?: true, condition: :always}],
-          questions: Enum.map(job_steps, fn job_step ->
-            %{type: "multiple_choice_question_group",
-              # TODO: Wrap in "Step #{index}: #{job_step.name}"
-              title: job_step.name,
-              prompts: job_step.desired_outcomes,
-              questions: [
-                %{
-                  prompt: "When you #{String.downcase(job_step.name)}, how important is it to you to:",
-                  options: [
-                    "Not At All Important",
-                    "Somewhat Important",
-                    "Important",
-                    "Very Important",
-                    "Extremely Important"
-                  ]
-                },
-                %{
-                  prompt: "Given the solutions you currently have, how satisfied are you with your ability to:",
-                  options: [
-                    "Not At All Satisfied",
-                    "Somewhat Satisfied",
-                    "Satisfied",
-                    "Very Satisfied",
-                    "Extremely Satisfied"
-                  ]
-                },
-              ]
-            }
-          end)
+          questions: questions
         },
         %{
           id: thank_you_page_id,
@@ -216,6 +220,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
 
     # TODO: Handle any that happens failure with its own event
     {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
+    |> IO.inspect()
     {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
   end
 

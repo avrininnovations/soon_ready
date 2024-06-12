@@ -74,7 +74,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
             prompt_responses: [
               type: :list,
               data: fn
-                %AshPhoenix.Form.WrappedValue{value: %{type: __MODULE__.MultipleChoiceQuestionGroup}} = question -> question.value.value.prompt_responses
+                %AshPhoenix.Form.WrappedValue{value: %{type: __MODULE__.MultipleChoiceQuestionGroupResponse}} = question -> question.value.value.prompt_responses
                 _question -> []
               end,
               update_action: :update,
@@ -175,6 +175,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     # TODO: How do I handle index?
 
     # TODO: Rename ODI related component, attr and slot names
+    IO.inspect(assigns)
     ~H"""
     <.accordion index={@index}>
       <:title><%= @title %></:title>

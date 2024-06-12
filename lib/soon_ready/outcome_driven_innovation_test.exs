@@ -102,12 +102,12 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
     test "WHEN: A researcher tries to create a survey, THEN: A survey is created", %{user: user} do
       screening_questions = [
         %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: "What is the answer to screening question 1?", options: [
-          %{type: "option_with_correct_flag",value: "Option 1", correct?: true},
-          %{type: "option_with_correct_flag",value: "Option 2", correct?: false},
+          %{type: "option_with_correct_flag", value: "Option 1", correct?: true},
+          %{type: "option_with_correct_flag", value: "Option 2", correct?: false},
         ]},
         %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: "What is the answer to screening question 2?", options: [
-          %{type: "option_with_correct_flag",value: "Option 1", correct?: true},
-          %{type: "option_with_correct_flag",value: "Option 2", correct?: false},
+          %{type: "option_with_correct_flag", value: "Option 1", correct?: true},
+          %{type: "option_with_correct_flag", value: "Option 2", correct?: false},
         ]}
       ]
       demographic_questions = [
