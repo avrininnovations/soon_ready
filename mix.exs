@@ -54,9 +54,9 @@ defmodule SoonReady.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
-      {:ash, "~> 2.16"},
-      {:ash_phoenix, "~> 1.3"},
-      {:ash_postgres, "~> 1.5"},
+      {:ash, "~> 3.0"},
+      {:ash_phoenix, "~> 2.0"},
+      {:ash_postgres, "~> 2.0.9"},
       {:commanded, "~> 1.4.3"},
       {:commanded_eventstore_adapter, "~> 1.4"},
       {:cloak, "~> 1.1"},
@@ -64,9 +64,9 @@ defmodule SoonReady.MixProject do
       {:pyro, "~> 0.3.6"},
       # Date/Time/Zone components & tooling
       {:tzdata, "~> 1.1"},
-      {:ash_authentication, "~> 3.12.4"},
-      {:ash_authentication_phoenix, "~> 1.9.4"},
-      {:ash_admin, "~> 0.10.9"},
+      {:ash_authentication, "~> 4.0"},
+      {:ash_authentication_phoenix, "~> 2.0"},
+      {:ash_admin, "~> 0.11"},
     ]
   end
 
