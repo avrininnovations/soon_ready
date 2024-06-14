@@ -1,7 +1,7 @@
-# defmodule SoonReady.Encryption.Api do
-#   use Ash.Api
+defmodule SoonReady.Encryption.Api do
+  use Ash.Api
 
-#   resources do
-#     resource SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
-#   end
-# end
+  resources do
+    resource SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
+  end
+end
