@@ -15,11 +15,11 @@ defmodule SoonReady.Application do
       consistency: Application.get_env(:soon_ready, :consistency, :eventual)
     ]
 
-  router SoonReady.OutcomeDrivenInnovation.ResearchProject
-  router SoonReady.SurveyManagement.Survey
-  router SoonReady.IdentityAndAccessManagement.Researcher
+  # router SoonReady.OutcomeDrivenInnovation.ResearchProject
+  # router SoonReady.SurveyManagement.Survey
+  # router SoonReady.IdentityAndAccessManagement.Researcher
 
-  router SoonReady.Onboarding.Commands.Router
+  # router SoonReady.Onboarding.Commands.Router
 
   @impl true
   def start(_type, _args) do
@@ -42,10 +42,10 @@ defmodule SoonReady.Application do
 
       # Commanded
       __MODULE__,
-      SoonReady.Onboarding.Setup.Supervisor,
-      SoonReady.OutcomeDrivenInnovation.Supervisor,
-      SoonReady.SurveyManagement.Supervisor,
-      SoonReady.IdentityAndAccessManagement.Supervisor,
+      # SoonReady.Onboarding.Setup.Supervisor,
+      # SoonReady.OutcomeDrivenInnovation.Supervisor,
+      # SoonReady.SurveyManagement.Supervisor,
+      # SoonReady.IdentityAndAccessManagement.Supervisor,
 
       # SoonReadyInterface.Respondents.Setup.Supervisor,
       # SoonReadyInterface.Researcher.Supervisor,
