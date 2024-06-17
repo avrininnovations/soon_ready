@@ -5,7 +5,7 @@
 #   alias SoonReady.SurveyManagement.DomainConcepts.Response
 
 #   # alias SoonReady.SurveyManagement.DomainConcepts.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
-#   # alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
+#   # alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
 
 #   attributes do

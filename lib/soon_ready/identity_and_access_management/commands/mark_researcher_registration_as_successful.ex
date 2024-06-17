@@ -1,5 +1,5 @@
 defmodule SoonReady.IdentityAndAccessManagement.Commands.MarkResearcherRegistrationAsSuccessful do
-  use Ash.Resource, data_layer: :embedded
+  use Ash.Resource, domain: SoonReady.IdentityAndAccessManagement
 
   attributes do
     attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false
@@ -21,7 +21,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.MarkResearcherRegistrat
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement
     define :dispatch
   end
 end

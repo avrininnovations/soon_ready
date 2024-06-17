@@ -1,5 +1,7 @@
 defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
-  use Ash.Resource, data_layer: AshPostgres.DataLayer
+  use Ash.Resource,
+    domain: SoonReady.IdentityAndAccessManagement,
+    data_layer: AshPostgres.DataLayer
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -33,7 +35,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement
     define :create
     define :get, args: [:id]
   end

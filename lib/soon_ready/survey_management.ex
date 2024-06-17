@@ -2,7 +2,7 @@
 #   use Ash.Api
 
 #   alias SoonReady.SurveyManagement.Commands.{CreateSurvey, PublishSurvey, SubmitSurveyResponse}
-#   alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
+#   alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
 #   resources do
 

@@ -1,10 +1,13 @@
-defmodule SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey do
-  use Ash.Resource, data_layer: AshPostgres.DataLayer
+defmodule SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey do
+  use Ash.Resource,
+    domain: SoonReady.Encryption,
+    data_layer: AshPostgres.DataLayer
+
   require Logger
 
   attributes do
-    attribute :id, :uuid, allow_nil?: false, primary_key?: true
-    attribute :encoded_key, :string, allow_nil?: false, private?: true
+    attribute :id, :uuid, allow_nil?: false, primary_key?: true, public?: true
+    attribute :encoded_key, :string, allow_nil?: false
   end
 
   calculations do
@@ -40,7 +43,6 @@ defmodule SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey do
   end
 
   code_interface do
-    define_for SoonReady.Encryption.Api
     define :generate
     define :get, args: [:id]
     define :read
@@ -48,6 +50,7 @@ defmodule SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey do
   end
 
   postgres do
+    # TODO: Rename table
     repo SoonReady.Repo
     table "encryption__personal_identifiable_information_encryption_key"
   end

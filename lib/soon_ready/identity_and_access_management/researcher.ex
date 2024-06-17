@@ -1,5 +1,5 @@
 defmodule SoonReady.IdentityAndAccessManagement.Researcher do
-  use Ash.Resource, data_layer: :embedded
+  use Ash.Resource, domain: SoonReady.IdentityAndAccessManagement
   use Commanded.Commands.Router
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -21,8 +21,11 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
     uuid_primary_key :researcher_id
   end
 
+  actions do
+    defaults [:create, :read]
+  end
+
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement
     define :create
   end
 

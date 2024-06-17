@@ -1,7 +1,10 @@
 defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationInitiatedV1 do
-  use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder], api: SoonReady.IdentityAndAccessManagement
+  use Ash.Resource,
+    domain: SoonReady.IdentityAndAccessManagement,
+    extensions: [SoonReady.Ash.Extensions.JsonEncoder]
+    
   require Logger
-  alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
+  alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
   attributes do
     attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false
@@ -128,7 +131,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationIni
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement
     define :create
     define :decrypt
   end

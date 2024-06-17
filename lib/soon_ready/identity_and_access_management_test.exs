@@ -10,7 +10,7 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
     ResearcherRegistrationSucceededV1,
   }
 
-  alias SoonReady.Encryption.PersonalIdentifiableInformationEncryptionKey
+  alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
   test "WHEN: An administrator tries to register a researcher, THEN: A researcher" do
     params = %{

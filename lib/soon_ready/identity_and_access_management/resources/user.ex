@@ -1,5 +1,6 @@
 defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
   use Ash.Resource,
+    domain: SoonReady.IdentityAndAccessManagement,
     data_layer: AshPostgres.DataLayer,
     extensions: [AshAuthentication],
     authorizers: [Ash.Policy.Authorizer]
@@ -8,8 +9,8 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
 
   attributes do
     uuid_primary_key :id
-    attribute :username, :ci_string, allow_nil?: false
-    attribute :hashed_password, :string, allow_nil?: false, sensitive?: true, private?: true
+    attribute :username, :ci_string, allow_nil?: false, public?: true
+    attribute :hashed_password, :string, allow_nil?: false, sensitive?: true
   end
 
   relationships do
@@ -47,8 +48,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
   end
 
   authentication do
-    api SoonReady.IdentityAndAccessManagement
-
     strategies do
       password :password do
         identity_field :username
@@ -65,6 +64,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
   end
 
   postgres do
+    identity_index_names unique_username: "iam__resources__users_unique_username_index"
     table "identity_and_access_management__resources__users"
     repo SoonReady.Repo
   end
@@ -74,7 +74,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement
     define :get, args: [:id]
   end
 

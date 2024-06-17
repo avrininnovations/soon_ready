@@ -13,11 +13,11 @@ config :soon_ready,
 
 config :soon_ready, event_stores: [SoonReady.EventStore]
 
-config :soon_ready, ash_apis: [
+config :soon_ready, ash_domains: [
   # SoonReady.OutcomeDrivenInnovation,
   # SoonReady.SurveyManagement,
   SoonReady.IdentityAndAccessManagement,
-  SoonReady.Encryption.Api,
+  SoonReady.Encryption,
 
   # SoonReady.Onboarding.Setup.Api,
 

@@ -1,5 +1,7 @@
 defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationFailedV1 do
-  use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
+  use Ash.Resource,
+    domain: SoonReady.IdentityAndAccessManagement,
+    extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do
     attribute :researcher_id, :uuid, allow_nil?: false, primary_key?: true
@@ -11,7 +13,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationFai
   end
 
   code_interface do
-    define_for SoonReady.IdentityAndAccessManagement
     define :create
   end
 end

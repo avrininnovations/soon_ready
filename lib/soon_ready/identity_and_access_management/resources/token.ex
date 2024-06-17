@@ -1,11 +1,8 @@
 defmodule SoonReady.IdentityAndAccessManagement.Resources.Token do
   use Ash.Resource,
+    domain: SoonReady.IdentityAndAccessManagement,
     data_layer: AshPostgres.DataLayer,
     extensions: [AshAuthentication.TokenResource]
-
-  token do
-    api SoonReady.IdentityAndAccessManagement
-  end
 
   postgres do
     table "identity_and_access_management__resources__tokens"
