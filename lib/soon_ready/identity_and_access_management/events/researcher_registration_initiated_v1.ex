@@ -7,18 +7,20 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationIni
   alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
   attributes do
-    attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false
-    attribute :first_name_hash, :string, allow_nil?: false
-    attribute :last_name_hash, :string, allow_nil?: false
-    attribute :username_hash, :string, allow_nil?:  false
-    attribute :password_hash, :string, allow_nil?: false
-    attribute :password_confirmation_hash, :string, allow_nil?: false
+    attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false, public?: true
+    attribute :first_name_hash, :string, allow_nil?: false, public?: true
+    attribute :last_name_hash, :string, allow_nil?: false, public?: true
+    attribute :username_hash, :string, allow_nil?:  false, public?: true
+    attribute :password_hash, :string, allow_nil?: false, public?: true
+    attribute :password_confirmation_hash, :string, allow_nil?: false, public?: true
   end
 
   actions do
-    default_accept [:researcher_id]
     defaults [:read]
+
     create :create do
+      accept [:researcher_id]
+
       primary? true
 
       argument :first_name, :ci_string, allow_nil?: false
@@ -48,7 +50,16 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationIni
       end
     end
 
-    create :decrypt
+    create :decrypt do
+      accept [
+        :researcher_id,
+        :first_name_hash,
+        :last_name_hash,
+        :username_hash,
+        :password_hash,
+        :password_confirmation_hash,
+      ]
+    end
   end
 
   calculations do

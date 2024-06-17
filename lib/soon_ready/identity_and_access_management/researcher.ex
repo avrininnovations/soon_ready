@@ -63,30 +63,30 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
     ResearcherRegistrationFailedV1.create(%{researcher_id: researcher_id, error: error})
   end
 
-  def handle(%ResearcherRegistrationInitiatedV1{} = event, _metadata) do
-    event =
-      event
-      |> Map.from_struct()
-      |> ResearcherRegistrationInitiatedV1.decrypt!()
+  # def handle(%ResearcherRegistrationInitiatedV1{} = event, _metadata) do
+  #   event =
+  #     event
+  #     |> Map.from_struct()
+  #     |> ResearcherRegistrationInitiatedV1.decrypt!()
 
-    %{
-      researcher_id: researcher_id,
-      first_name: first_name,
-      last_name: last_name,
-      username: username,
-      password: password,
-      password_confirmation: password_confirmation
-    } = event
+  #   %{
+  #     researcher_id: researcher_id,
+  #     first_name: first_name,
+  #     last_name: last_name,
+  #     username: username,
+  #     password: password,
+  #     password_confirmation: password_confirmation
+  #   } = event
 
-    case SoonReady.IdentityAndAccessManagement.Resources.User.register_user_with_password(username, password, password_confirmation) do
-      {:ok, %{id: user_id} = user} ->
-        {:ok, _command} = MarkResearcherRegistrationAsSuccessful.dispatch(%{researcher_id: researcher_id, user_id: user_id})
-      {:error, error} ->
-        {:ok, _command} = MarkResearcherRegistrationAsFailed.dispatch(%{researcher_id: researcher_id, error: error})
-    end
+  #   case SoonReady.IdentityAndAccessManagement.Resources.User.register_user_with_password(username, password, password_confirmation) do
+  #     {:ok, %{id: user_id} = user} ->
+  #       {:ok, _command} = MarkResearcherRegistrationAsSuccessful.dispatch(%{researcher_id: researcher_id, user_id: user_id})
+  #     {:error, error} ->
+  #       {:ok, _command} = MarkResearcherRegistrationAsFailed.dispatch(%{researcher_id: researcher_id, error: error})
+  #   end
 
-    :ok
-  end
+  #   :ok
+  # end
 
   def apply(state, %ResearcherRegistrationInitiatedV1{researcher_id: researcher_id} = _event) do
     __MODULE__.create(%{researcher_id: researcher_id})
