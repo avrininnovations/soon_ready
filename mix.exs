@@ -55,6 +55,7 @@ defmodule SoonReady.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
       {:ash, "~> 3.0"},
+      {:picosat_elixir, "~> 0.2"},
       {:ash_phoenix, "~> 2.0"},
       {:ash_postgres, "~> 2.0.9"},
       {:commanded, "~> 1.4.3"},
