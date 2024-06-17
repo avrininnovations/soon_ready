@@ -15,6 +15,14 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegis
   end
 
   actions do
+    default_accept [
+      :first_name,
+      :last_name,
+      :username,
+      :password,
+      :password_confirmation,
+    ]
+    
     create :dispatch do
       primary? true
 

@@ -2,7 +2,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationIni
   use Ash.Resource,
     domain: SoonReady.IdentityAndAccessManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
-    
+
   require Logger
   alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
@@ -16,6 +16,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationIni
   end
 
   actions do
+    default_accept [:researcher_id]
     defaults [:read]
     create :create do
       primary? true
@@ -51,50 +52,50 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationIni
   end
 
   calculations do
-    calculate :first_name, :ci_string, fn record, _context ->
+    calculate :first_name, :ci_string, fn [record], _context ->
       with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.get(record.researcher_id) do
         case SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: record.first_name_hash}) do
-          {:ok, first_name} -> {:ok, Ash.CiString.new(first_name)}
+          {:ok, first_name} -> {:ok, [Ash.CiString.new(first_name)]}
           :error -> {:error, :decryption_error}
         end
       end
     end
 
-    calculate :last_name, :ci_string, fn record, _context ->
+    calculate :last_name, :ci_string, fn [record], _context ->
       # TODO: Run this only once
       with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.get(record.researcher_id) do
         case SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: record.last_name_hash}) do
-          {:ok, last_name} -> {:ok, Ash.CiString.new(last_name)}
+          {:ok, last_name} -> {:ok, [Ash.CiString.new(last_name)]}
           :error -> {:error, :decryption_error}
         end
       end
     end
 
-    calculate :username, :ci_string, fn record, _context ->
+    calculate :username, :ci_string, fn [record], _context ->
       # TODO: Run this only once
       with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.get(record.researcher_id) do
         case SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: record.username_hash}) do
-          {:ok, username} -> {:ok, Ash.CiString.new(username)}
+          {:ok, username} -> {:ok, [Ash.CiString.new(username)]}
           :error -> {:error, :decryption_error}
         end
       end
     end
 
-    calculate :password, :string, fn record, _context ->
+    calculate :password, :string, fn [record], _context ->
       # TODO: Run this only once
       with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.get(record.researcher_id) do
         case SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: record.password_hash}) do
-          {:ok, password} -> {:ok, password}
+          {:ok, password} -> {:ok, [password]}
           :error -> {:error, :decryption_error}
         end
       end
     end
 
-    calculate :password_confirmation, :string, fn record, _context ->
+    calculate :password_confirmation, :string, fn [record], _context ->
       # TODO: Run this only once
       with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.get(record.researcher_id) do
         case SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: record.password_confirmation_hash}) do
-          {:ok, password_confirmation} -> {:ok, password_confirmation}
+          {:ok, password_confirmation} -> {:ok, [password_confirmation]}
           :error -> {:error, :decryption_error}
         end
       end

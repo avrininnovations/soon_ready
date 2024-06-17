@@ -11,8 +11,8 @@ defmodule SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncrypti
   end
 
   calculations do
-    calculate :key, :string, fn record, _context ->
-      {:ok, Base.decode64!(record.encoded_key)}
+    calculate :key, :string, fn [record], _context ->
+      {:ok, [Base.decode64!(record.encoded_key)]}
     end
   end
 
@@ -27,6 +27,7 @@ defmodule SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncrypti
   end
 
   actions do
+    default_accept [:id]
     defaults [:read, :destroy]
 
     create :generate do
