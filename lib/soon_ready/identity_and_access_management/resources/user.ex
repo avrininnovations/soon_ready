@@ -75,17 +75,18 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
 
   code_interface do
     define :get, args: [:id]
+    define :read
   end
 
-  # policies do
-  #   bypass AshAuthentication.Checks.AshAuthenticationInteraction do
-  #     authorize_if always()
-  #   end
+  policies do
+    bypass AshAuthentication.Checks.AshAuthenticationInteraction do
+      authorize_if always()
+    end
 
-  #   policy always() do
-  #     forbid_if always()
-  #   end
-  # end
+    policy always() do
+      forbid_if always()
+    end
+  end
 
   def register_user_with_password(username, password, password_confirmation) do
     SoonReady.IdentityAndAccessManagement.Resources.User

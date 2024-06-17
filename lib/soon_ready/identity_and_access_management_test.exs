@@ -63,20 +63,20 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
       end
     )
 
-    # assert_receive_event(Application, ResearcherRegistrationSucceededV1,
-    #   fn event -> event.researcher_id == command.researcher_id end,
-    #   fn event ->
-    #     {:ok, event} =
-    #       event
-    #       |> Map.from_struct()
-    #       |> ResearcherRegistrationSucceededV1.create()
+    assert_receive_event(Application, ResearcherRegistrationSucceededV1,
+      fn event -> event.researcher_id == command.researcher_id end,
+      fn event ->
+        {:ok, event} =
+          event
+          |> Map.from_struct()
+          |> ResearcherRegistrationSucceededV1.create()
 
-    #     {:ok, user} = SoonReady.IdentityAndAccessManagement.Resources.User.get(event.user_id)
-    #     assert event.user_id == user.id
-    #     assert command.username == user.username
-    #     # TODO: Test password
-    #     # assert command.password == user.password
-    #   end
-    # )
+        {:ok, user} = SoonReady.IdentityAndAccessManagement.Resources.User.get(event.user_id)
+        assert event.user_id == user.id
+        assert command.username == user.username
+        # TODO: Test password
+        # assert command.password == user.password
+      end
+    )
   end
 end

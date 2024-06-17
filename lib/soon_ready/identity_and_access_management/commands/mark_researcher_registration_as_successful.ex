@@ -7,6 +7,8 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.MarkResearcherRegistrat
   end
 
   actions do
+    default_accept [:researcher_id, :user_id]
+    
     create :dispatch do
       primary? true
 
