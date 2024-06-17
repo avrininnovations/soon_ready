@@ -9,7 +9,7 @@ defmodule SoonReady.SurveyManagement.Events.SurveyCreatedV1 do
     attribute :survey_id, :uuid, allow_nil?: false, primary_key?: true, public?: true
     attribute :starting_page_id, :uuid, allow_nil?: false, public?: true
     # attribute :pages, {:array, :map}, public?: true
-    # attribute :trigger, Trigger, public?: true
+    attribute :trigger, Trigger, public?: true
   end
 
   actions do
@@ -17,7 +17,7 @@ defmodule SoonReady.SurveyManagement.Events.SurveyCreatedV1 do
       :survey_id,
       :starting_page_id,
       # :pages,
-      # :trigger,
+      :trigger,
     ]
     create :new
   end

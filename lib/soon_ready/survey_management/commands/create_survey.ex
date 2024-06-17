@@ -13,7 +13,7 @@ defmodule SoonReady.SurveyManagement.Commands.CreateSurvey do
     attribute :starting_page_id, :uuid, allow_nil?: false
     # attribute :pages, {:array, SurveyPage}, constraints: [min_length: 1]
     # attribute :raw_pages_data, {:array, :map}, constraints: [min_length: 1]
-    # attribute :trigger, Trigger
+    attribute :trigger, Trigger
   end
 
   # policies do
@@ -29,7 +29,7 @@ defmodule SoonReady.SurveyManagement.Commands.CreateSurvey do
       :starting_page_id,
       # :pages,
       # :raw_pages_data,
-      # :trigger,
+      :trigger,
     ]
 
     defaults [:create, :read]

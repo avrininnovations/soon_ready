@@ -12,10 +12,14 @@ defmodule SoonReady.SurveyManagement.Survey do
 
   attributes do
     attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
-    # attribute :trigger, Trigger
+    attribute :trigger, Trigger
   end
 
   actions do
+    default_accept [
+      :survey_id,
+      :trigger,
+    ]
     defaults [:create, :read, :update]
   end
 
@@ -30,8 +34,8 @@ defmodule SoonReady.SurveyManagement.Survey do
 
   # # TODO: Do something about this need to use raw data
   # def execute(_aggregate_state, %CreateSurvey{survey_id: survey_id, starting_page_id: starting_page_id, raw_pages_data: raw_pages_data, trigger: trigger} = _command) do
-  def execute(_aggregate_state, %CreateSurvey{survey_id: survey_id, starting_page_id: starting_page_id} = _command) do
-    SurveyCreatedV1.new(%{survey_id: survey_id, starting_page_id: starting_page_id})
+  def execute(_aggregate_state, %CreateSurvey{survey_id: survey_id, starting_page_id: starting_page_id, trigger: trigger} = _command) do
+    SurveyCreatedV1.new(%{survey_id: survey_id, starting_page_id: starting_page_id, trigger: trigger})
   end
 
   # def execute(aggregate_state, %PublishSurvey{survey_id: survey_id} = _command) do
@@ -46,9 +50,9 @@ defmodule SoonReady.SurveyManagement.Survey do
   #   })
   # end
 
-  # def apply(state, %SurveyCreatedV1{survey_id: survey_id, trigger: trigger}) do
-  #   __MODULE__.create!(%{survey_id: survey_id, trigger: trigger})
-  # end
+  def apply(state, %SurveyCreatedV1{survey_id: survey_id, trigger: trigger}) do
+    __MODULE__.create!(%{survey_id: survey_id, trigger: trigger})
+  end
 
   def apply(state, _event) do
     state
