@@ -19,10 +19,10 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
 
   calculations do
     calculate :is_researcher, :boolean, fn
-      %{researcher: %Researcher{}} = _user, _context ->
-        {:ok, true}
-      _user, _context ->
-        {:ok, false}
+      [%{researcher: %Researcher{}}] = _users, _context ->
+        {:ok, [true]}
+      _users, _context ->
+        {:ok, [false]}
     end
   end
 
@@ -92,5 +92,11 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
     SoonReady.IdentityAndAccessManagement.Resources.User
     |> AshAuthentication.Info.strategy!(:password)
     |> AshAuthentication.Strategy.action(:register, %{"username" => username, "password" => password, "password_confirmation" => password_confirmation})
+  end
+
+  def sign_in_with_password(username, password) do
+    SoonReady.IdentityAndAccessManagement.Resources.User
+    |> AshAuthentication.Info.strategy!(:password)
+    |> AshAuthentication.Strategy.action(:sign_in, %{"username" => username, "password" => password})
   end
 end

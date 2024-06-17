@@ -23,6 +23,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
   end
 
   actions do
+    default_accept [:id, :user_id]
     defaults [:create, :read]
 
     read :get do
