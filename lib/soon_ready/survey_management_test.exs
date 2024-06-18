@@ -105,15 +105,15 @@ defmodule SoonReady.SurveyManagementTest do
     test "GIVEN: A survey with a short answer question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       page_id = Ecto.UUID.generate()
       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id,
-        # pages: [
-        #   %{
-        #     id: page_id,
-        #     actions: %{correct_response_action: :submit_form, incorrect_response_action: :submit_form},
-        #     questions: [
-        #       %{type: "short_answer_question", prompt: "The short answer prompt"},
-        #     ]
-        #   }
-        # ]
+        pages: [
+          %{
+            id: page_id,
+            title: "Page Title",
+            questions: [
+              %{type: "short_answer_question", prompt: "The short answer prompt"},
+            ]
+          }
+        ]
       }
 
       {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
