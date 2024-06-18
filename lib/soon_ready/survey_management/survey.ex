@@ -30,7 +30,7 @@ defmodule SoonReady.SurveyManagement.Survey do
 
   dispatch CreateSurvey, to: __MODULE__, identity: :survey_id
   dispatch PublishSurvey, to: __MODULE__, identity: :survey_id
-  # dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
+  dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
 
   # # TODO: Do something about this need to use raw data
   def execute(_aggregate_state, %CreateSurvey{survey_id: survey_id, starting_page_id: starting_page_id, raw_pages_data: raw_pages_data, trigger: trigger} = _command) do
@@ -41,13 +41,13 @@ defmodule SoonReady.SurveyManagement.Survey do
     SurveyPublishedV1.new(%{survey_id: survey_id, trigger: aggregate_state.trigger})
   end
 
-  # def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, raw_responses_data: raw_responses_data} = command) do
-  #   SurveyResponseSubmittedV1.new(%{
-  #     response_id: response_id,
-  #     survey_id: survey_id,
-  #     responses: raw_responses_data,
-  #   })
-  # end
+  def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, raw_responses_data: raw_responses_data} = command) do
+    SurveyResponseSubmittedV1.new(%{
+      response_id: response_id,
+      survey_id: survey_id,
+      responses: raw_responses_data,
+    })
+  end
 
   def apply(state, %SurveyCreatedV1{survey_id: survey_id, trigger: trigger}) do
     __MODULE__.create!(%{survey_id: survey_id, trigger: trigger})

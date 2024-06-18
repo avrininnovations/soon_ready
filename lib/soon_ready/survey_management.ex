@@ -11,12 +11,12 @@ defmodule SoonReady.SurveyManagement do
     # Commands
     resource SoonReady.SurveyManagement.Commands.CreateSurvey
     resource SoonReady.SurveyManagement.Commands.PublishSurvey
-    # resource SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
+    resource SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
 
     # Events
     resource SoonReady.SurveyManagement.Events.SurveyCreatedV1
     resource SoonReady.SurveyManagement.Events.SurveyPublishedV1
-    # resource SoonReady.SurveyManagement.Events.SurveyResponseSubmittedV1
+    resource SoonReady.SurveyManagement.Events.SurveyResponseSubmittedV1
   end
 
   authorization do
