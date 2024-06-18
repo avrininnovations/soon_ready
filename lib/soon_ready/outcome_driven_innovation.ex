@@ -12,8 +12,10 @@ defmodule SoonReady.OutcomeDrivenInnovation do
     resource SoonReady.OutcomeDrivenInnovation.ResearchProject
 
     resource SoonReady.OutcomeDrivenInnovation.Commands.CreateProject
+    resource SoonReady.OutcomeDrivenInnovation.Commands.DefineMarket
 
     resource SoonReady.OutcomeDrivenInnovation.Events.ProjectCreatedV1
+    resource SoonReady.OutcomeDrivenInnovation.Events.MarketDefinedV1
   end
 
   authorization do
