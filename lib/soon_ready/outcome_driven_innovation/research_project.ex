@@ -50,7 +50,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
 
   dispatch CreateProject, to: __MODULE__, identity: :project_id
   dispatch DefineMarket, to: __MODULE__, identity: :project_id
-  # dispatch DefineNeeds, to: __MODULE__, identity: :project_id
+  dispatch DefineNeeds, to: __MODULE__, identity: :project_id
   # dispatch CreateSurvey, to: __MODULE__, identity: :project_id
   # dispatch MarkSurveyCreationAsSuccessful, to: __MODULE__, identity: :project_id
 
@@ -68,12 +68,12 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     })
   end
 
-  # def execute(_aggregate_state, %DefineNeeds{project_id: project_id, job_steps: job_steps} = _command) do
-  #   NeedsDefinedV1.new(%{
-  #     project_id: project_id,
-  #     job_steps: job_steps,
-  #   })
-  # end
+  def execute(_aggregate_state, %DefineNeeds{project_id: project_id, job_steps: job_steps} = _command) do
+    NeedsDefinedV1.new(%{
+      project_id: project_id,
+      job_steps: job_steps,
+    })
+  end
 
   # def execute(aggregate_state, %CreateSurvey{} = command) do
   #   params = %{
@@ -241,9 +241,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     __MODULE__.update!(state, %{market: market})
   end
 
-  # def apply(state, %NeedsDefinedV1{job_steps: job_steps}) do
-  #   __MODULE__.update!(state, %{job_steps: job_steps})
-  # end
+  def apply(state, %NeedsDefinedV1{job_steps: job_steps}) do
+    __MODULE__.update!(state, %{job_steps: job_steps})
+  end
 
   def apply(state, _event) do
     IO.inspect("INSIDE Apply, #{inspect(_event)}")

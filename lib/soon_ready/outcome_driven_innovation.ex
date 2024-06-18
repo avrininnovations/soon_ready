@@ -13,15 +13,19 @@ defmodule SoonReady.OutcomeDrivenInnovation do
 
     resource SoonReady.OutcomeDrivenInnovation.Commands.CreateProject
     resource SoonReady.OutcomeDrivenInnovation.Commands.DefineMarket
+    resource SoonReady.OutcomeDrivenInnovation.Commands.DefineNeeds
 
     resource SoonReady.OutcomeDrivenInnovation.Events.ProjectCreatedV1
     resource SoonReady.OutcomeDrivenInnovation.Events.MarketDefinedV1
+    resource SoonReady.OutcomeDrivenInnovation.Events.NeedsDefinedV1
   end
 
   authorization do
     authorize :by_default
   end
 
+
+  # TODO: Remove all defdelegates
   defdelegate create_project(params), to: CreateProject, as: :dispatch
   defdelegate define_market(params), to: DefineMarket, as: :dispatch
   defdelegate define_needs(params), to: DefineNeeds, as: :dispatch
