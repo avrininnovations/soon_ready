@@ -253,21 +253,21 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  # describe "Market Definition" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
-  #     {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-  #     submit_landing_page_form(view)
+  describe "Market Definition" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      submit_landing_page_form(view)
 
-  #     _resulting_html = submit_market_definition_form(view)
+      _resulting_html = submit_market_definition_form(view)
 
-  #     _market_definition_page_path = assert_patch(view)
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/odi-survey/create/desired-outcomes"
-  #     assert has_element?(view, "h2", "Desired Outcomes")
-  #     assert_landing_page_query_params(path)
-  #     assert_market_definition_page_query_params(path)
-  #   end
-  # end
+      _market_definition_page_path = assert_patch(view)
+      path = assert_patch(view)
+      assert path =~ ~p"/odi-survey/create/desired-outcomes"
+      assert has_element?(view, "h2", "Desired Outcomes")
+      assert_landing_page_query_params(path)
+      assert_market_definition_page_query_params(path)
+    end
+  end
 
   # describe "Desired Outcomes" do
   #   test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
