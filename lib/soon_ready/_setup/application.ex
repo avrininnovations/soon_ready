@@ -19,7 +19,7 @@ defmodule SoonReady.Application do
   router SoonReady.SurveyManagement.Survey
   router SoonReady.IdentityAndAccessManagement.Researcher
 
-  # router SoonReady.Onboarding.Commands.Router
+  router SoonReady.Onboarding.Commands.Router
 
   @impl true
   def start(_type, _args) do
