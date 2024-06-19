@@ -43,8 +43,8 @@ defmodule SoonReady.Application do
       # Commanded
       __MODULE__,
       # SoonReady.Onboarding.Setup.Supervisor,
-      # SoonReady.OutcomeDrivenInnovation.Supervisor,
-      # SoonReady.SurveyManagement.Supervisor,
+      SoonReady.OutcomeDrivenInnovation.Supervisor,
+      SoonReady.SurveyManagement.Supervisor,
       SoonReady.IdentityAndAccessManagement.Supervisor,
 
       # SoonReadyInterface.Respondents.Setup.Supervisor,
