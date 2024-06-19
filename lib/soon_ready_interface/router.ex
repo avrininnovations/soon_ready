@@ -19,14 +19,14 @@ defmodule SoonReadyInterface.Router do
     plug :load_from_bearer
   end
 
-  # scope "/", SoonReadyInterface.Public.Webpages do
-  #   pipe_through :browser
+  scope "/", SoonReadyInterface.Public.Webpages do
+    pipe_through :browser
 
-  #   sign_in_route()
-  #   sign_out_route AuthController
-  #   auth_routes_for SoonReady.IdentityAndAccessManagement.Resources.User, to: AuthController
-  #   reset_route []
-  # end
+    sign_in_route()
+    sign_out_route AuthController
+    auth_routes_for SoonReady.IdentityAndAccessManagement.Resources.User, to: AuthController
+    reset_route []
+  end
 
   scope "/", SoonReadyInterface.Public.Webpages do
     pipe_through :browser

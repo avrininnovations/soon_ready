@@ -2,7 +2,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegis
   use Ash.Resource, domain: SoonReady.IdentityAndAccessManagement
 
   attributes do
-    uuid_primary_key :researcher_id
+    attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false, default: &Ash.UUID.generate/0
     attribute :first_name, :ci_string, allow_nil?: false
     attribute :last_name, :ci_string, allow_nil?: false
     attribute :username, :ci_string, allow_nil?:  false
@@ -16,13 +16,14 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegis
 
   actions do
     default_accept [
+      :researcher_id,
       :first_name,
       :last_name,
       :username,
       :password,
       :password_confirmation,
     ]
-    
+
     create :dispatch do
       primary? true
 

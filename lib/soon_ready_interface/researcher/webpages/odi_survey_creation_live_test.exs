@@ -446,76 +446,76 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  # describe "Context Questions" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
-  #     {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-  #     submit_landing_page_form(view)
-  #     submit_market_definition_form(view)
-  #     add_two_job_steps(view)
-  #     add_two_desired_outcomes_each(view)
-  #     submit_desired_outcomes_form(view)
-  #     add_two_screening_questions(view)
-  #     add_two_options_each_to_screening_questions(view)
-  #     submit_screeing_questions_form(view)
-  #     add_two_demographic_questions(view)
-  #     add_two_options_each_to_demographic_questions(view)
-  #     submit_demographic_questions_form(view)
+  describe "Context Questions" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      submit_landing_page_form(view)
+      submit_market_definition_form(view)
+      add_two_job_steps(view)
+      add_two_desired_outcomes_each(view)
+      submit_desired_outcomes_form(view)
+      add_two_screening_questions(view)
+      add_two_options_each_to_screening_questions(view)
+      submit_screeing_questions_form(view)
+      add_two_demographic_questions(view)
+      add_two_options_each_to_demographic_questions(view)
+      submit_demographic_questions_form(view)
 
-  #     _resulting_html = add_two_context_questions(view)
+      _resulting_html = add_two_context_questions(view)
 
-  #     assert has_element?(view, ~s{input[name="form[context_questions][0][prompt]"]})
-  #     assert has_element?(view, ~s{input[name="form[context_questions][1][prompt]"]})
-  #   end
+      assert has_element?(view, ~s{input[name="form[context_questions][0][prompt]"]})
+      assert has_element?(view, ~s{input[name="form[context_questions][1][prompt]"]})
+    end
 
-  #   test "GIVEN: Two context questions have been added, WHEN: Researcher tries to add two options each to the context questions, THEN: Two options field each are added to the context questions", %{conn: conn} do
-  #     {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-  #     submit_landing_page_form(view)
-  #     submit_market_definition_form(view)
-  #     add_two_job_steps(view)
-  #     add_two_desired_outcomes_each(view)
-  #     submit_desired_outcomes_form(view)
-  #     add_two_screening_questions(view)
-  #     add_two_options_each_to_screening_questions(view)
-  #     submit_screeing_questions_form(view)
-  #     add_two_demographic_questions(view)
-  #     add_two_options_each_to_demographic_questions(view)
-  #     submit_demographic_questions_form(view)
-  #     add_two_context_questions(view)
+    test "GIVEN: Two context questions have been added, WHEN: Researcher tries to add two options each to the context questions, THEN: Two options field each are added to the context questions", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      submit_landing_page_form(view)
+      submit_market_definition_form(view)
+      add_two_job_steps(view)
+      add_two_desired_outcomes_each(view)
+      submit_desired_outcomes_form(view)
+      add_two_screening_questions(view)
+      add_two_options_each_to_screening_questions(view)
+      submit_screeing_questions_form(view)
+      add_two_demographic_questions(view)
+      add_two_options_each_to_demographic_questions(view)
+      submit_demographic_questions_form(view)
+      add_two_context_questions(view)
 
-  #     _resulting_html = add_two_options_each_to_context_questions(view)
+      _resulting_html = add_two_options_each_to_context_questions(view)
 
-  #     assert has_element?(view, ~s{input[name="form[context_questions][0][options][0][value]"]})
-  #     assert has_element?(view, ~s{input[name="form[context_questions][0][options][1][value]"]})
-  #     assert has_element?(view, ~s{input[name="form[context_questions][1][options][0][value]"]})
-  #     assert has_element?(view, ~s{input[name="form[context_questions][1][options][1][value]"]})
-  #   end
+      assert has_element?(view, ~s{input[name="form[context_questions][0][options][0][value]"]})
+      assert has_element?(view, ~s{input[name="form[context_questions][0][options][1][value]"]})
+      assert has_element?(view, ~s{input[name="form[context_questions][1][options][0][value]"]})
+      assert has_element?(view, ~s{input[name="form[context_questions][1][options][1][value]"]})
+    end
 
-  #   test "GIVEN: Two options each have been added to two context questions, WHEN: Researcher tries to submit the context questions, THEN: The context questions page is displayed", %{conn: conn} do
-  #     {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-  #     submit_landing_page_form(view)
-  #     submit_market_definition_form(view)
-  #     add_two_job_steps(view)
-  #     add_two_desired_outcomes_each(view)
-  #     submit_desired_outcomes_form(view)
-  #     add_two_screening_questions(view)
-  #     add_two_options_each_to_screening_questions(view)
-  #     submit_screeing_questions_form(view)
-  #     add_two_demographic_questions(view)
-  #     add_two_options_each_to_demographic_questions(view)
-  #     submit_demographic_questions_form(view)
-  #     add_two_context_questions(view)
-  #     add_two_options_each_to_context_questions(view)
+    test "GIVEN: Two options each have been added to two context questions, WHEN: Researcher tries to submit the context questions, THEN: The context questions page is displayed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      submit_landing_page_form(view)
+      submit_market_definition_form(view)
+      add_two_job_steps(view)
+      add_two_desired_outcomes_each(view)
+      submit_desired_outcomes_form(view)
+      add_two_screening_questions(view)
+      add_two_options_each_to_screening_questions(view)
+      submit_screeing_questions_form(view)
+      add_two_demographic_questions(view)
+      add_two_options_each_to_demographic_questions(view)
+      submit_demographic_questions_form(view)
+      add_two_context_questions(view)
+      add_two_options_each_to_context_questions(view)
 
-  #     _resulting_html = submit_context_questions_form(view)
+      _resulting_html = submit_context_questions_form(view)
 
-  #     _market_definition_page_path = assert_patch(view)
-  #     _desired_outcomes_page_path = assert_patch(view)
-  #     _screening_questions_page_path = assert_patch(view)
-  #     _demographic_questions_page_path = assert_patch(view)
-  #     _context_questions_page_path = assert_patch(view)
+      _market_definition_page_path = assert_patch(view)
+      _desired_outcomes_page_path = assert_patch(view)
+      _screening_questions_page_path = assert_patch(view)
+      _demographic_questions_page_path = assert_patch(view)
+      _context_questions_page_path = assert_patch(view)
 
-  #     flash = assert_redirect(view, ~p"/", @timeout)
-  #     assert flash == %{"info" => "Survey published successfully!"}
-  #   end
-  # end
+      flash = assert_redirect(view, ~p"/", @timeout)
+      assert flash == %{"info" => "Survey published successfully!"}
+    end
+  end
 end
