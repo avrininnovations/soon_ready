@@ -7,6 +7,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager do
   # TODO: Change to integration event
   alias SoonReady.SurveyManagement.Events.SurveyPublishedV1
 
+  alias SoonReady.OutcomeDrivenInnovation.Commands.MarkSurveyCreationAsSuccessful
+
   def handle(%SurveyPublishedV1{survey_id: survey_id, trigger: trigger} = event, _metadata) do
     case trigger do
       %{name: trigger_name, id: trigger_id} ->

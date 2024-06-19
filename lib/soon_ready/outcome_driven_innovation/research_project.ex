@@ -48,7 +48,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   dispatch DefineMarket, to: __MODULE__, identity: :project_id
   dispatch DefineNeeds, to: __MODULE__, identity: :project_id
   dispatch CreateSurvey, to: __MODULE__, identity: :project_id
-  # dispatch MarkSurveyCreationAsSuccessful, to: __MODULE__, identity: :project_id
+  dispatch MarkSurveyCreationAsSuccessful, to: __MODULE__, identity: :project_id
 
   def execute(_aggregate_state, %CreateProject{project_id: project_id, brand_name: brand_name} = _command) do
     ProjectCreatedV1.new(%{
@@ -91,10 +91,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     end
   end
 
-  # def execute(_aggregate_state, %MarkSurveyCreationAsSuccessful{project_id: project_id, survey_id: survey_id} = command) do
-  #   IO.inspect("INSIDE MarkSurveyCreationAsSuccessful")
-  #   SurveyCreationSucceededV1.new(%{project_id: project_id, survey_id: survey_id})
-  # end
+  def execute(_aggregate_state, %MarkSurveyCreationAsSuccessful{project_id: project_id, survey_id: survey_id} = command) do
+    SurveyCreationSucceededV1.new(%{project_id: project_id, survey_id: survey_id})
+  end
 
   def apply(state, %ProjectCreatedV1{project_id: project_id}) do
     __MODULE__.create!(%{project_id: project_id})
@@ -111,5 +110,4 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   def apply(state, _event) do
     state
   end
-
 end
