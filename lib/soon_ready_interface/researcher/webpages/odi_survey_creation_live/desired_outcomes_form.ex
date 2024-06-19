@@ -44,7 +44,7 @@
 
 #   @impl true
 #   def update(_assigns, socket) do
-#     socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
+#     socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
 
 #     {:ok, socket}
 #   end

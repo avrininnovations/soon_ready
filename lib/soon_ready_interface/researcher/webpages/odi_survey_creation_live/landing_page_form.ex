@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPa
   import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
 
   attributes do
-    attribute :brand_name, :string, allow_nil?: false
+    attribute :brand_name, :string, allow_nil?: false, public?: true
   end
 
   @impl true

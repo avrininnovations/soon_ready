@@ -241,16 +241,16 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       assert html =~ "Welcome to the ODI Survey Creator!"
     end
 
-    # test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher tries to submit a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
-    #   {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+    test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher tries to submit a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
 
-    #   _resulting_html = submit_landing_page_form(view)
+      _resulting_html = submit_landing_page_form(view)
 
-    #   path = assert_patch(view)
-    #   assert path =~ ~p"/odi-survey/create/market-definition"
-    #   assert has_element?(view, "h2", "Market Definition")
-    #   assert_landing_page_query_params(path)
-    # end
+      path = assert_patch(view)
+      assert path =~ ~p"/odi-survey/create/market-definition"
+      assert has_element?(view, "h2", "Market Definition")
+      assert_landing_page_query_params(path)
+    end
   end
 
   # describe "Market Definition" do
