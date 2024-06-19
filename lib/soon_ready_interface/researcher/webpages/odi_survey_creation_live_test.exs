@@ -317,66 +317,66 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  # describe "Screening Questions" do
-  #   test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
-  #     {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-  #     submit_landing_page_form(view)
-  #     submit_market_definition_form(view)
-  #     add_two_job_steps(view)
-  #     add_two_desired_outcomes_each(view)
-  #     submit_desired_outcomes_form(view)
+  describe "Screening Questions" do
+    test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      submit_landing_page_form(view)
+      submit_market_definition_form(view)
+      add_two_job_steps(view)
+      add_two_desired_outcomes_each(view)
+      submit_desired_outcomes_form(view)
 
-  #     _resulting_html = add_two_screening_questions(view)
+      _resulting_html = add_two_screening_questions(view)
 
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][0][prompt]"]})
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][1][prompt]"]})
-  #   end
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][prompt]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][prompt]"]})
+    end
 
-  #   test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
-  #     {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-  #     submit_landing_page_form(view)
-  #     submit_market_definition_form(view)
-  #     add_two_job_steps(view)
-  #     add_two_desired_outcomes_each(view)
-  #     submit_desired_outcomes_form(view)
-  #     add_two_screening_questions(view)
+    test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      submit_landing_page_form(view)
+      submit_market_definition_form(view)
+      add_two_job_steps(view)
+      add_two_desired_outcomes_each(view)
+      submit_desired_outcomes_form(view)
+      add_two_screening_questions(view)
 
-  #     _resulting_html = add_two_options_each_to_screening_questions(view)
+      _resulting_html = add_two_options_each_to_screening_questions(view)
 
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][is_correct_option]"]})
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][value]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][value]"]})
 
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][is_correct_option]"]})
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][value]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][value]"]})
 
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][is_correct_option]"]})
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][value]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][value]"]})
 
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][is_correct_option]"]})
-  #     assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][value]"]})
-  #   end
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][is_correct_option]"]})
+      assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][value]"]})
+    end
 
-  #   test "GIVEN: Two options each have been added to two screening questions, WHEN: Researcher tries to submit the screening questions, THEN: The demographic questions page is displayed", %{conn: conn} do
-  #     {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
-  #     submit_landing_page_form(view)
-  #     submit_market_definition_form(view)
-  #     add_two_job_steps(view)
-  #     add_two_desired_outcomes_each(view)
-  #     submit_desired_outcomes_form(view)
-  #     add_two_screening_questions(view)
-  #     add_two_options_each_to_screening_questions(view)
+    test "GIVEN: Two options each have been added to two screening questions, WHEN: Researcher tries to submit the screening questions, THEN: The demographic questions page is displayed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
+      submit_landing_page_form(view)
+      submit_market_definition_form(view)
+      add_two_job_steps(view)
+      add_two_desired_outcomes_each(view)
+      submit_desired_outcomes_form(view)
+      add_two_screening_questions(view)
+      add_two_options_each_to_screening_questions(view)
 
-  #     _resulting_html = submit_screeing_questions_form(view)
+      _resulting_html = submit_screeing_questions_form(view)
 
-  #     _market_definition_page_path = assert_patch(view)
-  #     _desired_outcomes_page_path = assert_patch(view)
-  #     _screening_questions_page_path = assert_patch(view)
-  #     path = assert_patch(view)
-  #     assert path =~ ~p"/odi-survey/create/demographic-questions"
-  #     assert has_element?(view, "h2", "Demographic Questions")
-  #     assert_screening_questions_page_query_params(path)
-  #   end
-  # end
+      _market_definition_page_path = assert_patch(view)
+      _desired_outcomes_page_path = assert_patch(view)
+      _screening_questions_page_path = assert_patch(view)
+      path = assert_patch(view)
+      assert path =~ ~p"/odi-survey/create/demographic-questions"
+      assert has_element?(view, "h2", "Demographic Questions")
+      assert_screening_questions_page_query_params(path)
+    end
+  end
 
   # describe "Demographic Questions" do
   #   test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two demographic questions, THEN: Two demographic question fields are added", %{conn: conn} do
