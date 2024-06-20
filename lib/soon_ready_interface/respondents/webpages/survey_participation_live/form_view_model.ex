@@ -37,7 +37,7 @@
 #   end
 
 #   code_interface do
-#     define_for SoonReadyInterface.Respondents.Setup.Api
+#     define_for SoonReadyInterface.Respondents.Setup.Domain
 #     define :create
 #   end
 
@@ -65,7 +65,7 @@
 #       socket
 #       |> assign(:has_mcq_group_question, assigns.has_mcq_group_question)
 #       |> assign(:current_page, assigns.current_page)
-#       |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondents.Setup.Api, forms: [
+#       |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondents.Setup.Domain, forms: [
 #         responses: [
 #           type: :list,
 #           data: view_model.responses,

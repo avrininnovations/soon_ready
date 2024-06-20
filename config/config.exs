@@ -22,7 +22,7 @@ config :soon_ready, ash_domains: [
   # SoonReady.Onboarding.Setup.Domain,
 
   SoonReadyInterface.Researcher.Domain,
-  # SoonReadyInterface.Respondents.Setup.Api,
+  # SoonReadyInterface.Respondents.Setup.Domain,
   SoonReadyInterface.Admin.Domain,
 ]
 

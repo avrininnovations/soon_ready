@@ -47,7 +47,7 @@ defmodule SoonReady.Application do
       SoonReady.SurveyManagement.Supervisor,
       SoonReady.IdentityAndAccessManagement.Supervisor,
 
-      # SoonReadyInterface.Respondents.Setup.Supervisor,
+      SoonReadyInterface.Respondents.Setup.Supervisor,
       # SoonReadyInterface.Researcher.Supervisor,
     ]
 

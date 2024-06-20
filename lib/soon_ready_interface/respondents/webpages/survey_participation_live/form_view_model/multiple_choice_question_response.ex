@@ -19,7 +19,7 @@
 #   end
 
 #   code_interface do
-#     define_for SoonReadyInterface.Respondents.Setup.Api
+#     define_for SoonReadyInterface.Respondents.Setup.Domain
 
 #     define :create
 #   end
