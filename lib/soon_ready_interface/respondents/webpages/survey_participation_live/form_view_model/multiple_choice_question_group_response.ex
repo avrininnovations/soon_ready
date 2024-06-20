@@ -1,29 +1,23 @@
-# defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroupResponse do
-#   use Ash.Resource, data_layer: :embedded
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroupResponse do
+  use Ash.Resource, data_layer: :embedded
 
-#   alias __MODULE__.{Prompt, Question, PromptResponse}
+  alias __MODULE__.{Prompt, Question, PromptResponse}
 
-#   attributes do
-#     attribute :id, :uuid, primary_key?: true, allow_nil?: false
-#     attribute :title, :string, allow_nil?: false
-#     attribute :prompts, {:array, Prompt}, allow_nil?: false
-#     attribute :questions, {:array, Question}, allow_nil?: false
-#     # TODO: nil is always allowed. Resolve.
-#     attribute :prompt_responses, {:array, PromptResponse}, allow_nil?: true
-#   end
+  attributes do
+    attribute :id, :uuid, primary_key?: true, allow_nil?: false, public?: true
+    attribute :title, :string, allow_nil?: false, public?: true
+    attribute :prompts, {:array, Prompt}, allow_nil?: false, public?: true
+    attribute :questions, {:array, Question}, allow_nil?: false, public?: true
+    # TODO: nil is always allowed. Resolve.
+    attribute :prompt_responses, {:array, PromptResponse}, allow_nil?: true, public?: true
+  end
 
-#   actions do
-#     defaults [:read, :update, :destroy]
+  actions do
+    defaults [:read, :update, :destroy]
 
-#     create :create do
-#       primary? true
-#       allow_nil_input [:response]
-#     end
-#   end
-
-#   code_interface do
-#     define_for SoonReadyInterface.Respondents.Setup.Domain
-
-#     define :create
-#   end
-# end
+    create :create do
+      primary? true
+      allow_nil_input [:response]
+    end
+  end
+end
