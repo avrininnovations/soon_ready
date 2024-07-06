@@ -1,8 +1,8 @@
 defmodule SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager do
   use Commanded.Event.Handler,
     application: SoonReady.Application,
-    name: "#{__MODULE__}",
-    consistency: Application.get_env(:soon_ready, :consistency, :eventual)
+    name: "#{__MODULE__}"
+    # NOTE: Translators must always be eventually consistent
 
   # TODO: Change to integration event
   alias SoonReady.SurveyManagement.Events.SurveyPublishedV1
