@@ -9,7 +9,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     CreateSurvey,
     MarkSurveyCreationAsSuccessful,
   }
-  alias SoonReady.OutcomeDrivenInnovation.Events.{
+  alias SoonReady.OutcomeDrivenInnovation.DomainEvents.{
     ProjectCreatedV1,
     MarketDefinedV1,
     NeedsDefinedV1,

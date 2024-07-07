@@ -1,19 +1,19 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Events.NeedsDefinedV1 do
+defmodule SoonReady.OutcomeDrivenInnovation.DomainEvents.MarketDefinedV1 do
   use Ash.Resource,
     domain: SoonReady.OutcomeDrivenInnovation,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.JobStep
+  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.Market
 
   attributes do
     attribute :project_id, :uuid, allow_nil?: false, primary_key?: true, public?: true
-    attribute :job_steps, {:array, JobStep}, public?: true
+    attribute :market, Market, public?: true
   end
 
   actions do
     default_accept [
       :project_id,
-      :job_steps,
+      :market,
     ]
     create :new
   end

@@ -3,10 +3,10 @@ defmodule SoonReady.SurveyManagement.Survey do
   use Commanded.Commands.Router
 
   alias SoonReady.SurveyManagement.Commands.{CreateSurvey, PublishSurvey}
-  alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
 
   alias SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
-  alias SoonReady.SurveyManagement.Events.SurveyResponseSubmittedV1
+  alias SoonReady.SurveyManagement.DomainEvents.SurveyResponseSubmittedV1
 
   alias SoonReady.SurveyManagement.DomainConcepts.Trigger
 

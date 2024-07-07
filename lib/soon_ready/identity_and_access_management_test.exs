@@ -5,7 +5,7 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
 
   alias SoonReady.Application
 
-  alias SoonReady.IdentityAndAccessManagement.Events.{
+  alias SoonReady.IdentityAndAccessManagement.DomainEvents.{
     ResearcherRegistrationInitiatedV1,
     ResearcherRegistrationSucceededV1,
   }

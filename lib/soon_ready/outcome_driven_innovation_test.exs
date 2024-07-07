@@ -4,8 +4,8 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.Events.{SurveyCreationRequestedV1, SurveyCreationSucceededV1}
-  alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.OutcomeDrivenInnovation.DomainEvents.{SurveyCreationRequestedV1, SurveyCreationSucceededV1}
+  alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
 
 
   @survey_details %{
@@ -92,7 +92,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
     }
     {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
     {:ok, user} = SoonReady.IdentityAndAccessManagement.Resources.User.sign_in_with_password(params.username, params.password)
-    
+
     %{user: user}
   end
 

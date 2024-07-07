@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Events.ProjectCreatedV1 do
+defmodule SoonReady.OutcomeDrivenInnovation.DomainEvents.ProjectCreatedV1 do
   use Ash.Resource,
     domain: SoonReady.OutcomeDrivenInnovation,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]

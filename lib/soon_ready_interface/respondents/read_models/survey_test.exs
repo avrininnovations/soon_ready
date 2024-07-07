@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
 
   alias SoonReady.Application
   alias SoonReadyInterface.Respondents.ReadModels.Survey
-  alias SoonReady.OutcomeDrivenInnovation.Events.SurveyCreationSucceededV1
+  alias SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1
 
 
   @survey_params %{

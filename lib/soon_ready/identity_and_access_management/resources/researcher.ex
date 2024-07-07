@@ -8,7 +8,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Resources.Researcher do
     name: __MODULE__,
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationSucceededV1
+  alias SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegistrationSucceededV1
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false

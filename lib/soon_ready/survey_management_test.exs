@@ -4,7 +4,7 @@ defmodule SoonReady.SurveyManagementTest do
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.Events.{SurveyCreatedV1, SurveyPublishedV1, SurveyResponseSubmittedV1}
+  alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1, SurveyResponseSubmittedV1}
 
   @old_survey_details %{
     brand: "A Big Brand",

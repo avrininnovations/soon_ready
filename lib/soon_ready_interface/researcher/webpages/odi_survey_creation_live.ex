@@ -214,7 +214,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     #     {:noreply, socket}
     # end
 
-    # TODO: Wait for SoonReady.OutcomeDrivenInnovation.Events.SurveyCreationSucceededV1 with this project_id to confirm?
+    # TODO: Wait for SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1 with this project_id to confirm?
   end
 
   defp normalize(params) do

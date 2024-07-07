@@ -11,7 +11,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
     MarkResearcherRegistrationAsSuccessful,
     MarkResearcherRegistrationAsFailed,
   }
-  alias SoonReady.IdentityAndAccessManagement.Events.{
+  alias SoonReady.IdentityAndAccessManagement.DomainEvents.{
     ResearcherRegistrationInitiatedV1,
     ResearcherRegistrationSucceededV1,
     ResearcherRegistrationFailedV1,

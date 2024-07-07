@@ -17,10 +17,10 @@ defmodule SoonReady.IdentityAndAccessManagement do
     resource SoonReady.IdentityAndAccessManagement.Commands.MarkResearcherRegistrationAsFailed
     resource SoonReady.IdentityAndAccessManagement.Commands.MarkResearcherRegistrationAsSuccessful
 
-    # Events
-    resource SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationFailedV1
-    resource SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationInitiatedV1
-    resource SoonReady.IdentityAndAccessManagement.Events.ResearcherRegistrationSucceededV1
+    # DomainEvents
+    resource SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegistrationFailedV1
+    resource SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegistrationInitiatedV1
+    resource SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegistrationSucceededV1
   end
 
   defdelegate initiate_researcher_registration(params), to: InitiateResearcherRegistration, as: :dispatch

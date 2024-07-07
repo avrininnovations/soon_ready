@@ -1,4 +1,4 @@
-defmodule SoonReady.SurveyManagement.Events.SurveyCreatedV1 do
+defmodule SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1 do
   use Ash.Resource,
     domain: SoonReady.SurveyManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]

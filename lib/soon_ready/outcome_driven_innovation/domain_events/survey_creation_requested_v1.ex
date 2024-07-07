@@ -1,19 +1,17 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Events.MarketDefinedV1 do
+defmodule SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationRequestedV1 do
   use Ash.Resource,
     domain: SoonReady.OutcomeDrivenInnovation,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.Market
-
   attributes do
     attribute :project_id, :uuid, allow_nil?: false, primary_key?: true, public?: true
-    attribute :market, Market, public?: true
+    attribute :survey_id, :uuid, allow_nil?: false, public?: true
   end
 
   actions do
     default_accept [
       :project_id,
-      :market,
+      :survey_id,
     ]
     create :new
   end
