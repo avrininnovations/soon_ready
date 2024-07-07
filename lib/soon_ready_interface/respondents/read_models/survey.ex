@@ -10,7 +10,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
     name: "#{__MODULE__}",
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1
   alias SoonReady.SurveyManagement.DomainConcepts.SurveyPage
 
   attributes do
@@ -59,7 +59,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
 
 
   # TODO: Check
-  def handle(%SurveyCreatedV1{} = event, _metadata) do
+  def handle(%SurveyPublishedV1{} = event, _metadata) do
     %{
       survey_id: survey_id,
       starting_page_id: starting_page_id,
@@ -70,17 +70,8 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
       id: survey_id,
       starting_page_id: starting_page_id,
       pages: pages,
+      is_active: true,
     }) do
-      :ok
-    end
-  end
-
-  # TODO: Check
-  def handle(%SurveyPublishedV1{survey_id: survey_id} = _event, _metadata) do
-    # TODO: Refactor this not to need query?
-    with {:ok, survey} <- __MODULE__.get(survey_id),
-          {:ok, _odi_survey} <- __MODULE__.update(survey, %{is_active: true})
-    do
       :ok
     end
   end

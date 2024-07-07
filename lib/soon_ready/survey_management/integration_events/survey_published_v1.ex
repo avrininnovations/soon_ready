@@ -3,17 +3,20 @@ defmodule SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1 do
     domain: SoonReady.SurveyManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.DomainConcepts.Trigger
+  alias SoonReady.SurveyManagement.DomainConcepts.{SurveyPage, Trigger}
 
-  # TODO: Duplicate out into integration event, remove trigger
   attributes do
     attribute :survey_id, :uuid, allow_nil?: false, primary_key?: true, public?: true
+    attribute :starting_page_id, :uuid, allow_nil?: false, public?: true
+    attribute :pages, {:array, :map}, public?: true
     attribute :trigger, Trigger, public?: true
   end
 
   actions do
     default_accept [
       :survey_id,
+      :starting_page_id,
+      :pages,
       :trigger,
     ]
     create :new

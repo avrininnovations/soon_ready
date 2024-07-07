@@ -15,12 +15,16 @@ defmodule SoonReady.SurveyManagement.Survey do
 
   attributes do
     attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :starting_page_id, :uuid, allow_nil?: false, public?: true
+    attribute :pages, {:array, :map}, public?: true
     attribute :trigger, Trigger
   end
 
   actions do
     default_accept [
       :survey_id,
+      :starting_page_id,
+      :pages,
       :trigger,
     ]
     defaults [:create, :read, :update]
@@ -42,7 +46,7 @@ defmodule SoonReady.SurveyManagement.Survey do
 
   def execute(aggregate_state, %PublishSurvey{survey_id: survey_id} = _command) do
     with {:ok, domain_event} <- DomainEvents.SurveyPublishedV1.new(%{survey_id: survey_id}),
-          {:ok, integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey_id, trigger: aggregate_state.trigger})
+          {:ok, integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey_id, starting_page_id: aggregate_state.starting_page_id, pages: aggregate_state.pages, trigger: aggregate_state.trigger})
     do
       {:ok, [domain_event, integration_event]}
     end
@@ -56,8 +60,8 @@ defmodule SoonReady.SurveyManagement.Survey do
     })
   end
 
-  def apply(state, %SurveyCreatedV1{survey_id: survey_id, trigger: trigger}) do
-    __MODULE__.create!(%{survey_id: survey_id, trigger: trigger})
+  def apply(state, %SurveyCreatedV1{survey_id: survey_id, starting_page_id: starting_page_id, pages: raw_pages_data, trigger: trigger}) do
+    __MODULE__.create!(%{survey_id: survey_id, starting_page_id: starting_page_id, pages: raw_pages_data, trigger: trigger})
   end
 
   def apply(state, _event) do
