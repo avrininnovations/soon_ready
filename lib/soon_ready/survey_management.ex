@@ -13,10 +13,13 @@ defmodule SoonReady.SurveyManagement do
     resource SoonReady.SurveyManagement.Commands.PublishSurvey
     resource SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
 
-    # DomainEvents
+    # Domain Events
     resource SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1
     resource SoonReady.SurveyManagement.DomainEvents.SurveyPublishedV1
     resource SoonReady.SurveyManagement.DomainEvents.SurveyResponseSubmittedV1
+
+    # Integration Events
+    resource SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1
   end
 
   authorization do

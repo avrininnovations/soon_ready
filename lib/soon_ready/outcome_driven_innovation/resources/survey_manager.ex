@@ -5,7 +5,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager do
     # NOTE: Translators must always be eventually consistent
 
   # TODO: Change to integration event
-  alias SoonReady.SurveyManagement.DomainEvents.SurveyPublishedV1
+  alias SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1
 
   alias SoonReady.OutcomeDrivenInnovation.Commands.MarkSurveyCreationAsSuccessful
 

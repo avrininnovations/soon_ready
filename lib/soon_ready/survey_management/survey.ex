@@ -2,8 +2,11 @@ defmodule SoonReady.SurveyManagement.Survey do
   use Ash.Resource, domain: SoonReady.SurveyManagement
   use Commanded.Commands.Router
 
+  alias SoonReady.SurveyManagement.DomainEvents
+  alias SoonReady.SurveyManagement.IntegrationEvents
+
   alias SoonReady.SurveyManagement.Commands.{CreateSurvey, PublishSurvey}
-  alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1
 
   alias SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
   alias SoonReady.SurveyManagement.DomainEvents.SurveyResponseSubmittedV1
@@ -38,7 +41,11 @@ defmodule SoonReady.SurveyManagement.Survey do
   end
 
   def execute(aggregate_state, %PublishSurvey{survey_id: survey_id} = _command) do
-    SurveyPublishedV1.new(%{survey_id: survey_id, trigger: aggregate_state.trigger})
+    with {:ok, domain_event} <- DomainEvents.SurveyPublishedV1.new(%{survey_id: survey_id}),
+          {:ok, integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey_id, trigger: aggregate_state.trigger})
+    do
+      {:ok, [domain_event, integration_event]}
+    end
   end
 
   def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, raw_responses_data: raw_responses_data} = command) do
