@@ -174,7 +174,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   def handle_info({:handle_submission, ContextQuestionsForm}, socket) do
     normalized_params = normalize(socket.assigns.params)
-    |> IO.inspect()
 
     {:ok, %{project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_project(%{brand_name: normalized_params.brand_name})
     {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_market(%{project_id: project_id, market: normalized_params.market})

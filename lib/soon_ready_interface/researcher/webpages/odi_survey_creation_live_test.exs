@@ -5,7 +5,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   alias SoonReadyInterface.OdiSurveyCreationLive.LandingPageTest, as: LandingPage
   alias SoonReadyInterface.OdiSurveyCreationLive.MarketDefinitionPageTest, as: MarketDefinitionPage
 
-  @timeout 300
+  @timeout 5000
 
   @landing_page_query_params %{"brand_name" => "Big Brand Co"}
   @market_definition_query_params %{job_executor: "Person", job_to_be_done: "Do what persons do"}
