@@ -13,17 +13,17 @@ config :soon_ready,
 
 config :soon_ready, event_stores: [SoonReady.EventStore]
 
-config :soon_ready, ash_apis: [
-  SoonReady.OutcomeDrivenInnovation.Survey,
-  SoonReady.IdentityAndAccessManagement.UserAccount,
-  SoonReady.IdentityAndAccessManagement.Api,
-  SoonReady.Encryption.Api,
+config :soon_ready, ash_domains: [
+  SoonReady.OutcomeDrivenInnovation,
+  SoonReady.SurveyManagement,
+  SoonReady.IdentityAndAccessManagement,
+  SoonReady.Encryption,
 
-  SoonReady.Onboarding.Setup.Api,
+  # SoonReady.Onboarding.Setup.Domain,
 
-  SoonReadyInterface.Researcher.Api,
-  SoonReadyInterface.Respondents.Setup.Api,
-  SoonReadyInterface.Admin.Api,
+  SoonReadyInterface.Researcher.Domain,
+  # SoonReadyInterface.Respondents.Setup.Domain,
+  SoonReadyInterface.Admin.Domain,
 ]
 
 config :soon_ready, token_signing_secret: "super secret"

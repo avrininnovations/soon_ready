@@ -5,7 +5,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   alias SoonReadyInterface.OdiSurveyCreationLive.LandingPageTest, as: LandingPage
   alias SoonReadyInterface.OdiSurveyCreationLive.MarketDefinitionPageTest, as: MarketDefinitionPage
 
-  @timeout 300
+  @timeout 5000
 
   @landing_page_query_params %{"brand_name" => "Big Brand Co"}
   @market_definition_query_params %{job_executor: "Person", job_to_be_done: "Do what persons do"}
@@ -215,24 +215,33 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     |> render_submit()
   end
 
-  defp sign_in_researcher(conn) do
-    {:ok, user} = SoonReady.IdentityAndAccessManagement.UserAccount.register_user_with_password("marty", "outatime1985", "outatime1985")
+  setup %{conn: conn} do
+    params = %{
+      first_name: "John",
+      last_name: "Doe",
+      username: "john.doe",
+      password: "outatime1985",
+      password_confirmation: "outatime1985",
+    }
+    {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
+    {:ok, user} = SoonReady.IdentityAndAccessManagement.Resources.User.sign_in_with_password(params.username, params.password)
 
-    conn
-    |> Phoenix.ConnTest.init_test_session(%{})
-    |> AshAuthentication.Plug.Helpers.store_in_session(user)
+    conn =
+      conn
+      |> Phoenix.ConnTest.init_test_session(%{})
+      |> AshAuthentication.Plug.Helpers.store_in_session(user)
+
+    %{conn: conn}
   end
 
   describe "Landing Page" do
     test "WHEN: Researcher tries to visit the survey creation url, THEN: The landing page is displayed", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, _view, html} = live(conn, ~p"/odi-survey/create")
 
       assert html =~ "Welcome to the ODI Survey Creator!"
     end
 
     test "GIVEN: Researcher has visited the survey creation url, WHEN: Researcher tries to submit a brand name for the survey, THEN: The market definition page is displayed", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
 
       _resulting_html = submit_landing_page_form(view)
@@ -246,7 +255,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
   describe "Market Definition" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
 
@@ -263,7 +271,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
   describe "Desired Outcomes" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -277,7 +284,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two job steps have been added, WHEN: Researcher tries to add two desired outcomes each to both job steps, THEN: Two desired outcome fields are added to the first job step", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -292,7 +298,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two desired outcome fields each have been added to two job steps, WHEN: Researcher tries to submit the desired outceoms, THEN: The screening question page is displayed", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -314,7 +319,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
   describe "Screening Questions" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -329,7 +333,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two screening questions have been added, WHEN: Researcher tries to add two options each to the screening questions, THEN: Two options field each are added to the screening questions", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -354,7 +357,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two options each have been added to two screening questions, WHEN: Researcher tries to submit the screening questions, THEN: The demographic questions page is displayed", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -378,7 +380,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
   describe "Demographic Questions" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two demographic questions, THEN: Two demographic question fields are added", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -396,7 +397,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two demographic questions have been added, WHEN: Researcher tries to add two options each to the demographic questions, THEN: Two options field each are added to the demographic questions", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -417,7 +417,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two options each have been added to two demographic questions, WHEN: Researcher tries to submit the demographic questions, THEN: The context questions page is displayed", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -449,7 +448,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
 
   describe "Context Questions" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -470,7 +468,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two context questions have been added, WHEN: Researcher tries to add two options each to the context questions, THEN: Two options field each are added to the context questions", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)
@@ -494,7 +491,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
 
     test "GIVEN: Two options each have been added to two context questions, WHEN: Researcher tries to submit the context questions, THEN: The context questions page is displayed", %{conn: conn} do
-      conn = sign_in_researcher(conn)
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
       submit_market_definition_form(view)

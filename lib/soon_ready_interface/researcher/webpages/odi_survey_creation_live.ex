@@ -3,7 +3,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   require Logger
 
-  alias SoonReady.OutcomeDrivenInnovation.Survey
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
     LandingPageForm,
     MarketDefinitionForm,
@@ -176,29 +175,70 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def handle_info({:handle_submission, ContextQuestionsForm}, socket) do
     normalized_params = normalize(socket.assigns.params)
 
+    {:ok, %{project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_project(%{brand_name: normalized_params.brand_name})
+    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_market(%{project_id: project_id, market: normalized_params.market})
+    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_needs(%{project_id: project_id, job_steps: normalized_params.job_steps})
 
-    with {:ok, %{survey_id: survey_id}} <- Survey.create_survey(normalized_params, socket.assigns.actor),
-          {:ok, _survey} <- Survey.publish_survey(%{survey_id: survey_id})
-    do
-      socket =
-        socket
-        |> push_redirect(to: ~p"/")
-        |> put_flash(:info, "Survey published successfully!")
-      {:noreply, socket}
-    else
-      {:error, error} ->
-        socket =
-          socket
-          |> put_flash(:error, "Survey publishing failed. Please try again or contact support.")
+    {:ok, %{survey_id: survey_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
+      project_id: project_id,
+      screening_questions: normalized_params.screening_questions,
+      demographic_questions: normalized_params.demographic_questions,
+      context_questions: normalized_params.context_questions,
+      raw_screening_questions: normalized_params.raw_screening_questions,
+      raw_demographic_questions: normalized_params.raw_demographic_questions,
+      raw_context_questions: normalized_params.raw_context_questions,
+    })
 
-          Logger.error("Survey publishing failed: #{inspect(error)}")
-        {:noreply, socket}
-    end
+    socket =
+      socket
+      |> push_redirect(to: ~p"/")
+      |> put_flash(:info, "Survey published successfully!")
+    {:noreply, socket}
+
+    # SoonReady.OutcomeDrivenInnovation.create_survey(normalized_params, socket.assigns.actor)
+
+    # case SoonReady.OutcomeDrivenInnovation.create_survey(normalized_params, socket.assigns.actor) do
+    #   {:ok, %{project_id: _project_id} = _command} ->
+    #     socket =
+    #       socket
+    #       |> push_redirect(to: ~p"/")
+    #       |> put_flash(:info, "Survey published successfully!")
+    #     {:noreply, socket}
+    #   {:error, error} ->
+    #     socket =
+    #       socket
+    #       |> put_flash(:error, "Survey publishing failed. Please try again or contact support.")
+
+    #       Logger.error("Survey publishing failed: #{inspect(error)}")
+    #     {:noreply, socket}
+    # end
+
+    # TODO: Wait for SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1 with this project_id to confirm?
   end
 
   defp normalize(params) do
+    screening_questions = Enum.map(params["screening_questions_form"]["screening_questions"], fn {_index, screening_question} ->
+      %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: screening_question["prompt"],
+        options: Enum.map(screening_question["options"], fn {_index, option} ->
+          %{type: "option_with_correct_flag", value: option["value"], correct?: option["is_correct_option"] == "true"}
+        end)
+      }
+    end)
+
+    demographic_questions = Enum.map(params["demographic_questions_form"]["demographic_questions"], fn {_index, demographic_question} ->
+      %{type: "multiple_choice_question", prompt: demographic_question["prompt"],
+        options: Enum.map(demographic_question["options"], fn {_index, option} -> option["value"] end)
+      }
+    end)
+
+    context_questions = Enum.map(params["context_questions_form"]["context_questions"], fn {_index, context_question} ->
+      %{type: "multiple_choice_question", prompt: context_question["prompt"],
+        options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
+      }
+    end)
+
     %{
-      brand: params["landing_page_form"]["brand_name"],
+      brand_name: params["landing_page_form"]["brand_name"],
       market: %{job_executor: params["market_definition_form"]["job_executor"],
                 job_to_be_done: params["market_definition_form"]["job_to_be_done"]},
       job_steps: Enum.map(params["desired_outcomes_form"]["job_steps"], fn {_index, job_step} ->
@@ -206,24 +246,12 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
           desired_outcomes: Enum.map(job_step["desired_outcomes"], fn {_index, desired_outcome} -> desired_outcome["value"] end)
         }
       end),
-      screening_questions: Enum.map(params["screening_questions_form"]["screening_questions"], fn {_index, screening_question} ->
-        %{prompt: screening_question["prompt"],
-          options: Enum.map(screening_question["options"], fn {_index, option} ->
-            %{value: option["value"],
-              is_correct: option["is_correct_option"]}
-          end)
-        }
-      end),
-      demographic_questions: Enum.map(params["demographic_questions_form"]["demographic_questions"], fn {_index, demographic_question} ->
-        %{prompt: demographic_question["prompt"],
-          options: Enum.map(demographic_question["options"], fn {_index, option} -> option["value"] end)
-        }
-      end),
-      context_questions: Enum.map(params["context_questions_form"]["context_questions"], fn {_index, context_question} ->
-        %{prompt: context_question["prompt"],
-          options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
-        }
-      end)
+      screening_questions: screening_questions,
+      demographic_questions: demographic_questions,
+      context_questions: context_questions,
+      raw_screening_questions: screening_questions,
+      raw_demographic_questions: demographic_questions,
+      raw_context_questions: context_questions,
     }
   end
 end

@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Public.Webpages.HomepageLive do
   alias SoonReady.Onboarding.Commands.JoinWaitlist
 
   def mount(_params, _session, socket) do
-    form =  AshPhoenix.Form.for_create(JoinWaitlist, :create, api: SoonReady.Onboarding.Setup.Api)
+    form =  AshPhoenix.Form.for_create(JoinWaitlist, :create, api: SoonReady.Onboarding.Setup.Domain)
     {:ok, assign(socket, :form, form)}
   end
 

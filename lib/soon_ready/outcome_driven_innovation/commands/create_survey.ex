@@ -1,37 +1,38 @@
 defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
-  use Ash.Resource,
-    authorizers: [Ash.Policy.Authorizer],
-    data_layer: :embedded
+  use Ash.Resource, domain: SoonReady.OutcomeDrivenInnovation
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.ValueObjects.Survey.{
+  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
     Market,
     JobStep,
-    ScreeningQuestion,
-    DemographicQuestion,
-    ContextQuestion
   }
-
-  alias SoonReady.IdentityAndAccessManagement.Checks.ActorIsResearcher
+  alias SoonReady.SurveyManagement.DomainConcepts.Question
 
   attributes do
-    uuid_primary_key :survey_id
-    attribute :brand, :string
-    attribute :market, Market
-    attribute :job_steps, {:array, JobStep}
-    attribute :screening_questions, {:array, ScreeningQuestion}
-    attribute :demographic_questions, {:array, DemographicQuestion}
-    attribute :context_questions, {:array, ContextQuestion}
-  end
+    attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :survey_id, :uuid, allow_nil?: false, default: &Ash.UUID.generate/0
+    attribute :screening_questions, {:array, Question}
+    attribute :demographic_questions, {:array, Question}
+    attribute :context_questions, {:array, Question}
 
-  policies do
-    policy always() do
-      authorize_if ActorIsResearcher
-    end
+    # TODO: Change or eliminate this
+    attribute :raw_screening_questions, {:array, :map}
+    attribute :raw_demographic_questions, {:array, :map}
+    attribute :raw_context_questions, {:array, :map}
   end
-
 
   actions do
+    default_accept [
+      :project_id,
+      :survey_id,
+      :screening_questions,
+      :demographic_questions,
+      :context_questions,
+
+      :raw_screening_questions,
+      :raw_demographic_questions,
+      :raw_context_questions,
+    ]
     defaults [:create, :read]
 
     create :dispatch do
@@ -46,7 +47,6 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
   end
 
   code_interface do
-    define_for SoonReady.OutcomeDrivenInnovation.Survey
     define :dispatch
     define :create
   end

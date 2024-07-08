@@ -1,5 +1,5 @@
 defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
-  use Ash.Resource, data_layer: :embedded
+  use Ash.Resource, domain: SoonReady.Onboarding.Setup.Domain
 
   alias __MODULE__.Validations.EmailIsUnique
   alias SoonReady.Onboarding.DomainConcepts.EmailAddress
@@ -8,15 +8,19 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist do
 
   attributes do
     uuid_primary_key :person_id
-    attribute :email, EmailAddress, allow_nil?: false
+    attribute :email, EmailAddress, allow_nil?: false, public?: true
   end
 
   validations do
     validate {EmailIsUnique, email_field: :email}
   end
 
+  actions do
+    default_accept [:email]
+    defaults [:create, :read]
+  end
+
   code_interface do
-    define_for SoonReady.Onboarding.Setup.Api
     define :create
   end
 

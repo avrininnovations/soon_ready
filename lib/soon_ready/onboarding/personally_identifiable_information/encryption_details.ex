@@ -1,5 +1,7 @@
 defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetails do
-  use Ash.Resource, data_layer: AshPostgres.DataLayer
+  use Ash.Resource,
+    domain: SoonReady.Onboarding.Setup.Domain,
+    data_layer: AshPostgres.DataLayer
 
   attributes do
     attribute :person_id, :uuid, allow_nil?: false, primary_key?: true
@@ -7,6 +9,7 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetai
   end
 
   actions do
+    default_accept [:person_id]
     defaults [:read, :destroy]
 
     create :generate do
@@ -23,7 +26,6 @@ defmodule SoonReady.Onboarding.PersonallyIdentifiableInformation.EncryptionDetai
   end
 
   code_interface do
-    define_for SoonReady.Onboarding.Setup.Api
     define :generate
     define :get
     define :read

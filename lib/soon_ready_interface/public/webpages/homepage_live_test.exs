@@ -5,4 +5,6 @@ defmodule SoonReadyInterface.HomepageLiveTest do
     conn = get(conn, ~p"/")
     assert html_response(conn, 200) =~ "SoonReady"
   end
+
+  # TODO: Test onboarding flow
 end

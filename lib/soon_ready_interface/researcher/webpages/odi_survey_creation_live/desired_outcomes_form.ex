@@ -6,7 +6,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
   alias __MODULE__.JobStepField
 
   attributes do
-    attribute :job_steps, {:array, JobStepField}, allow_nil?: false, constraints: [min_length: 1]
+    attribute :job_steps, {:array, JobStepField}, allow_nil?: false, public?: true, constraints: [min_length: 1]
   end
 
   @impl true
@@ -44,7 +44,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
 
     {:ok, socket}
   end

@@ -1,15 +1,11 @@
 defmodule SoonReady.IdentityAndAccessManagement.Resources.Token do
   use Ash.Resource,
+    domain: SoonReady.IdentityAndAccessManagement,
     data_layer: AshPostgres.DataLayer,
     extensions: [AshAuthentication.TokenResource]
 
-  token do
-    api SoonReady.IdentityAndAccessManagement.UserAccount
-  end
-
-  # TODO: Rename table
   postgres do
-    table "user_authentication__entities__tokens"
+    table "identity_and_access_management__resources__tokens"
     repo SoonReady.Repo
   end
 

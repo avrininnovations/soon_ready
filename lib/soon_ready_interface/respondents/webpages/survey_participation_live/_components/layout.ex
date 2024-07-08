@@ -1,18 +1,6 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Layout do
   use Phoenix.Component
 
-  slot :accordion do
-    attr :index, :integer, required: true
-  end
-
-  def accordion_section(assigns) do
-    ~H"""
-    <div id="accordion-open" data-accordion="open">
-      <%= render_slot(@inner_block) %>
-    </div>
-    """
-  end
-
   slot :icon
   # TODO: Improve component naming
   # TODO: Add index attr

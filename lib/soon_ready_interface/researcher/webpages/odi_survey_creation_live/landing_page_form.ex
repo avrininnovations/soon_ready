@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPa
   import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
 
   attributes do
-    attribute :brand_name, :string, allow_nil?: false
+    attribute :brand_name, :string, allow_nil?: false, public?: true
   end
 
   @impl true
@@ -27,7 +27,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LandingPa
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain))
 
     {:ok, socket}
   end

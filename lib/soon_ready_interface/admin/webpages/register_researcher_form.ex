@@ -1,18 +1,25 @@
 defmodule SoonReadyInterface.Admin.Webpages.RegisterResearcherForm do
   use Ash.Resource
 
-  alias SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher
+  alias SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegistration
 
   attributes do
     uuid_primary_key :researcher_id
-    attribute :first_name, :string, allow_nil?: false
-    attribute :last_name, :string, allow_nil?: false
-    attribute :username, :string, allow_nil?:  false
-    attribute :password, :string, allow_nil?: false
-    attribute :password_confirmation, :string, allow_nil?: false
+    attribute :first_name, :string, allow_nil?: false, public?: true
+    attribute :last_name, :string, allow_nil?: false, public?: true
+    attribute :username, :string, allow_nil?:  false, public?: true
+    attribute :password, :string, allow_nil?: false, public?: true
+    attribute :password_confirmation, :string, allow_nil?: false, public?: true
   end
 
   actions do
+    default_accept [
+      :first_name,
+      :last_name,
+      :username,
+      :password,
+      :password_confirmation,
+    ]
     create :submit do
       primary? true
 
@@ -36,7 +43,7 @@ defmodule SoonReadyInterface.Admin.Webpages.RegisterResearcherForm do
             password_confirmation: password_confirmation
           }
 
-          with :ok <- RegisterResearcher.dispatch(params) do
+          with :ok <- InitiateResearcherRegistration.dispatch(params) do
             {:ok, resource}
           end
         end)

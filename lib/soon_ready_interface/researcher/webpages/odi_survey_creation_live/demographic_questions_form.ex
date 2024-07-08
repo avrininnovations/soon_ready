@@ -6,7 +6,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Demograph
   alias __MODULE__.DemographicQuestionField
 
   attributes do
-    attribute :demographic_questions, {:array, DemographicQuestionField}, allow_nil?: false
+    attribute :demographic_questions, {:array, DemographicQuestionField}, allow_nil?: false, public?: true
   end
 
   @impl true
@@ -44,7 +44,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Demograph
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
 
     {:ok, socket}
   end

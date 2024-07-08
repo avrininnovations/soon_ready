@@ -1,5 +1,7 @@
 defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
-  use Ash.Resource, data_layer: AshPostgres.DataLayer
+  use Ash.Resource,
+    domain: SoonReady.Onboarding.Setup.Domain,
+    data_layer: AshPostgres.DataLayer
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -15,6 +17,10 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
   end
 
   actions do
+    default_accept [
+      :person_id,
+      :email,
+    ]
     defaults [:read]
 
     create :add do
@@ -27,7 +33,6 @@ defmodule SoonReady.Onboarding.ReadModels.WaitlistMembers do
   end
 
   code_interface do
-    define_for SoonReady.Onboarding.Setup.Api
     define :add
     define :get_by_email
   end

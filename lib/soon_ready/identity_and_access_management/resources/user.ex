@@ -1,39 +1,53 @@
-defmodule SoonReady.UserAuthentication.Entities.User do
+defmodule SoonReady.IdentityAndAccessManagement.Resources.User do
   use Ash.Resource,
+    domain: SoonReady.IdentityAndAccessManagement,
     data_layer: AshPostgres.DataLayer,
     extensions: [AshAuthentication],
     authorizers: [Ash.Policy.Authorizer]
 
+  alias SoonReady.IdentityAndAccessManagement.Resources.Researcher
+
   attributes do
     uuid_primary_key :id
-    attribute :username, :ci_string, allow_nil?: false
-    attribute :hashed_password, :string, allow_nil?: false, sensitive?: true, private?: true
+    attribute :username, :ci_string, allow_nil?: false, public?: true
+    attribute :hashed_password, :string, allow_nil?: false, sensitive?: true
+  end
+
+  relationships do
+    has_one :researcher, SoonReady.IdentityAndAccessManagement.Resources.Researcher
   end
 
   calculations do
-    calculate :is_researcher, :boolean, fn user, _context ->
-      # TODO: Update to read from researcher read model
-      {:ok, true}
+    calculate :is_researcher, :boolean, fn
+      [%{researcher: %Researcher{}}] = _users, _context ->
+        {:ok, [true]}
+      _users, _context ->
+        {:ok, [false]}
     end
   end
 
   changes do
     change load(:is_researcher)
+    change load(:researcher)
   end
 
   preparations do
     prepare fn query, _context ->
-      Ash.Query.load(query, :is_researcher)
+      query
+      |> Ash.Query.load(:is_researcher)
+      |> Ash.Query.load(:researcher)
     end
   end
 
   actions do
     defaults [:read]
+
+    read :get do
+      get_by [:id]
+    end
   end
 
   authentication do
-    api SoonReady.IdentityAndAccessManagement.UserAccount
-
     strategies do
       password :password do
         identity_field :username
@@ -49,9 +63,9 @@ defmodule SoonReady.UserAuthentication.Entities.User do
     end
   end
 
-  # TODO: Rename table
   postgres do
-    table "user_authentication__entities__users"
+    identity_index_names unique_username: "iam__resources__users_unique_username_index"
+    table "identity_and_access_management__resources__users"
     repo SoonReady.Repo
   end
 
@@ -59,13 +73,30 @@ defmodule SoonReady.UserAuthentication.Entities.User do
     identity :unique_username, [:username]
   end
 
-  # policies do
-  #   bypass AshAuthentication.Checks.AshAuthenticationInteraction do
-  #     authorize_if always()
-  #   end
+  code_interface do
+    define :get, args: [:id]
+    define :read
+  end
 
-  #   policy always() do
-  #     forbid_if always()
-  #   end
-  # end
+  policies do
+    bypass AshAuthentication.Checks.AshAuthenticationInteraction do
+      authorize_if always()
+    end
+
+    policy always() do
+      forbid_if always()
+    end
+  end
+
+  def register_user_with_password(username, password, password_confirmation) do
+    SoonReady.IdentityAndAccessManagement.Resources.User
+    |> AshAuthentication.Info.strategy!(:password)
+    |> AshAuthentication.Strategy.action(:register, %{"username" => username, "password" => password, "password_confirmation" => password_confirmation})
+  end
+
+  def sign_in_with_password(username, password) do
+    SoonReady.IdentityAndAccessManagement.Resources.User
+    |> AshAuthentication.Info.strategy!(:password)
+    |> AshAuthentication.Strategy.action(:sign_in, %{"username" => username, "password" => password})
+  end
 end

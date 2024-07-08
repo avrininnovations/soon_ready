@@ -8,8 +8,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Supervisor do
   @impl true
   def init(_arg) do
     children = [
-      # Event handlers
-      SoonReadyInterface.Respondents.ReadModels.Survey
+      SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager,
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

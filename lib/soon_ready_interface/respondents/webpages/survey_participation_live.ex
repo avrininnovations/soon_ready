@@ -15,245 +15,173 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
   }
   alias SoonReadyInterface.Respondents.ReadModels.Survey
 
-  def render(%{live_action: :landing_page} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Welcome to our Survey!
-      </:title>
-      <:subtitle>
-        Buckle your belts! It'll be a great (and somewhat long) ride! 😎
-      </:subtitle>
 
-      <.live_component module={NicknameForm} id="nickname_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :screening_questions} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Screening Questions
-      </:title>
-
-      <.live_component module={ScreeningForm} survey={@survey} id="screening_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :contact_details} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Contact Details
-      </:title>
-
-      <.live_component module={ContactDetailsForm} survey={@survey} id="contact_details_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :demographics} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Demographics
-      </:title>
-
-      <.live_component module={DemographicsForm} survey={@survey} id="demographics_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :context} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Context
-      </:title>
-
-      <.live_component module={ContextForm} survey={@survey} id="context_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :comparison} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Comparison
-      </:title>
-
-      <.live_component module={ComparisonForm} survey={@survey} id="comparison_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :desired_outcome_ratings} = assigns) do
-    ~H"""
-    <.page is_wide={true}>
-      <:title>
-        Desired Outcome Ratings
-      </:title>
-
-      <.live_component module={DesiredOutcomeRatingForm} survey={@survey} id="desired_outcome_rating_form" />
-    </.page>
-    """
-  end
-
-  def render(%{live_action: :thank_you} = assigns) do
-    ~H"""
-    <.page>
-      <:title>
-        Thank You!
-      </:title>
-      <:subtitle>
-        We appreciate your input to our journey! 💯🚀
-      </:subtitle>
-    </.page>
-    """
-  end
+  alias SoonReady.SurveyManagement.DomainConcepts.{
+    ShortAnswerQuestion,
+    MultipleChoiceQuestion,
+    ParagraphQuestion,
+    MultipleChoiceQuestionGroup,
+  }
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel
+  alias SoonReady.SurveyManagement.DomainConcepts.PageAction.ChangePage
 
   def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
     # TODO: Make asyncronous
-    {:ok, survey} = Survey.get_active(survey_id)
-    {:ok, screening_form_view_model} = ScreeningForm.from_read_model(survey)
-    {:ok, demographics_form_view_model} = DemographicsForm.from_read_model(survey)
-    {:ok, context_form_view_model} = ContextForm.from_read_model(survey)
-    {:ok, comparison_form_view_model} = ComparisonForm.initialize(survey.market.job_to_be_done)
-    {:ok, desired_outcome_rating_form_view_model} = DesiredOutcomeRatingForm.from_read_model(survey)
+    {:ok, %{starting_page_id: starting_page_id} = survey} = Survey.get_active(survey_id)
 
-    socket =
-      socket
-      |> assign(:survey, survey)
-      |> assign(:nickname_form, AshPhoenix.Form.for_create(NicknameForm, :create, api: SoonReadyInterface.Respondents.Setup.Api))
-      |> assign(:screening_form, AshPhoenix.Form.for_update(screening_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
-        questions: [
-          type: :list,
-          data: screening_form_view_model.questions,
-          update_action: :update,
-          transform_params: fn form, params, _arg3 ->
-            params
-            |> Map.put("prompt", form.data.prompt)
-            |> Map.put("options", form.data.options)
-          end
-        ]
-      ]))
-      |> assign(:contact_details_form, AshPhoenix.Form.for_create(ContactDetailsForm, :create, api: SoonReadyInterface.Respondents.Setup.Api))
-      |> assign(:demographics_form, AshPhoenix.Form.for_update(demographics_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
-        questions: [
-          type: :list,
-          data: demographics_form_view_model.questions,
-          update_action: :update,
-          transform_params: fn form, params, _arg3 ->
-            params
-            |> Map.put("prompt", form.data.prompt)
-            |> Map.put("options", form.data.options)
-          end
-        ]
-      ]))
-      |> assign(:context_form, AshPhoenix.Form.for_update(context_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
-        questions: [
-          type: :list,
-          data: context_form_view_model.questions,
-          update_action: :update,
-          transform_params: fn form, params, _arg3 ->
-            params
-            |> Map.put("prompt", form.data.prompt)
-            |> Map.put("options", form.data.options)
-          end
-        ]
-      ]))
-      |> assign(:comparison_form, AshPhoenix.Form.for_update(comparison_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api))
-      |> assign(:desired_outcome_rating_form, AshPhoenix.Form.for_update(desired_outcome_rating_form_view_model, :update, api: SoonReadyInterface.Respondents.Setup.Api, forms: [
-        job_steps: [
-          type: :list,
-          data: desired_outcome_rating_form_view_model.job_steps,
-          update_action: :update,
-          transform_params: fn form, params, _arg3 -> Map.put(params, "name", form.data.name) end,
-          forms: [
-            desired_outcomes: [
-              type: :list,
-              data: fn job_step -> job_step.desired_outcomes end,
-              update_action: :update,
-              transform_params: fn form, params, _arg3 -> Map.put(params, "name", form.data.name) end
-            ]
-          ]
-        ]
-      ]))
-
-    {:ok, socket}
+    {:ok, assign(socket, :survey, survey)}
   end
 
-  def handle_params(params, _url, socket) do
-    {:noreply, assign(socket, params: params)}
+  def handle_params(params, url, %{assigns: %{survey: survey}} = socket) do
+    {page_id, socket} =
+      case Map.get(params, "page_id") do
+        nil ->
+          socket = push_patch(socket, to: ~p"/survey/participate/#{params["survey_id"]}/pages/#{survey.starting_page_id}")
+          {survey.starting_page_id, socket}
+        page_id ->
+          {page_id, socket}
+      end
+
+    current_page = get_page(survey, page_id)
+
+    has_mcq_group_question = Enum.any?(current_page.questions || [], fn question -> question.type == MultipleChoiceQuestionGroup end)
+
+    {:noreply, assign(socket, params: params, current_page: current_page, has_mcq_group_question: has_mcq_group_question)}
   end
 
-  def handle_info({:update_params, new_params}, socket) do
-    params = Map.merge(socket.assigns.params, new_params)
-    {:noreply, assign(socket, :params, params)}
+  def render(assigns) do
+    ~H"""
+    <.page is_wide={@has_mcq_group_question}>
+      <:title>
+        <%= @current_page.title %>
+      </:title>
+      <:subtitle>
+        <%= @current_page.description %>
+      </:subtitle>
+
+      <%= if @current_page.questions do %>
+        <.live_component module={FormViewModel} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
+      <% end %>
+    </.page>
+    """
   end
 
-  def handle_info({:handle_submission, NicknameForm}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/screening-questions?#{socket.assigns.params}")}
+  def get_page(%{pages: pages} = _survey, page_id) do
+    pages
+    |> Enum.filter(fn %{id: id} = _page -> page_id == id end)
+    |> Enum.at(0)
   end
 
-  def handle_info({:handle_submission, ScreeningForm, all_responses_are_correct}, socket) do
-    if all_responses_are_correct do
-      {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/contact-details?#{socket.assigns.params}")}
-    else
-      {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")}
-    end
-  end
-
-  def handle_info({:handle_submission, ContactDetailsForm}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/demographics?#{socket.assigns.params}")}
-  end
-
-  def handle_info({:handle_submission, DemographicsForm}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/context?#{socket.assigns.params}")}
-  end
-
-  def handle_info({:handle_submission, ContextForm}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/comparison?#{socket.assigns.params}")}
-  end
-
-  def handle_info({:handle_submission, ComparisonForm}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/desired-outcome-ratings?#{socket.assigns.params}")}
-  end
-
-  def handle_info({:handle_submission, DesiredOutcomeRatingForm}, socket) do
+  def handle_info({:transition_from_page, %{transition: %{destination_page_id: destination_page_id, submit_response?: submit_response?}} = view_model}, socket) do
     socket.assigns.params
-    |> normalize()
-    |> SoonReady.OutcomeDrivenInnovation.Survey.submit_response()
-    |> case do
-      {:ok, _aggregate} ->
-        socket =
-          socket
-          |> put_flash(:info, "Thank you for participating in our survey!")
-          |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/thank-you")
-        {:noreply, socket}
-      {:error, error} ->
-        Logger.error("DEBUG: #{inspect(error)}")
-        socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
-        {:noreply, socket}
+
+    params =
+      view_model
+      |> extract_query_params(socket.assigns.current_page)
+      |> deep_merge(socket.assigns.params)
+
+    if submit_response? do
+      params
+      |> normalize_response(socket.assigns.survey)
+      |> SoonReady.SurveyManagement.submit_response()
+      |> case do
+        {:ok, _aggregate} ->
+          socket =
+            socket
+            |> put_flash(:info, "Thank you for participating in our survey!")
+            |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}")
+
+            {:noreply, socket}
+        {:error, error} ->
+          Logger.error("DEBUG: #{inspect(error)}")
+          socket = put_flash(socket, :error, "Something went wrong. Please try again or contact support.")
+          {:noreply, socket}
+      end
+    else
+      socket =
+        socket
+        |> assign(:params, params)
+        |> push_patch(to: ~p"/survey/participate/#{socket.assigns.params["survey_id"]}/pages/#{destination_page_id}?#{params}")
+
+      {:noreply, socket}
     end
   end
 
-  def normalize(params) do
-    %{
-      survey_id: params["survey_id"],
-      participant: %{
-        nickname: params["nickname_form"]["nickname"],
-        email: params["contact_details_form"]["email"],
-        phone_number: params["contact_details_form"]["phone_number"]
-      },
-      screening_responses: params["screening_form"],
-      demographic_responses: params["demographics_form"],
-      context_responses: params["context_form"],
-      comparison_responses: params["comparison_form"],
-      desired_outcome_ratings: params["desired_outcome_rating_form"]
-    }
+  def extract_query_params(%FormViewModel{responses: responses}, %{id: page_id} = _current_page) do
+    responses =
+      responses
+      |> Enum.reduce(%{}, fn
+        %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
+          FormViewModel.ShortAnswerQuestionResponse,
+          FormViewModel.ParagraphQuestionResponse,
+        ] ->
+          Map.put(question_params, question_id, response)
+        %{type: FormViewModel.MultipleChoiceQuestionGroupResponse, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
+          response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
+            prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->
+              Map.put(question_response_params, question_response_id, response)
+            end)
+            Map.put(prompt_response_params, prompt_id, prompt_response)
+          end)
+          Map.put(question_params, question_id, response)
+      end)
+    %{"pages" => %{page_id => %{"responses" => responses}}}
+    # %{"page_responses" => %{page_id => %{"questions" => responses}}}
+  end
+
+  # TODO: Avoid collision
+  defp deep_merge(map1, map2) do
+    Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
+  end
+
+  def normalize_response(params, survey) do
+    questions =
+      Enum.reduce(survey.pages, [], fn
+        %{questions: nil}, acc ->
+          acc
+        %{questions: questions}, acc ->
+          Enum.reduce(questions, acc, fn %Ash.Union{value: question} = _question, acc ->
+            [question | acc]
+          end)
+      end)
+
+    responses =
+      Enum.reduce(params["pages"], [], fn {_page_id, %{"responses" => page_responses}}, acc ->
+        Enum.reduce(page_responses, acc, fn {question_id, response}, acc ->
+          question = Enum.find(questions, fn question -> question.id == question_id end)
+
+          normalized_response =
+            case question do
+              # TODO: Simplify to simple maps
+              %ShortAnswerQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "short_answer_question_response")
+              %MultipleChoiceQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "multiple_choice_question_response")
+              %ParagraphQuestion{} ->
+                %{"response" => response}
+                |> Map.put("question_id", question_id)
+                |> Map.put("type", "paragraph_question_response")
+              %MultipleChoiceQuestionGroup{} ->
+                responses = Enum.reduce(response, [], fn {prompt_id, prompt_response}, responses ->
+                  Enum.reduce(prompt_response, responses, fn {question_id, question_response}, responses ->
+                    [%{"prompt_id" => prompt_id, "question_id" => question_id, "response" => question_response} | responses]
+                  end)
+                end)
+                %{
+                  "type" => "multiple_choice_question_group_responses",
+                  "group_id" => question_id,
+                  "responses" => responses,
+                }
+
+            end
+          [normalized_response | acc]
+        end)
+      end)
+
+    %{"survey_id" => params["survey_id"], "responses" => responses}
   end
 end

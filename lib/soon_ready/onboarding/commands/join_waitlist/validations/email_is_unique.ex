@@ -24,7 +24,7 @@ defmodule SoonReady.Onboarding.Commands.JoinWaitlist.Validations.EmailIsUnique d
   end
 
   @impl true
-  def validate(changeset, opts) do
+  def validate(changeset, opts, _context) do
     case Ash.Changeset.get_argument_or_attribute(changeset, opts[:email_field]) do
       nil ->
         :ok

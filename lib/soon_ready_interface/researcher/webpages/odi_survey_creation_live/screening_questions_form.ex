@@ -6,7 +6,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Screening
   alias __MODULE__.ScreeningQuestionField
 
   attributes do
-    attribute :screening_questions, {:array, ScreeningQuestionField}, allow_nil?: false
+    attribute :screening_questions, {:array, ScreeningQuestionField}, allow_nil?: false, public?: true
   end
 
   @impl true
@@ -46,7 +46,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Screening
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, api: SoonReadyInterface.Researcher.Api, forms: [auto?: true]))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
 
     {:ok, socket}
   end
