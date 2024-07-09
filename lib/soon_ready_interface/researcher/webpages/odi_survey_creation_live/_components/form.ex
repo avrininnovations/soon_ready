@@ -126,6 +126,22 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     """
   end
 
+
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :name, :string, required: true
+  attr :action, :string, required: true
+  attr :target, :string, required: true
+  slot :inner_block, required: true
+  def add_button(assigns) do
+    ~H"""
+    <button name={@name} phx-click={@action} phx-target={@target} phx-value-name={@name} type="button" class="text-primary-600 hover:underline p-4 lg:p-8 w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800">
+      <%= render_slot(@inner_block) %>
+    </button>
+    <.errors field={@field} />
+    """
+  end
+
+
   slot :header, required: true
   slot :body, required: true
   slot :add_button, required: true
@@ -153,7 +169,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
   attr :form_field, :atom, required: true
   attr :target, :any
   attr :rest, :global
-  slot :add_button, required: true
+  slot :add_button
   slot :submit, required: true
 
   def card_form(assigns) do
@@ -161,15 +177,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     <.form :let={f} phx-target={@target} {@rest}>
       <div class="flex gap-4">
         <%= render_slot(@inner_block, f) %>
-
-        <div>
-          <%= for button <- @add_button do %>
-            <button class="text-primary-600 hover:underline mb-auto p-4 lg:p-8 w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800" type="button" phx-click={button.action} phx-target={@target}>
-              <%= render_slot(button) %>
-            </button>
-            <.errors field={f[button.form_field]} />
-          <% end %>
-        </div>
       </div>
 
       <button type="submit" name="submit" class="w-full mt-4 py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
