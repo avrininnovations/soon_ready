@@ -29,6 +29,17 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     """
   end
 
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :rest, :global
+
+  def hidden_input(assigns) do
+    ~H"""
+    <div>
+      <%= hidden_input(@field.form, @field.field) %>
+    </div>
+    """
+  end
+
   attr :placeholder, :string, required: true
   attr :field, Phoenix.HTML.FormField, required: true
   attr :rest, :global
