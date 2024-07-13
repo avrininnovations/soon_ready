@@ -54,7 +54,7 @@ defmodule SoonReady.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
-      {:ash, "~> 3.0"},
+      {:ash, "~> 3.1"},
       {:picosat_elixir, "~> 0.2"},
       {:ash_phoenix, "~> 2.0"},
       {:ash_postgres, "~> 2.0.9"},
