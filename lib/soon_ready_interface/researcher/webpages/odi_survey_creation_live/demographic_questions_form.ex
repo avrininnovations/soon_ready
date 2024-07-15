@@ -35,10 +35,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Demograph
           </.card>
         </.inputs_for>
 
-        <div class="flex flex-col gap-4">
-          <.add_button name="add-multiple-choice-question" target={@myself} action="add-multiple-choice-question" field={f[:demographic_questions]}> Add Multiple Choice Question </.add_button>
-          <.add_button name="add-checkbox-question" target={@myself} action="add-checkbox-question" field={f[:demographic_questions]}> Add Checkbox Question </.add_button>
-        </div>
+        <:add_button action="add-demographic-question" form_field={:demographic_questions}> Add demographic question </:add_button>
         <:submit>Proceed</:submit>
       </.card_form>
     </div>
@@ -75,12 +72,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Demograph
   end
 
   @impl true
-  def handle_event("add-multiple-choice-question", _params, socket) do
-    {:noreply, assign(socket, form: AshPhoenix.Form.add_form(socket.assigns.form, :demographic_questions, validate?: socket.assigns.form.errors || false))}
-  end
-
-  @impl true
-  def handle_event("add-checkbox-question", _params, socket) do
+  def handle_event("add-demographic-question", _params, socket) do
     {:noreply, assign(socket, form: AshPhoenix.Form.add_form(socket.assigns.form, :demographic_questions, validate?: socket.assigns.form.errors || false))}
   end
 
