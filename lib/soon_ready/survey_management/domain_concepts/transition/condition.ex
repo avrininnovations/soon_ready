@@ -5,7 +5,7 @@ defmodule SoonReady.SurveyManagement.DomainConcepts.Transition.Condition do
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [
     {Always, [type: Always]},
     {ResponseEquals, [type: ResponseEquals, tag: :type, tag_value: "response_equals"]},
-    {AnyTrue, [type: AnyTrue, tag: :type, tag_value: "any_true"]},
-    {AllTrue, [type: AllTrue, tag: :type, tag_value: "all_true"]},
+    {AnyTrue, [type: AnyTrue, tag: :type, tag_value: "any_true", init?: false]},
+    {AllTrue, [type: AllTrue, tag: :type, tag_value: "all_true", init?: false]},
   ]]
 end
