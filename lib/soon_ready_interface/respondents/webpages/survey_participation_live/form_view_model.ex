@@ -70,111 +70,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       socket
       |> assign(:has_mcq_group_question, assigns.has_mcq_group_question)
       |> assign(:current_page, assigns.current_page)
-      |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondents.Setup.Domain, forms: [
-        responses: [
-          type: :list,
-          data: view_model.responses,
-          update_action: :update,
-          # forms: [
-          #   prompt_responses: [
-          #     type: :list,
-          #     data: fn
-          #       %AshPhoenix.Form.WrappedValue{value: %{type: __MODULE__.MultipleChoiceQuestionGroupResponse}} = question -> question.value.value.prompt_responses
-          #       _question -> []
-          #     end,
-          #     update_action: :update,
-          #     forms: [
-          #       question_responses: [
-          #         type: :list,
-          #         data: fn prompt_response -> prompt_response.question_responses end,
-          #         update_action: :update,
-          #       ]
-          #     ],
-          #   ]
-          # ],
-          # transform_params: fn form, params, _arg3 ->
-          #   case form.data.value do
-          #     %Ash.Union{type: __MODULE__.ShortAnswerQuestionResponse, value: %{id: id, prompt: prompt}} ->
-          #       params
-          #       |> Map.put("type", "short_answer_question_response")
-          #       |> Map.put("id", id)
-          #       |> Map.put("prompt", prompt)
-          #     %Ash.Union{type: __MODULE__.MultipleChoiceQuestionResponse, value: %{id: id, prompt: prompt, options: options}} ->
-          #       params
-          #       |> Map.put("type", "short_answer_question_response")
-          #       |> Map.put("id", id)
-          #       |> Map.put("prompt", prompt)
-          #       |> Map.put("options", options)
-          #     %Ash.Union{type: __MODULE__.ParagraphQuestionResponse, value: %{id: id, prompt: prompt}} ->
-          #       params
-          #       |> Map.put("type", "paragraph_question_response")
-          #       |> Map.put("id", id)
-          #       |> Map.put("prompt", prompt)
-          #     %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroupResponse, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
-          #       params
-          #       |> Map.put("type", "multiple_choice_question_group_response")
-          #       |> Map.put("id", id)
-          #       |> Map.put("title", title)
-          #       |> Map.put("prompts", prompts)
-          #       |> Map.put("questions", questions)
-          #   end
-          # end
-        ]
-      ]))
+      |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondents.Setup.Domain, forms: [auto?: true]))
 
     {:ok, socket}
   end
-  # , forms: [
-  #   responses: [
-  #     type: :list,
-  #     data: view_model.responses,
-  #     update_action: :update,
-  #     forms: [
-  #       prompt_responses: [
-  #         type: :list,
-  #         data: fn
-  #           %AshPhoenix.Form.WrappedValue{value: %{type: __MODULE__.MultipleChoiceQuestionGroupResponse}} = question -> question.value.value.prompt_responses
-  #           _question -> []
-  #         end,
-  #         update_action: :update,
-  #         forms: [
-  #           question_responses: [
-  #             type: :list,
-  #             data: fn prompt_response -> prompt_response.question_responses end,
-  #             update_action: :update,
-  #           ]
-  #         ],
-  #       ]
-  #     ],
-  #     transform_params: fn form, params, _arg3 ->
-  #       case form.data.value do
-  #         %Ash.Union{type: __MODULE__.ShortAnswerQuestionResponse, value: %{id: id, prompt: prompt}} ->
-  #           params
-  #           |> Map.put("type", "short_answer_question_response")
-  #           |> Map.put("id", id)
-  #           |> Map.put("prompt", prompt)
-  #         %Ash.Union{type: __MODULE__.MultipleChoiceQuestionResponse, value: %{id: id, prompt: prompt, options: options}} ->
-  #           params
-  #           |> Map.put("type", "short_answer_question_response")
-  #           |> Map.put("id", id)
-  #           |> Map.put("prompt", prompt)
-  #           |> Map.put("options", options)
-  #         %Ash.Union{type: __MODULE__.ParagraphQuestionResponse, value: %{id: id, prompt: prompt}} ->
-  #           params
-  #           |> Map.put("type", "paragraph_question_response")
-  #           |> Map.put("id", id)
-  #           |> Map.put("prompt", prompt)
-  #         %Ash.Union{type: __MODULE__.MultipleChoiceQuestionGroupResponse, value: %{id: id, title: title, prompts: prompts, questions: questions}} ->
-  #           params
-  #           |> Map.put("type", "multiple_choice_question_group_response")
-  #           |> Map.put("id", id)
-  #           |> Map.put("title", title)
-  #           |> Map.put("prompts", prompts)
-  #           |> Map.put("questions", questions)
-  #       end
-  #     end
-  #   ]
-  # ]
+
   @impl true
   def render(assigns) do
     # <div id="accordion-open" data-accordion="open">
@@ -185,39 +85,39 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
         %{}
       end
     assigns = assign(assigns, :accordion_attrs, accordion_attrs)
-  # <%= case ff.data.value.type do %>
-  #   <% __MODULE__.ShortAnswerQuestionResponse -> %>
-  #     <.text_field
-  #       field={ff[:response]}
-  #       label={ff.data.value.value.prompt}
-  #       class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-  #     />
-  #   <% __MODULE__.MultipleChoiceQuestionResponse -> %>
-  #     <.radio_group
-  #       field={ff[:response]}
-  #       label={ff.data.value.value.prompt}
-  #       options={Enum.map(ff.data.value.value.options, fn option -> {option, option} end)}
-  #     />
-  #   <% __MODULE__.ParagraphQuestionResponse -> %>
-  #     <.textarea
-  #       field={ff[:response]}
-  #       label={ff.data.value.value.prompt}
-  #       class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-  #     />
-  #   <% __MODULE__.MultipleChoiceQuestionGroupResponse -> %>
-  #     <.mcq_group
-  #       form={ff}
-  #       index={ff.index}
-  #       title={ff.data.value.value.title}
-  #       questions={ff.data.value.value.questions}
-  #     />
-  # <% end %>
     ~H"""
     <div>
       <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
         <div {@accordion_attrs}>
           <.inputs_for :let={ff} field={f[:responses]}>
-
+            <%= case ff.source.resource do %>
+              <% __MODULE__.ShortAnswerQuestionResponse -> %>
+                <.text_field
+                  field={ff[:response]}
+                  label={ff.data.prompt}
+                  class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                />
+              <% __MODULE__.MultipleChoiceQuestionResponse -> %>
+                <.radio_group
+                  field={ff[:response]}
+                  label={ff.data.prompt}
+                  options={Enum.map(ff.data.options, fn option -> {option, option} end)}
+                />
+              <% __MODULE__.ParagraphQuestionResponse -> %>
+                <.textarea
+                  field={ff[:response]}
+                  label={ff.data.prompt}
+                  class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                />
+              <% __MODULE__.MultipleChoiceQuestionGroupResponse -> %>
+                <.mcq_group
+                  form={ff}
+                  index={ff.index}
+                  title={ff.data.title}
+                  questions={ff.data.questions}
+                />
+            <% end %>
+            <% IO.inspect(ff) %>
           </.inputs_for>
         </div>
 
@@ -308,6 +208,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
         {:noreply, socket}
 
       {:error, form_with_error} ->
+        IO.inspect({:error, form_with_error})
         {:noreply, assign(socket, form: form_with_error)}
     end
   end
