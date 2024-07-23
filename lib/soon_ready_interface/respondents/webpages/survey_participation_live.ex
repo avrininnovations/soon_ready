@@ -117,6 +117,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
           FormViewModel.MultipleChoiceQuestionResponse,
         ] ->
           Map.put(question_params, question_id, response)
+        %{type: FormViewModel.CheckboxQuestionResponse, value: %{id: question_id, responses: responses}}, question_params ->
+          Map.put(question_params, question_id, responses)
         %{type: FormViewModel.MultipleChoiceQuestionGroupResponse, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
           response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
             prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->

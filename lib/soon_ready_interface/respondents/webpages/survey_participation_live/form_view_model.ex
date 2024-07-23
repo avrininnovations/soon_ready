@@ -8,6 +8,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     Transition,
     ShortAnswerQuestion,
     MultipleChoiceQuestion,
+    CheckboxQuestion,
     OptionWithCorrectFlag,
     ParagraphQuestion,
     MultipleChoiceQuestionGroup,
@@ -102,6 +103,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                   label={ff.data.prompt}
                   options={Enum.map(ff.data.options, fn option -> {option, option} end)}
                 />
+              <% __MODULE__.CheckboxQuestionResponse -> %>
+                <.checkbox_group
+                  field={ff[:responses]}
+                  label={ff.data.prompt}
+                  options={Enum.map(ff.data.options, fn option -> {option, option} end)}
+                />
               <% __MODULE__.ParagraphQuestionResponse -> %>
                 <.textarea
                   field={ff[:response]}
@@ -164,6 +171,14 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
               value
           end)
           %{type: "multiple_choice_question_response", id: id, prompt: prompt, options: options}
+        %Ash.Union{type: CheckboxQuestion, value: %CheckboxQuestion{id: id, prompt: prompt, options: options, correct_answer_criteria: correct_answer_criteria}} ->
+          options = Enum.map(options, fn
+            %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
+              value
+            %Ash.Union{type: :ci_string, value: value} ->
+              value
+          end)
+          %{type: "checkbox_question_response", id: id, prompt: prompt, options: options, correct_answer_criteria: correct_answer_criteria}
         %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
           %{type: "paragraph_question_response", id: id, prompt: prompt}
         %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, title: title, prompts: prompts, questions: questions}} ->
