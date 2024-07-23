@@ -114,6 +114,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
           FormViewModel.ShortAnswerQuestionResponse,
           FormViewModel.ParagraphQuestionResponse,
+          FormViewModel.MultipleChoiceQuestionResponse,
         ] ->
           Map.put(question_params, question_id, response)
         %{type: FormViewModel.MultipleChoiceQuestionGroupResponse, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
