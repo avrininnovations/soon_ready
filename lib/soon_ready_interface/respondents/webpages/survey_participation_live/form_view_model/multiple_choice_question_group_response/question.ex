@@ -8,6 +8,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   actions do
+    default_accept [:id, :prompt, :options]
     defaults [:create, :read, :update, :destroy]
   end
 end

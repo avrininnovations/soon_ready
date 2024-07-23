@@ -64,7 +64,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   @impl true
   def update(assigns, socket) do
     view_model = create_response_view_model(assigns.current_page)
-    |> IO.inspect()
 
     socket =
       socket
@@ -117,7 +116,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                   questions={ff.data.questions}
                 />
             <% end %>
-            <% IO.inspect(ff) %>
           </.inputs_for>
         </div>
 
