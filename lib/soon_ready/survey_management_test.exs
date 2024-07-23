@@ -254,10 +254,14 @@ defmodule SoonReady.SurveyManagementTest do
           id: page_id,
           title: "Page Title",
           questions: [
-            %{type: "short_answer_question_group", questions: [
-              %{prompt: "The prompt 1"},
-              %{prompt: "The prompt 2"},
-            ]},
+            %{
+              type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
+                %{prompt: "The prompt 1"},
+                %{prompt: "The prompt 2"},
+              ],
+              # TODO: Nothing really tests this
+              add_button_label: "Add Question"
+            },
           ]
         }
       ]}
