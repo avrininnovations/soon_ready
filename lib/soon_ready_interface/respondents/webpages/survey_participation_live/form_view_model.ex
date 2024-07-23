@@ -23,9 +23,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   calculations do
-    calculate :transition, Transition, fn resource, _context ->
+    calculate :transition, Transition, fn [resource], _context ->
       transition = Enum.find(resource.page_transitions, fn transition -> transition_condition_fulfilled(resource, transition.condition) end)
-      {:ok, transition}
+      {:ok, [transition]}
     end
   end
 
