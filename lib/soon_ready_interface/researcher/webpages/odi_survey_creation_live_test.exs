@@ -180,13 +180,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     assert SoonReady.Utils.is_equal_or_subset?(@demographic_questions_params, query_params)
   end
 
-  def add_two_context_questions(view) do
+  def add_two_mcq_context_questions(view) do
     view
-    |> element("button", "Add context question")
+    |> element("button", "Add Multiple Choice Question")
     |> render_click()
 
     view
-    |> element("button", "Add context question")
+    |> element("button", "Add Multiple Choice Question")
     |> render_click()
   end
 
@@ -461,7 +461,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       add_two_options_each_to_demographic_questions(view)
       submit_demographic_questions_form(view)
 
-      _resulting_html = add_two_context_questions(view)
+      _resulting_html = add_two_mcq_context_questions(view)
 
       assert has_element?(view, ~s{input[name="form[context_questions][0][prompt]"]})
       assert has_element?(view, ~s{input[name="form[context_questions][1][prompt]"]})
@@ -480,7 +480,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       add_two_demographic_questions(view)
       add_two_options_each_to_demographic_questions(view)
       submit_demographic_questions_form(view)
-      add_two_context_questions(view)
+      add_two_mcq_context_questions(view)
 
       _resulting_html = add_two_options_each_to_context_questions(view)
 
@@ -503,7 +503,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       add_two_demographic_questions(view)
       add_two_options_each_to_demographic_questions(view)
       submit_demographic_questions_form(view)
-      add_two_context_questions(view)
+      add_two_mcq_context_questions(view)
       add_two_options_each_to_context_questions(view)
 
       _resulting_html = submit_context_questions_form(view)
