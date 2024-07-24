@@ -240,6 +240,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
         %{type: "checkbox_question", prompt: context_question["prompt"],
           options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
         }
+      {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.ShortAnswerQuestionGroup"} = context_question} ->
+        %{type: "short_answer_question_group", group_prompt: context_question["group_prompt"], add_button_label: context_question["add_button_label"],
+        questions: Enum.map(context_question["questions"], fn {_index, question} -> %{prompt: question["prompt"]} end)
+        }
     end)
 
     %{

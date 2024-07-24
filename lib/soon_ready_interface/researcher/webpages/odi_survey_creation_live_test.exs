@@ -447,6 +447,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   end
 
   describe "Context Questions" do
+    # TODO: Add tests for other question types outside MCQ
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
