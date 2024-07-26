@@ -127,6 +127,8 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                 <.short_answer_group
                   form={ff}
                   group_prompt={ff.data.group_prompt}
+                  add_button_label={ff.data.add_button_label}
+                  target={@myself}
                 />
             <% end %>
           </.inputs_for>
@@ -165,11 +167,48 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
 
   def short_answer_group(assigns) do
     ~H"""
-    <% IO.inspect(@form) %>
     <div>
       <h3 class="block mb-2 font-medium text-gray-900 dark:text-white"><%= @group_prompt %></h3>
-      
+
+      <.inputs_for :let={f} field={@form[:responses]}>
+        <div class="flex my-2">
+          <.thrash_button action="remove-short-answer-group-response" name={f.name} target={@target} sr_description="Remove Response" />
+        </div>
+      </.inputs_for>
+
+      <.add_button name={@form.name} target={@target} action="add-short-answer-group-response" field={@form[:responses]}><%= @add_button_label %></.add_button>
     </div>
+    """
+  end
+
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :name, :string, required: true
+  attr :action, :string, required: true
+  attr :target, :string, required: true
+  slot :inner_block, required: true
+  def add_button(assigns) do
+    ~H"""
+    <button name={@name} phx-click={@action} phx-target={@target} phx-value-name={@name} type="button"
+      class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm"
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    <.errors field={@field} />
+    """
+  end
+
+  attr :action, :string, required: true
+  attr :name, :string, required: true
+  attr :target, :string, required: true
+  attr :sr_description, :string, required: true
+  def thrash_button(assigns) do
+    ~H"""
+    <button type="button" phx-click={@action} phx-value-name={@name} phx-target={@target} class="text-primary-700 border border-primary-700 hover:bg-primary-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center dark:border-primary-500 dark:text-primary-500 dark:hover:text-white dark:focus:ring-primary-800 dark:hover:bg-primary-500">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+      </svg>
+      <span class="sr-only"><%= @sr_description %></span>
+    </button>
     """
   end
 
@@ -232,6 +271,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     form_params = Map.get(params, "form", %{})
     validated_form = AshPhoenix.Form.validate(socket.assigns.form, form_params, errors: socket.assigns.form.errors || false)
     {:noreply, assign(socket, form: validated_form)}
+  end
+
+  @impl true
+  def handle_event("add-short-answer-group-response", %{"name" => name} = _params, socket) do
+    {:noreply, assign(socket, form: AshPhoenix.Form.add_form(socket.assigns.form, "#{name}[responses]", validate?: socket.assigns.form.errors || false))}
+  end
+
+  @impl true
+  def handle_event("remove-short-answer-group-response", %{"name" => name}, socket) do
+    {:noreply, assign(socket, form: AshPhoenix.Form.remove_form(socket.assigns.form, name, validate?: socket.assigns.form.errors || false))}
   end
 
   @impl true
