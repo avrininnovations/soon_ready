@@ -4,6 +4,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     MultipleChoiceQuestionResponse,
     CheckboxQuestionResponse,
     ParagraphQuestionResponse,
+    ShortAnswerQuestionGroupResponse,
     MultipleChoiceQuestionGroupResponse,
   }
 
@@ -12,6 +13,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     {MultipleChoiceQuestionResponse, [type: MultipleChoiceQuestionResponse, tag: :type, tag_value: "multiple_choice_question_response"]},
     {CheckboxQuestionResponse, [type: CheckboxQuestionResponse, tag: :type, tag_value: "checkbox_question_response"]},
     {ParagraphQuestionResponse, [type: ParagraphQuestionResponse, tag: :type, tag_value: "paragraph_question_response"]},
+    {ShortAnswerQuestionGroupResponse, [type: ShortAnswerQuestionGroupResponse, tag: :type, tag_value: "short_answer_question_group_response"]},
     {MultipleChoiceQuestionGroupResponse, [type: MultipleChoiceQuestionGroupResponse, tag: :type, tag_value: "multiple_choice_question_group_response"]},
   ]]
 end

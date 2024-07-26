@@ -11,6 +11,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     CheckboxQuestion,
     OptionWithCorrectFlag,
     ParagraphQuestion,
+    ShortAnswerQuestionGroup,
     MultipleChoiceQuestionGroup,
   }
 
@@ -122,6 +123,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
                   title={ff.data.title}
                   questions={ff.data.questions}
                 />
+              <% __MODULE__.ShortAnswerQuestionGroupResponse -> %>
+                <.short_answer_group
+                  form={ff}
+                  group_prompt={ff.data.group_prompt}
+                />
             <% end %>
           </.inputs_for>
         </div>
@@ -157,6 +163,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     """
   end
 
+  def short_answer_group(assigns) do
+    ~H"""
+    <% IO.inspect(@form) %>
+    <div>
+      <h3 class="block mb-2 font-medium text-gray-900 dark:text-white"><%= @group_prompt %></h3>
+      
+    </div>
+    """
+  end
+
   def create_response_view_model(%{questions: questions, transitions: page_transitions} = _survey_page) do
     responses =
       questions
@@ -181,6 +197,12 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
           %{type: "checkbox_question_response", id: id, prompt: prompt, options: options, correct_answer_criteria: correct_answer_criteria}
         %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
           %{type: "paragraph_question_response", id: id, prompt: prompt}
+        %Ash.Union{type: ShortAnswerQuestionGroup, value: %ShortAnswerQuestionGroup{id: id, group_prompt: group_prompt, add_button_label: add_button_label, questions: questions}} ->
+          questions = Enum.map(questions, fn %{id: id, prompt: prompt} = _question ->
+            %{id: id, prompt: prompt}
+          end)
+          # %{type: "short_answer_question_group_response", id: id, group_prompt: group_prompt, add_button_label: add_button_label, responses: responses}
+          %{type: "short_answer_question_group_response", id: id, group_prompt: group_prompt, add_button_label: add_button_label}
         %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, title: title, prompts: prompts, questions: questions}} ->
           prompt_responses = Enum.map(prompts, fn %{id: id, prompt: prompt} ->
             question_responses = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} ->
