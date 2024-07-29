@@ -171,24 +171,34 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       <h3 class="block mb-2 font-medium text-gray-900 dark:text-white"><%= @group_prompt %></h3>
 
       <.inputs_for :let={f} field={@form[:responses]}>
-        <div class="flex my-2">
+        <div class="flex my-2 gap-2">
+          <.inputs_for :let={ff} field={f[:question_responses]}>
+            <.hidden_input field={ff[:id]} />
+            <.hidden_input field={ff[:prompt]} />
+            <.text_field
+              field={ff[:response]}
+              label={ff.source.source.attributes.prompt}
+              class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+            />
+          </.inputs_for>
           <.thrash_button action="remove-short-answer-group-response" name={f.name} target={@target} sr_description="Remove Response" />
         </div>
       </.inputs_for>
 
-      <.add_button name={@form.name} target={@target} action="add-short-answer-group-response" field={@form[:responses]}><%= @add_button_label %></.add_button>
+      <.add_button name={@form.name} index={@form.index} target={@target} action="add-short-answer-group-response" field={@form[:responses]}><%= @add_button_label %></.add_button>
     </div>
     """
   end
 
   attr :field, Phoenix.HTML.FormField, required: true
   attr :name, :string, required: true
+  attr :index, :string, required: true
   attr :action, :string, required: true
   attr :target, :string, required: true
   slot :inner_block, required: true
   def add_button(assigns) do
     ~H"""
-    <button name={@name} phx-click={@action} phx-target={@target} phx-value-name={@name} type="button"
+    <button name={@name} phx-click={@action} phx-target={@target} phx-value-name={@name} phx-value-index={@index} type="button"
       class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm"
     >
       <%= render_slot(@inner_block) %>
@@ -212,6 +222,16 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
     """
   end
 
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :rest, :global
+
+  def hidden_input(assigns) do
+    ~H"""
+    <div>
+      <%= hidden_input(@field.form, @field.field, Keyword.new(@rest)) %>
+    </div>
+    """
+  end
   def create_response_view_model(%{questions: questions, transitions: page_transitions} = _survey_page) do
     responses =
       questions
@@ -241,7 +261,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
             %{id: id, prompt: prompt}
           end)
           # %{type: "short_answer_question_group_response", id: id, group_prompt: group_prompt, add_button_label: add_button_label, responses: responses}
-          %{type: "short_answer_question_group_response", id: id, group_prompt: group_prompt, add_button_label: add_button_label}
+          %{type: "short_answer_question_group_response", id: id, group_prompt: group_prompt, add_button_label: add_button_label, questions: questions}
         %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, title: title, prompts: prompts, questions: questions}} ->
           prompt_responses = Enum.map(prompts, fn %{id: id, prompt: prompt} ->
             question_responses = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} ->
@@ -274,8 +294,22 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   @impl true
-  def handle_event("add-short-answer-group-response", %{"name" => name} = _params, socket) do
-    {:noreply, assign(socket, form: AshPhoenix.Form.add_form(socket.assigns.form, "#{name}[responses]", validate?: socket.assigns.form.errors || false))}
+  def handle_event("add-short-answer-group-response", %{"name" => name, "index" => question_index} = _params, socket) do
+    {question_index, ""} = Integer.parse(question_index)
+
+    responses_index =
+      Enum.at(socket.assigns.form.forms.responses, question_index).forms.responses
+      |> Enum.count()
+
+    form = AshPhoenix.Form.add_form(socket.assigns.form, "#{name}[responses]", validate?: socket.assigns.form.errors || false)
+
+    questions = Enum.map(Enum.at(form.data.responses, question_index).value.questions, fn %{id: id, prompt: prompt} -> %{id: id, prompt: prompt} end)
+
+    form = Enum.reduce(questions, form, fn %{id: id, prompt: prompt}, form ->
+      AshPhoenix.Form.add_form(form, "#{name}[responses][#{responses_index}][question_responses]", params: %{id: id, prompt: prompt}, validate?: socket.assigns.form.errors || false)
+    end)
+
+    {:noreply, assign(socket, form: form)}
   end
 
   @impl true
@@ -292,6 +326,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
         {:noreply, socket}
 
       {:error, form_with_error} ->
+        IO.inspect(form_with_error, label: "Form with error")
         {:noreply, assign(socket, form: form_with_error)}
     end
   end

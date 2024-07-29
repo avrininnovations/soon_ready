@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestionGroupResponse.QuestionResponse
 
   attributes do
-    attribute :id, :uuid, primary_key?: true, allow_nil?: false, public?: true
+    uuid_primary_key :id
     # TODO: nil is always allowed. Resolve.
     attribute :question_responses, {:array, QuestionResponse}, allow_nil?: true, public?: true
   end
