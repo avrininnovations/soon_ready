@@ -63,6 +63,40 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Compon
     """
   end
 
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :label, :string, required: true
+  attr :options, :list, required: true
+
+  def checkbox_group(assigns) do
+    ~H"""
+    <div>
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+          <%= @label %>
+        </label>
+        <div class="space-y-2">
+          <%= for {label, value} <- @options do %>
+            <div class="flex items-center">
+                <label class="text-sm font-medium text-gray-900 dark:text-gray-300">
+
+                  <input
+                    id={"#{@field.id}_#{value}"}
+                    type="checkbox"
+                    value={value}
+                    checked={@field.value && value in @field.value}
+                    name={"#{@field.name}[]"}
+                    class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+
+
+                  <%= label %>
+                </label>
+            </div>
+          <% end %>
+        </div>
+    </div>
+    """
+  end
+
   attr :label, :string, required: true
   attr :field, Phoenix.HTML.FormField, required: true
   attr :rest, :global

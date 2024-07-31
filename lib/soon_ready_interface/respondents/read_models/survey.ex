@@ -3,7 +3,8 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   # use Ash.Resource, data_layer: AshPostgres.DataLayer
   use Ash.Resource,
     domain: SoonReadyInterface.Respondents.Setup.Domain,
-    data_layer: Ash.DataLayer.Ets
+    data_layer: AshPostgres.DataLayer
+    # data_layer: Ash.DataLayer.Ets
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
@@ -51,11 +52,11 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
     define :update
   end
 
-  # # TODO: Check all postgres names for issues
-  # postgres do
-  #   repo SoonReady.Repo
-  #   table "respondents__read_models__survey"
-  # end
+  # TODO: Check all postgres names for issues
+  postgres do
+    repo SoonReady.Repo
+    table "respondents__read_models__survey"
+  end
 
 
   # TODO: Check

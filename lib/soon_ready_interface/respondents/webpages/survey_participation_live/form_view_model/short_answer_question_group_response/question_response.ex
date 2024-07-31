@@ -1,5 +1,7 @@
-defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.ParagraphQuestionResponse do
+defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestionGroupResponse.QuestionResponse do
   use Ash.Resource, data_layer: :embedded
+
+  alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestionGroupResponse.QuestionResponse
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false, public?: true
@@ -9,7 +11,11 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
   end
 
   actions do
-    default_accept [:id, :prompt, :response]
+    default_accept [
+      :id,
+      :prompt,
+      :response,
+    ]
     defaults [:read, :update, :destroy]
 
     create :create do

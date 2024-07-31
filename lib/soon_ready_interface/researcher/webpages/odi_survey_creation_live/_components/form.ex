@@ -29,6 +29,17 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     """
   end
 
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :rest, :global
+
+  def hidden_input(assigns) do
+    ~H"""
+    <div>
+      <%= hidden_input(@field.form, @field.field) %>
+    </div>
+    """
+  end
+
   attr :placeholder, :string, required: true
   attr :field, Phoenix.HTML.FormField, required: true
   attr :rest, :global
@@ -126,6 +137,22 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
     """
   end
 
+
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :name, :string, required: true
+  attr :action, :string, required: true
+  attr :target, :string, required: true
+  slot :inner_block, required: true
+  def add_button(assigns) do
+    ~H"""
+    <button name={@name} phx-click={@action} phx-target={@target} phx-value-name={@name} type="button" class="text-primary-600 hover:underline p-4 lg:p-8 w-80 rounded-lg border border-gray-200 shadow dark:border-gray-700 dark:bg-gray-800">
+      <%= render_slot(@inner_block) %>
+    </button>
+    <.errors field={@field} />
+    """
+  end
+
+
   slot :header, required: true
   slot :body, required: true
   slot :add_button, required: true
@@ -153,7 +180,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Component
   attr :form_field, :atom, required: true
   attr :target, :any
   attr :rest, :global
-  slot :add_button, required: true
+  slot :add_button
   slot :submit, required: true
 
   def card_form(assigns) do

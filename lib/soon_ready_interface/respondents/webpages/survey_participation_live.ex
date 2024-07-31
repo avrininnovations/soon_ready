@@ -20,6 +20,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
     ShortAnswerQuestion,
     MultipleChoiceQuestion,
     ParagraphQuestion,
+    ShortAnswerQuestionGroup,
     MultipleChoiceQuestionGroup,
   }
   alias SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel
@@ -114,8 +115,19 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
         %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
           FormViewModel.ShortAnswerQuestionResponse,
           FormViewModel.ParagraphQuestionResponse,
+          FormViewModel.MultipleChoiceQuestionResponse,
         ] ->
           Map.put(question_params, question_id, response)
+        %{type: FormViewModel.CheckboxQuestionResponse, value: %{id: question_id, responses: responses}}, question_params ->
+          Map.put(question_params, question_id, responses)
+        %{type: FormViewModel.ShortAnswerQuestionGroupResponse, value: %{id: group_id, responses: responses}}, question_params ->
+          responses = Enum.reduce(responses, %{}, fn %{id: batch_id, question_responses: question_responses}, responses_params ->
+            question_responses = Enum.reduce(question_responses, %{}, fn %{id: question_id, response: response}, question_responses_params ->
+              Map.put(question_responses_params, question_id, response)
+            end)
+            Map.put(responses_params, batch_id, question_responses)
+          end)
+          Map.put(question_params, group_id, responses)
         %{type: FormViewModel.MultipleChoiceQuestionGroupResponse, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
           response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
             prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->
@@ -165,6 +177,17 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive do
                 %{"response" => response}
                 |> Map.put("question_id", question_id)
                 |> Map.put("type", "paragraph_question_response")
+              %ShortAnswerQuestionGroup{} ->
+                responses = Enum.reduce(response, [], fn {batch_id, batch_response}, responses ->
+                  Enum.reduce(batch_response, responses, fn {question_id, question_response}, responses ->
+                    [%{"batch_id" => batch_id, "question_id" => question_id, "response" => question_response} | responses]
+                  end)
+                end)
+                %{
+                  "type" => "short_answer_question_group_responses",
+                  "group_id" => question_id,
+                  "responses" => responses,
+                }
               %MultipleChoiceQuestionGroup{} ->
                 responses = Enum.reduce(response, [], fn {prompt_id, prompt_response}, responses ->
                   Enum.reduce(prompt_response, responses, fn {question_id, question_response}, responses ->

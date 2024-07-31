@@ -54,7 +54,8 @@ defmodule SoonReady.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:eventstore, "~> 1.4"},
-      {:ash, "~> 3.0"},
+      {:ash, "~> 3.2.6"},
+      # {:ash, git: "https://github.com/ash-project/ash.git", override: true},
       {:picosat_elixir, "~> 0.2"},
       {:ash_phoenix, "~> 2.0"},
       {:ash_postgres, "~> 2.0.9"},
@@ -68,6 +69,7 @@ defmodule SoonReady.MixProject do
       {:ash_authentication, "~> 4.0"},
       {:ash_authentication_phoenix, "~> 2.0"},
       {:ash_admin, "~> 0.11"},
+      # {:ash_admin, git: "https://github.com/ash-project/ash_admin.git"},
     ]
   end
 
