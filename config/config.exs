@@ -19,10 +19,10 @@ config :soon_ready, ash_domains: [
   SoonReady.IdentityAndAccessManagement,
   SoonReady.Encryption,
 
-  # SoonReady.Onboarding.Setup.Domain,
+  SoonReady.Onboarding.Setup.Domain,
 
   SoonReadyInterface.Researcher.Domain,
-  # SoonReadyInterface.Respondents.Setup.Domain,
+  SoonReadyInterface.Respondents.Setup.Domain,
   SoonReadyInterface.Admin.Domain,
 ]
 
