@@ -1,8 +1,6 @@
 defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.LandingPage do
   use SoonReadyInterface, :live_component
-  import SoonReadyInterface.Researcher.Common.Components, only: [page: 1]
-  # TODO: Restrict with `only`
-  import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
+  import SoonReadyInterface.Researcher.Common.Components, only: [page: 1, text_input: 1]
 
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.LandingPageForm
 

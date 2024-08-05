@@ -1,8 +1,12 @@
 defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.DemographicQuestionsPage do
   use SoonReadyInterface, :live_component
-  import SoonReadyInterface.Researcher.Common.Components, only: [page: 1]
-  # TODO: Restrict with `only`
-  import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
+  import SoonReadyInterface.Researcher.Common.Components, only: [
+    page: 1,
+    card_form: 1,
+    card: 1,
+    card_header: 1,
+    card_field: 1,
+  ]
 
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DemographicQuestionsForm
 
