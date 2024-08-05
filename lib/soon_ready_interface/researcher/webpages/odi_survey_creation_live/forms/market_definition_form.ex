@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.MarketDefinitionForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.MarketDefinitionForm do
   use Ash.Resource, data_layer: :embedded
 
   attributes do

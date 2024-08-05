@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DemographicQuestionsForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.DemographicQuestionsForm do
   use Ash.Resource, data_layer: :embedded
 
   alias __MODULE__.DemographicQuestionField

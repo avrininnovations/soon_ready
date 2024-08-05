@@ -8,7 +8,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
     card_field: 1,
   ]
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ScreeningQuestionsForm
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ScreeningQuestionsForm
 
   @impl true
   def render(assigns) do

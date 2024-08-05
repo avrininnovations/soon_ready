@@ -2,7 +2,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
   use SoonReadyInterface, :live_component
   import SoonReadyInterface.Researcher.Common.Components, only: [page: 1, text_field: 1]
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.MarketDefinitionForm
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.MarketDefinitionForm
 
   @impl true
   def render(assigns) do

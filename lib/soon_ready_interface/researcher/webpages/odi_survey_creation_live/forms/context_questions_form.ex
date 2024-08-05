@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm do
   use Ash.Resource, data_layer: :embedded
 
   alias __MODULE__.{ContextQuestionField, MultipleChoiceQuestion, CheckboxQuestion, ShortAnswerQuestionGroup}

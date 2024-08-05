@@ -1,7 +1,7 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.ShortAnswerQuestionGroup do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.ShortAnswerQuestionGroup do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.QuestionField
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.QuestionField
 
   attributes do
     attribute :group_prompt, :string, allow_nil?: false, public?: true

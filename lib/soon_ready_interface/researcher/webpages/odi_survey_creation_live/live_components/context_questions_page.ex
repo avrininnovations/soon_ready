@@ -9,9 +9,9 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
     add_button: 1,
   ]
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.{
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.{
     ContextQuestionField,
     MultipleChoiceQuestion,
     CheckboxQuestion,

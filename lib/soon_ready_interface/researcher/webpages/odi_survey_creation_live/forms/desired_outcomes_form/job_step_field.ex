@@ -1,8 +1,8 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DesiredOutcomesForm.JobStepField do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.DesiredOutcomesForm.JobStepField do
   use Ash.Resource, data_layer: :embedded
 
   alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.JobStatement
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DesiredOutcomesForm.DesiredOutcomeField
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.DesiredOutcomesForm.DesiredOutcomeField
 
   attributes do
     attribute :name, JobStatement, allow_nil?: false, public?: true

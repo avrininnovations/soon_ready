@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DesiredOutcomesForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.DesiredOutcomesForm do
   use Ash.Resource, data_layer: :embedded
 
   alias __MODULE__.JobStepField

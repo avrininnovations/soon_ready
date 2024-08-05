@@ -1,6 +1,6 @@
 defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.DesiredOutcomesPage do
   use SoonReadyInterface, :live_component
-  
+
   import SoonReadyInterface.Researcher.Common.Components, only: [
     page: 1,
     card_form: 1,
@@ -9,7 +9,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
     card_field: 1,
   ]
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DesiredOutcomesForm
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.DesiredOutcomesForm
 
   @impl true
   def render(assigns) do

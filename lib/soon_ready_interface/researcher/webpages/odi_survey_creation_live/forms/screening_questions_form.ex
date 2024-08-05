@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ScreeningQuestionsForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ScreeningQuestionsForm do
   use Ash.Resource, data_layer: :embedded
 
   alias __MODULE__.ScreeningQuestionField
