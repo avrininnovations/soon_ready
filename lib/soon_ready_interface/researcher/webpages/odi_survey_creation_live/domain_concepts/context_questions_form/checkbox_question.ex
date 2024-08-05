@@ -1,7 +1,7 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.CheckboxQuestion do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.CheckboxQuestion do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.OptionField
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.OptionField
 
   attributes do
     attribute :prompt, :string, allow_nil?: false, public?: true

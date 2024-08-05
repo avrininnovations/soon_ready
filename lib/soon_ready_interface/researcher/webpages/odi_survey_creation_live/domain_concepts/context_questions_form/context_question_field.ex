@@ -1,5 +1,5 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.ContextQuestionField do
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.{
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.ContextQuestionField do
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.{
     MultipleChoiceQuestion,
     CheckboxQuestion,
     ShortAnswerQuestionGroup,

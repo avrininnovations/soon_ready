@@ -1,37 +1,47 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.ContextQuestionsPage do
   use SoonReadyInterface, :live_component
-  use Ash.Resource, data_layer: :embedded
+  import SoonReadyInterface.Researcher.Common.Components, only: [page: 1]
+  # TODO: Restrict with `only`
   import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
 
-  alias __MODULE__.{ContextQuestionField, MultipleChoiceQuestion, CheckboxQuestion, ShortAnswerQuestionGroup}
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm
 
-  attributes do
-    attribute :context_questions, {:array, ContextQuestionField}, allow_nil?: false, public?: true
-  end
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.{
+    ContextQuestionField,
+    MultipleChoiceQuestion,
+    CheckboxQuestion,
+    ShortAnswerQuestionGroup
+  }
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
-      <.card_form :let={f} for={@form} phx-change="validate" phx-submit="submit" target={@myself}>
-        <.inputs_for :let={ff} field={f[:context_questions]}>
-          <%= case ff.source.resource do %>
-            <% MultipleChoiceQuestion -> %>
-              <.mcq_card form={ff} target={@myself} />
-            <% CheckboxQuestion -> %>
-              <.checkbox_card form={ff} target={@myself} />
-            <% ShortAnswerQuestionGroup -> %>
-              <.short_answer_question_group_card form={ff} target={@myself} />
-          <% end %>
-        </.inputs_for>
+      <.page is_wide={true}>
+        <:title>
+          Context Questions
+        </:title>
 
-        <div class="flex flex-col gap-4">
-          <.add_button name="add-multiple-choice-question" target={@myself} action="add-multiple-choice-question" field={f[:context_questions]}> Add Multiple Choice Question </.add_button>
-          <.add_button name="add-checkbox-question" target={@myself} action="add-checkbox-question" field={f[:context_questions]}> Add Checkbox Question </.add_button>
-          <.add_button name="add-short-answer-question-group" target={@myself} action="add-short-answer-question-group" field={f[:context_questions]}> Add Short Answer Question Group </.add_button>
-        </div>
-        <:submit>Proceed</:submit>
-      </.card_form>
+        <.card_form :let={f} for={@form} phx-change="validate" phx-submit="submit" target={@myself}>
+          <.inputs_for :let={ff} field={f[:context_questions]}>
+            <%= case ff.source.resource do %>
+              <% MultipleChoiceQuestion -> %>
+                <.mcq_card form={ff} target={@myself} />
+              <% CheckboxQuestion -> %>
+                <.checkbox_card form={ff} target={@myself} />
+              <% ShortAnswerQuestionGroup -> %>
+                <.short_answer_question_group_card form={ff} target={@myself} />
+            <% end %>
+          </.inputs_for>
+
+          <div class="flex flex-col gap-4">
+            <.add_button name="add-multiple-choice-question" target={@myself} action="add-multiple-choice-question" field={f[:context_questions]}> Add Multiple Choice Question </.add_button>
+            <.add_button name="add-checkbox-question" target={@myself} action="add-checkbox-question" field={f[:context_questions]}> Add Checkbox Question </.add_button>
+            <.add_button name="add-short-answer-question-group" target={@myself} action="add-short-answer-question-group" field={f[:context_questions]}> Add Short Answer Question Group </.add_button>
+          </div>
+          <:submit>Proceed</:submit>
+        </.card_form>
+      </.page>
     </div>
     """
   end
@@ -108,7 +118,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQu
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(ContextQuestionsForm, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
 
     {:ok, socket}
   end

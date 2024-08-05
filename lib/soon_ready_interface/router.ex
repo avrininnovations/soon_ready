@@ -39,7 +39,7 @@ defmodule SoonReadyInterface.Router do
     scope "/", SoonReadyInterface.Researcher.Webpages do
       pipe_through :browser
 
-      live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions
+      live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions_page
       live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions_page
       live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions_page
       live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes_page

@@ -13,10 +13,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     DesiredOutcomesPage,
     ScreeningQuestionsPage,
     DemographicQuestionsPage,
-  }
-
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
-    ContextQuestionsForm
+    ContextQuestionsPage
   }
 
   def mount(_params, _session, socket) do
@@ -69,15 +66,9 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     """
   end
 
-  def render(%{live_action: :context_questions} = assigns) do
+  def render(%{live_action: :context_questions_page} = assigns) do
     ~H"""
-    <.page is_wide={true}>
-      <:title>
-        Context Questions
-      </:title>
-
-      <.live_component module={ContextQuestionsForm} id="context_questions_form" />
-    </.page>
+    <.live_component module={ContextQuestionsPage} id="context_questions_page" />
     """
   end
 
@@ -106,7 +97,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{socket.assigns.params}")}
   end
 
-  def handle_info({:handle_submission, ContextQuestionsForm}, socket) do
+  def handle_info({:handle_submission, ContextQuestionsPage}, socket) do
     normalized_params = normalize(socket.assigns.params)
 
     {:ok, %{project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_project(%{brand_name: normalized_params.brand_name})
@@ -148,15 +139,15 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     end)
 
     context_questions = Enum.map(params["context_questions_form"]["context_questions"], fn
-      {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.MultipleChoiceQuestion"} = context_question} ->
+      {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.MultipleChoiceQuestion"} = context_question} ->
         %{type: "multiple_choice_question", prompt: context_question["prompt"],
           options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
         }
-      {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.CheckboxQuestion"} = context_question} ->
+      {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.CheckboxQuestion"} = context_question} ->
         %{type: "checkbox_question", prompt: context_question["prompt"],
           options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
         }
-      {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.ShortAnswerQuestionGroup"} = context_question} ->
+      {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.ShortAnswerQuestionGroup"} = context_question} ->
         %{type: "short_answer_question_group", group_prompt: context_question["group_prompt"], add_button_label: context_question["add_button_label"],
         questions: Enum.map(context_question["questions"], fn {_index, question} -> %{prompt: question["prompt"]} end)
         }

@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.ContextQuestionsForm.OptionField do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.ContextQuestionsForm.OptionField do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
