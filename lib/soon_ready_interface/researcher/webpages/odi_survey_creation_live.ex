@@ -11,10 +11,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     LandingPage,
     MarketDefinitionPage,
     DesiredOutcomesPage,
+    ScreeningQuestionsPage,
   }
 
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
-    ScreeningQuestionsForm,
     DemographicQuestionsForm,
     ContextQuestionsForm
   }
@@ -53,25 +53,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   def render(%{live_action: :desired_outcomes_page} = assigns) do
     ~H"""
-    <.page is_wide={true}>
-      <:title>
-        Desired Outcomes
-      </:title>
-
-      <.live_component module={DesiredOutcomesPage} id="desired_outcomes_page" />
-    </.page>
+    <.live_component module={DesiredOutcomesPage} id="desired_outcomes_page" />
     """
   end
 
-  def render(%{live_action: :screening_questions} = assigns) do
+  def render(%{live_action: :screening_questions_page} = assigns) do
     ~H"""
-    <.page is_wide={true}>
-      <:title>
-        Screening Questions
-      </:title>
-
-      <.live_component module={ScreeningQuestionsForm} id="screening_questions_form" />
-    </.page>
+    <.live_component module={ScreeningQuestionsPage} id="screening_questions_page" />
     """
   end
 
@@ -116,7 +104,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/screening-questions?#{socket.assigns.params}")}
   end
 
-  def handle_info({:handle_submission, ScreeningQuestionsForm}, socket) do
+  def handle_info({:handle_submission, ScreeningQuestionsPage}, socket) do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{socket.assigns.params}")}
   end
 

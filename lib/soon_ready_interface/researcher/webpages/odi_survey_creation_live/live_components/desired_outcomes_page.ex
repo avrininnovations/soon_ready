@@ -1,37 +1,45 @@
 defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.DesiredOutcomesPage do
   use SoonReadyInterface, :live_component
   import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
+  import SoonReadyInterface.Researcher.Common.Components, only: [page: 1]
+  # TODO: Restrict with `only`
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DesiredOutcomesForm
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
-      <.card_form :let={f} for={@form} phx-change="validate" phx-submit="submit" target={@myself}>
-        <.inputs_for :let={ff} field={f[:job_steps]}>
-          <.card>
-            <:header>
-              <.card_header>
-                <:title>Job Step <%= ff.index + 1 %></:title>
-                <:thrash_button click="remove-job-step" name={"#{ff.name}"} target={@myself}>Remove Job Step</:thrash_button>
-                <:text_input field={ff[:name]} placeholder="Enter name" />
-              </.card_header>
-            </:header>
-            <:body>
-              <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
-                <.card_field>
-                  <:text_input field={fff[:value]} placeholder="Desired Outcome" />
-                  <:thrash_button click="remove-desired-outcome" name={"#{fff.name}"} target={@myself}>Remove Desired Outcome</:thrash_button>
-                </.card_field>
-              </.inputs_for>
-            </:body>
-            <:add_button name={ff.name} action="add-desired-outcome" target={@myself} field={ff[:desired_outcomes]}> Add Desired Outcome </:add_button>
-          </.card>
-        </.inputs_for>
+      <.page is_wide={true}>
+        <:title>
+          Desired Outcomes
+        </:title>
 
-        <:add_button action="add-job-step" form_field={:job_steps}> Add Job Step </:add_button>
-        <:submit>Proceed</:submit>
-      </.card_form>
+        <.card_form :let={f} for={@form} phx-change="validate" phx-submit="submit" target={@myself}>
+          <.inputs_for :let={ff} field={f[:job_steps]}>
+            <.card>
+              <:header>
+                <.card_header>
+                  <:title>Job Step <%= ff.index + 1 %></:title>
+                  <:thrash_button click="remove-job-step" name={"#{ff.name}"} target={@myself}>Remove Job Step</:thrash_button>
+                  <:text_input field={ff[:name]} placeholder="Enter name" />
+                </.card_header>
+              </:header>
+              <:body>
+                <.inputs_for :let={fff} field={ff[:desired_outcomes]}>
+                  <.card_field>
+                    <:text_input field={fff[:value]} placeholder="Desired Outcome" />
+                    <:thrash_button click="remove-desired-outcome" name={"#{fff.name}"} target={@myself}>Remove Desired Outcome</:thrash_button>
+                  </.card_field>
+                </.inputs_for>
+              </:body>
+              <:add_button name={ff.name} action="add-desired-outcome" target={@myself} field={ff[:desired_outcomes]}> Add Desired Outcome </:add_button>
+            </.card>
+          </.inputs_for>
+
+          <:add_button action="add-job-step" form_field={:job_steps}> Add Job Step </:add_button>
+          <:submit>Proceed</:submit>
+        </.card_form>
+      </.page>
     </div>
     """
   end
