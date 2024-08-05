@@ -1,13 +1,7 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOutcomesForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.DesiredOutcomesPage do
   use SoonReadyInterface, :live_component
-  use Ash.Resource, data_layer: :embedded
   import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
-
-  alias __MODULE__.JobStepField
-
-  attributes do
-    attribute :job_steps, {:array, JobStepField}, allow_nil?: false, public?: true, constraints: [min_length: 1]
-  end
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DesiredOutcomesForm
 
   @impl true
   def render(assigns) do
@@ -44,7 +38,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DesiredOu
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(DesiredOutcomesForm, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
 
     {:ok, socket}
   end
