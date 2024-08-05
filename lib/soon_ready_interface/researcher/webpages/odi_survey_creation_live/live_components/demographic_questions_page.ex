@@ -1,50 +1,53 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DemographicQuestionsForm do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.DemographicQuestionsPage do
   use SoonReadyInterface, :live_component
-  use Ash.Resource, data_layer: :embedded
+  import SoonReadyInterface.Researcher.Common.Components, only: [page: 1]
+  # TODO: Restrict with `only`
   import SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Components.Form
 
-  alias __MODULE__.DemographicQuestionField
-
-  attributes do
-    attribute :demographic_questions, {:array, DemographicQuestionField}, allow_nil?: false, public?: true
-  end
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DomainConcepts.DemographicQuestionsForm
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
-      <.card_form :let={f} for={@form} phx-change="validate" phx-submit="submit" target={@myself}>
-        <.inputs_for :let={ff} field={f[:demographic_questions]}>
-          <.card>
-            <:header>
-              <.card_header>
-                <:title>Prompt</:title>
-                <:thrash_button click="remove-demographic-question" name={"#{ff.name}"} target={@myself}>Remove Demographic Question</:thrash_button>
-                <:text_input field={ff[:prompt]} placeholder="Enter prompt" />
-              </.card_header>
-            </:header>
-            <:body>
-              <.inputs_for :let={fff} field={ff[:options]}>
-                <.card_field>
-                  <:text_input field={fff[:value]} placeholder="Option" />
-                  <:thrash_button click="remove-demographic-question-option" name={"#{fff.name}"} target={@myself}>Remove Demographic Question Option</:thrash_button>
-                </.card_field>
-              </.inputs_for>
-            </:body>
-            <:add_button name={ff.name} action="add-demographic-question-option" target={@myself} field={ff[:options]}> Add option </:add_button>
-          </.card>
-        </.inputs_for>
+      <.page is_wide={true}>
+        <:title>
+          Demographic Questions
+        </:title>
 
-        <:add_button action="add-demographic-question" form_field={:demographic_questions}> Add demographic question </:add_button>
-        <:submit>Proceed</:submit>
-      </.card_form>
+        <.card_form :let={f} for={@form} phx-change="validate" phx-submit="submit" target={@myself}>
+          <.inputs_for :let={ff} field={f[:demographic_questions]}>
+            <.card>
+              <:header>
+                <.card_header>
+                  <:title>Prompt</:title>
+                  <:thrash_button click="remove-demographic-question" name={"#{ff.name}"} target={@myself}>Remove Demographic Question</:thrash_button>
+                  <:text_input field={ff[:prompt]} placeholder="Enter prompt" />
+                </.card_header>
+              </:header>
+              <:body>
+                <.inputs_for :let={fff} field={ff[:options]}>
+                  <.card_field>
+                    <:text_input field={fff[:value]} placeholder="Option" />
+                    <:thrash_button click="remove-demographic-question-option" name={"#{fff.name}"} target={@myself}>Remove Demographic Question Option</:thrash_button>
+                  </.card_field>
+                </.inputs_for>
+              </:body>
+              <:add_button name={ff.name} action="add-demographic-question-option" target={@myself} field={ff[:options]}> Add option </:add_button>
+            </.card>
+          </.inputs_for>
+
+          <:add_button action="add-demographic-question" form_field={:demographic_questions}> Add demographic question </:add_button>
+          <:submit>Proceed</:submit>
+        </.card_form>
+      </.page>
     </div>
     """
   end
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(__MODULE__, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(DemographicQuestionsForm, :create, domain: SoonReadyInterface.Researcher.Domain, forms: [auto?: true]))
 
     {:ok, socket}
   end

@@ -12,10 +12,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     MarketDefinitionPage,
     DesiredOutcomesPage,
     ScreeningQuestionsPage,
+    DemographicQuestionsPage,
   }
 
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
-    DemographicQuestionsForm,
     ContextQuestionsForm
   }
 
@@ -63,15 +63,9 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     """
   end
 
-  def render(%{live_action: :demographic_questions} = assigns) do
+  def render(%{live_action: :demographic_questions_page} = assigns) do
     ~H"""
-    <.page is_wide={true}>
-      <:title>
-        Demographic Questions
-      </:title>
-
-      <.live_component module={DemographicQuestionsForm} id="demographic_questions_form" />
-    </.page>
+    <.live_component module={DemographicQuestionsPage} id="demographic_questions_page" />
     """
   end
 
@@ -108,7 +102,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/demographic-questions?#{socket.assigns.params}")}
   end
 
-  def handle_info({:handle_submission, DemographicQuestionsForm}, socket) do
+  def handle_info({:handle_submission, DemographicQuestionsPage}, socket) do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/context-questions?#{socket.assigns.params}")}
   end
 
