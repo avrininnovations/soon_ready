@@ -326,7 +326,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
         {:noreply, socket}
 
       {:error, form_with_error} ->
-        IO.inspect(form_with_error, label: "Form with error")
         {:noreply, assign(socket, form: form_with_error)}
     end
   end
