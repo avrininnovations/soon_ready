@@ -12,6 +12,7 @@ defmodule SoonReadyInterface.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :load_from_session
+    plug SoonReadyInterface.Common.Plugs.ReturnToPlug
   end
 
   pipeline :api do
@@ -38,11 +39,11 @@ defmodule SoonReadyInterface.Router do
     scope "/", SoonReadyInterface.Researcher.Webpages do
       pipe_through :browser
 
-      live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions
-      live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions
-      live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions
-      live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes
-      live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition
+      live "/odi-survey/create/context-questions", OdiSurveyCreationLive, :context_questions_page
+      live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions_page
+      live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions_page
+      live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes_page
+      live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition_page
       live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
     end
   end

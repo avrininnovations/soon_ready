@@ -1,7 +1,7 @@
-defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DemographicQuestionsForm.DemographicQuestionField do
+defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.MultipleChoiceQuestion do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.DemographicQuestionsForm.OptionField
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.OptionField
 
   attributes do
     attribute :prompt, :string, allow_nil?: false, public?: true
