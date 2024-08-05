@@ -7,9 +7,12 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   alias SoonReadyInterface.Researcher.Common.Layout
 
+  alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveComponents.{
+    LandingPage,
+    MarketDefinitionPage,
+  }
+
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
-    LandingPageForm,
-    MarketDefinitionForm,
     DesiredOutcomesForm,
     ScreeningQuestionsForm,
     DemographicQuestionsForm,
@@ -19,10 +22,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def mount(_params, _session, socket) do
     current_user = Map.get(socket.assigns, :current_user)
 
-    case current_user do
-      %{is_researcher: true} ->
-        socket = assign(socket, :actor, current_user)
-        {:ok, socket, layout: {Layout, :layout}}
+    with %{is_researcher: true} <- current_user do
+      socket = assign(socket, :actor, current_user)
+      {:ok, socket, layout: {Layout, :layout}}
+    else
       _ ->
         socket =
           socket
@@ -32,30 +35,19 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     end
   end
 
+  def handle_params(params, _url, socket) do
+    {:noreply, assign(socket, params: params)}
+  end
+
   def render(%{live_action: :landing_page} = assigns) do
     ~H"""
-    <.page>
-      <:title>
-        Welcome to the ODI Survey Creator!
-      </:title>
-      <:subtitle>
-        Are you a researcher trying to create an ODI survey? This is where to get started!
-      </:subtitle>
-
-      <.live_component module={LandingPageForm} id="landing_page_form" />
-    </.page>
+    <.live_component module={LandingPage} id="landing_page" />
     """
   end
 
-  def render(%{live_action: :market_definition} = assigns) do
+  def render(%{live_action: :market_definition_page} = assigns) do
     ~H"""
-    <.page>
-      <:title>
-        Market Definition
-      </:title>
-
-      <.live_component module={MarketDefinitionForm} id="market_definition_form" />
-    </.page>
+    <.live_component module={MarketDefinitionPage} id="market_definition_page" />
     """
   end
 
@@ -107,20 +99,16 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     """
   end
 
-  def handle_params(params, _url, socket) do
-    {:noreply, assign(socket, params: params)}
-  end
-
   def handle_info({:update_params, new_params}, socket) do
     params = Map.merge(socket.assigns.params, new_params)
     {:noreply, assign(socket, :params, params)}
   end
 
-  def handle_info({:handle_submission, LandingPageForm}, socket) do
+  def handle_info({:handle_submission, LandingPage}, socket) do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/market-definition?#{socket.assigns.params}")}
   end
 
-  def handle_info({:handle_submission, MarketDefinitionForm}, socket) do
+  def handle_info({:handle_submission, MarketDefinitionPage}, socket) do
     {:noreply, push_patch(socket, to: ~p"/odi-survey/create/desired-outcomes?#{socket.assigns.params}")}
   end
 

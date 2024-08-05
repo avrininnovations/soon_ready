@@ -43,7 +43,7 @@ defmodule SoonReadyInterface.Router do
       live "/odi-survey/create/demographic-questions", OdiSurveyCreationLive, :demographic_questions
       live "/odi-survey/create/screening-questions", OdiSurveyCreationLive, :screening_questions
       live "/odi-survey/create/desired-outcomes", OdiSurveyCreationLive, :desired_outcomes
-      live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition
+      live "/odi-survey/create/market-definition", OdiSurveyCreationLive, :market_definition_page
       live "/odi-survey/create", OdiSurveyCreationLive, :landing_page
     end
   end
