@@ -3,6 +3,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   require Logger
 
+  import SoonReadyInterface.Researcher.Common.Components, only: [page: 1]
+
+  alias SoonReadyInterface.Researcher.Common.Layout
+
   alias SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.{
     LandingPageForm,
     MarketDefinitionForm,
@@ -12,33 +16,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     ContextQuestionsForm
   }
 
-  def layout(assigns) do
-    ~H"""
-    <main class="dark:text-white">
-      <.flash_group flash={@flash} />
-      <header>
-        <nav class="bg-white border-gray-200 px-4 lg:px-6 py-4 dark:bg-gray-800">
-          <div class="flex flex-wrap justify-center items-center mx-auto max-w-screen-xl">
-            <a href={~p"/"} class="flex items-center">
-              <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">😎 SoonReady</span>
-            </a>
-          </div>
-        </nav>
-      </header>
-      <section class="bg-white dark:bg-gray-900">
-        <%= @inner_content %>
-      </section>
-    </main>
-    """
-  end
-
   def mount(_params, _session, socket) do
     current_user = Map.get(socket.assigns, :current_user)
 
     case current_user do
       %{is_researcher: true} ->
         socket = assign(socket, :actor, current_user)
-        {:ok, socket, layout: {__MODULE__, :layout}}
+        {:ok, socket, layout: {Layout, :layout}}
       _ ->
         socket =
           socket
@@ -123,26 +107,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     """
   end
 
-  attr :is_wide, :boolean, default: false
-  slot :title, required: true
-  slot :subtitle
-  slot :inner_block, required: true
-  def page(assigns) do
-    ~H"""
-    <div class={["py-8 lg:py-16 px-4", unless @is_wide do " mx-auto max-w-screen-md" end]}>
-      <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
-        <%= render_slot(@title) %>
-      </h2>
-      <%= if @subtitle != [] do %>
-        <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
-          <%= render_slot(@subtitle) %>
-        </p>
-      <% end %>
-      <%= render_slot(@inner_block) %>
-    </div>
-    """
-  end
-
   def handle_params(params, _url, socket) do
     {:noreply, assign(socket, params: params)}
   end
@@ -194,24 +158,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       |> push_redirect(to: ~p"/")
       |> put_flash(:info, "Survey published successfully!")
     {:noreply, socket}
-
-    # SoonReady.OutcomeDrivenInnovation.create_survey(normalized_params, socket.assigns.actor)
-
-    # case SoonReady.OutcomeDrivenInnovation.create_survey(normalized_params, socket.assigns.actor) do
-    #   {:ok, %{project_id: _project_id} = _command} ->
-    #     socket =
-    #       socket
-    #       |> push_redirect(to: ~p"/")
-    #       |> put_flash(:info, "Survey published successfully!")
-    #     {:noreply, socket}
-    #   {:error, error} ->
-    #     socket =
-    #       socket
-    #       |> put_flash(:error, "Survey publishing failed. Please try again or contact support.")
-
-    #       Logger.error("Survey publishing failed: #{inspect(error)}")
-    #     {:noreply, socket}
-    # end
 
     # TODO: Wait for SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1 with this project_id to confirm?
   end
