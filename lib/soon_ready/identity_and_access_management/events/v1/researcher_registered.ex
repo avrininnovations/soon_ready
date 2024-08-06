@@ -32,21 +32,15 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
 
       change fn changeset, _context ->
         researcher_id = Ash.Changeset.get_attribute(changeset, :researcher_id)
-        first_name = Ash.Changeset.get_argument(changeset, :first_name)
-        last_name = Ash.Changeset.get_argument(changeset, :last_name)
-        username = Ash.Changeset.get_argument(changeset, :username)
-        password = Ash.Changeset.get_argument(changeset, :password)
-        password_confirmation = Ash.Changeset.get_argument(changeset, :password_confirmation)
 
-        # TODO: Export to encryption context
         with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.generate(%{id: researcher_id}) do
           changeset =
             changeset
-            |> encrypt(encryption_key, :first_name, first_name, :first_name_hash)
-            |> encrypt(encryption_key, :last_name, last_name, :last_name_hash)
-            |> encrypt(encryption_key, :username, username, :username_hash)
-            |> encrypt(encryption_key, :password, password, :password_hash)
-            |> encrypt(encryption_key, :password_confirmation, password_confirmation, :password_confirmation_hash)
+            |> encrypt(:first_name, :first_name_hash, encryption_key)
+            |> encrypt(:last_name, :last_name_hash, encryption_key)
+            |> encrypt(:username, :username_hash, encryption_key)
+            |> encrypt(:password, :password_hash, encryption_key)
+            |> encrypt(:password_confirmation, :password_confirmation_hash, encryption_key)
         end
       end
     end
@@ -134,13 +128,18 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
     end
   end
 
-  def encrypt(changeset, encryption_key, plain_argument_name, plain_text, hash_attribute_name) do
-    case SoonReady.Vault.encrypt(%{key: encryption_key, plain_text: to_string(plain_text)}) do
+  def encrypt(changeset, plain_field, cipher_field, encryption_key) do
+    plain_text =
+      changeset
+      |> Ash.Changeset.get_argument(plain_field)
+      |> to_string()
+
+    case SoonReady.Vault.encrypt(%{key: encryption_key, plain_text: plain_text}) do
       {:ok, cipher_text} ->
-        Ash.Changeset.change_attribute(changeset, hash_attribute_name, cipher_text)
+        Ash.Changeset.change_attribute(changeset, cipher_field, cipher_text)
       :error ->
-        Logger.warning("Encryption failed -- module: #{inspect(__MODULE__)}, field: #{inspect(plain_argument_name)}, value: #{inspect(plain_text)}")
-        Ash.Changeset.add_error(changeset, [field: plain_argument_name, message: "encryption failed", value: plain_text])
+        Logger.warning("Encryption failed -- module: #{inspect(__MODULE__)}, field: #{inspect(plain_field)}, value: #{inspect(plain_text)}")
+        Ash.Changeset.add_error(changeset, [field: plain_field, message: "encryption failed", value: plain_text])
     end
   end
 
