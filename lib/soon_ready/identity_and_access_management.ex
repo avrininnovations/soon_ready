@@ -16,7 +16,7 @@ defmodule SoonReady.IdentityAndAccessManagement do
     resource SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher
 
     # DomainEvents
-    resource SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegisteredV1
+    resource SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
   end
 
   defdelegate initiate_researcher_registration(params), to: RegisterResearcher, as: :dispatch

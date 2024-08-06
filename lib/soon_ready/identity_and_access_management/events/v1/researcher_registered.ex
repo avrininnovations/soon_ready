@@ -1,4 +1,4 @@
-defmodule SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegisteredV1 do
+defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered do
   use Ash.Resource,
     domain: SoonReady.IdentityAndAccessManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]

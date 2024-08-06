@@ -3,7 +3,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
   use Commanded.Commands.Router
 
   alias SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher
-  alias SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegisteredV1
+  alias SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
 
   attributes do
     uuid_primary_key :researcher_id
@@ -40,7 +40,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Researcher do
       password_confirmation: password_confirmation
     }
 
-    ResearcherRegisteredV1.create(params)
+    ResearcherRegistered.create(params)
   end
 
   def apply(state, _event) do
