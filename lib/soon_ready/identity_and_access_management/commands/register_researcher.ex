@@ -3,6 +3,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
 
   attributes do
     attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false
+    attribute :user_id, :uuid, allow_nil?: false
     attribute :first_name, :ci_string, allow_nil?: false
     attribute :last_name, :ci_string, allow_nil?: false
     attribute :username, :ci_string, allow_nil?:  false
@@ -40,7 +41,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
         # TODO: Is this really necessary?
         {:ok, _researcher} = SoonReady.IdentityAndAccessManagement.Resources.Researcher.create(%{id: researcher_id, user_id: user_id})
 
-        changeset
+        Ash.Changeset.change_attribute(changeset, :user_id, user_id)
       end
 
       change fn changeset, context ->

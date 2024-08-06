@@ -8,6 +8,7 @@ defmodule SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegistere
 
   attributes do
     attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false, public?: true
+    attribute :user_id, :uuid, allow_nil?: false, public?: true
     attribute :first_name_hash, :string, allow_nil?: false, public?: true
     attribute :last_name_hash, :string, allow_nil?: false, public?: true
     attribute :username_hash, :string, allow_nil?:  false, public?: true
@@ -19,7 +20,7 @@ defmodule SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegistere
     defaults [:read]
 
     create :create do
-      accept [:researcher_id]
+      accept [:researcher_id, :user_id]
 
       primary? true
 
@@ -53,6 +54,7 @@ defmodule SoonReady.IdentityAndAccessManagement.DomainEvents.ResearcherRegistere
     create :decrypt do
       accept [
         :researcher_id,
+        :user_id,
         :first_name_hash,
         :last_name_hash,
         :username_hash,
