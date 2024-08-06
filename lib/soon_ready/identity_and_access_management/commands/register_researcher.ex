@@ -1,6 +1,8 @@
 defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
   use Ash.Resource, domain: SoonReady.IdentityAndAccessManagement
 
+  alias SoonReady.IdentityAndAccessManagement.Resources.{User, Researcher}
+
   attributes do
     attribute :researcher_id, :uuid, primary_key?: true, allow_nil?: false
     attribute :user_id, :uuid, allow_nil?: false
@@ -28,17 +30,16 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
       primary? true
 
       change fn changeset, _context ->
-        # TODO: Add saga orchestrator (reactor) to undo on faliure
-
         researcher_id = Ash.UUID.generate()
         username = Ash.Changeset.get_attribute(changeset, :username)
         password = Ash.Changeset.get_attribute(changeset, :password)
         password_confirmation = Ash.Changeset.get_attribute(changeset, :password_confirmation)
 
-        {:ok, %{id: user_id} = _user} = SoonReady.IdentityAndAccessManagement.Resources.User.register_user_with_password(username, password, password_confirmation)
+        {:ok, %{id: user_id} = user} = User.register_user_with_password(username, password, password_confirmation)
 
-        # TODO: Is this really necessary?
-        {:ok, _researcher} = SoonReady.IdentityAndAccessManagement.Resources.Researcher.create(%{id: researcher_id, user_id: user_id})
+        with {:error, _error} <- Researcher.create(%{id: researcher_id, user_id: user_id}) do
+          :ok = User.delete(user)
+        end
 
         changeset
         |> Ash.Changeset.change_attribute(:researcher_id, researcher_id)
