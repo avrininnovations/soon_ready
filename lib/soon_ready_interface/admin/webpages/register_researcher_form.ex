@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Admin.Webpages.RegisterResearcherForm do
   use Ash.Resource
 
-  alias SoonReady.IdentityAndAccessManagement.Commands.InitiateResearcherRegistration
+  alias SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher
 
   attributes do
     uuid_primary_key :researcher_id
@@ -43,7 +43,7 @@ defmodule SoonReadyInterface.Admin.Webpages.RegisterResearcherForm do
             password_confirmation: password_confirmation
           }
 
-          with :ok <- InitiateResearcherRegistration.dispatch(params) do
+          with :ok <- RegisterResearcher.dispatch(params) do
             {:ok, resource}
           end
         end)

@@ -6,7 +6,7 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
   alias SoonReady.Application
 
   alias SoonReady.IdentityAndAccessManagement.DomainEvents.{
-    ResearcherRegistrationInitiatedV1,
+    ResearcherRegisteredV1,
     ResearcherRegistrationSucceededV1,
   }
 
@@ -22,7 +22,7 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
     }
     {:ok, command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
 
-    assert_receive_event(Application, ResearcherRegistrationInitiatedV1,
+    assert_receive_event(Application, ResearcherRegisteredV1,
       fn event -> event.researcher_id == command.researcher_id end,
       fn event ->
         %{
@@ -43,7 +43,7 @@ defmodule SoonReady.IdentityAndAccessManagementTest do
           password_confirmation_hash: password_confirmation_hash,
         }
 
-        {:ok, event} = ResearcherRegistrationInitiatedV1.decrypt(params)
+        {:ok, event} = ResearcherRegisteredV1.decrypt(params)
 
         with {:ok, %{key: encryption_key} = _user_encryption_key} <- PersonalIdentifiableInformationEncryptionKey.get(event.researcher_id),
               {:ok, first_name} <- SoonReady.Vault.decrypt(%{key: encryption_key, cipher_text: event.first_name_hash}),
