@@ -20,5 +20,4 @@ defmodule SoonReady.IdentityAndAccessManagement do
   end
 
   defdelegate initiate_researcher_registration(params), to: RegisterResearcher, as: :dispatch
-  defdelegate get_researcher(researcher_id), to: SoonReady.IdentityAndAccessManagement.Resources.Researcher, as: :get
 end

@@ -6,7 +6,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcherTest 
 
   test "WHEN: An Admin tries to register a reseacher, THEN: A researcher is registered" do
     {:ok, command} = SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher.dispatch(%{
-      researcher_id: Ash.UUID.generate(),
       first_name: "First",
       last_name: "Last",
       username: "username",
