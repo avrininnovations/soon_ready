@@ -13,208 +13,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
   @screening_questions_params %{"screening_questions" => %{"0" => %{"prompt" => "Screening Question 1", "options" => %{"0" => %{"is_correct_option" => "true", "value" => "Option 1"}, "1" => %{"is_correct_option" => "false", "value" => "Option 2"}}}, "1" => %{"prompt" => "Screening Question 2", "options" => %{"0" => %{"is_correct_option" => "true", "value" => "Option 1"}, "1" => %{"is_correct_option" => "false", "value" => "Option 2"}}}}}
   @demographic_questions_params %{"demographic_questions" => %{"0" => %{"prompt" => "Demographic Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Demographic Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}}
 
-  def submit_landing_page_form(view) do
-    view
-    |> form("form", form: @landing_page_query_params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_landing_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"landing_page_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert query_params == @landing_page_query_params
-  end
-
-  def submit_market_definition_form(view) do
-    view
-    |> form("form", form: @market_definition_query_params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_market_definition_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"market_definition_form" => %{
-      "job_executor" => job_executor,
-      "job_to_be_done" => job_to_be_done
-    }} = Plug.Conn.Query.decode(query)
-    assert job_executor == @market_definition_query_params[:job_executor]
-    assert job_to_be_done == @market_definition_query_params[:job_to_be_done]
-  end
-
-  def add_two_job_steps(view) do
-    view
-    |> element("button", "Add Job Step")
-    |> render_click()
-
-    view
-    |> element("button", "Add Job Step")
-    |> render_click()
-  end
-
-  def add_two_desired_outcomes_each(view) do
-    view
-    |> element(~s{button[name="form[job_steps][0]"]}, "Add Desired Outcome")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[job_steps][0]"]}, "Add Desired Outcome")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[job_steps][1]"]}, "Add Desired Outcome")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[job_steps][1]"]}, "Add Desired Outcome")
-    |> render_click()
-  end
-
-  def submit_desired_outcomes_form(view) do
-    view
-    |> form("form", form: @desired_outcome_query_params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_desired_outcomes_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"desired_outcomes_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert SoonReady.Utils.is_equal_or_subset?(@desired_outcome_query_params, query_params)
-  end
-
-  def add_two_screening_questions(view) do
-    view
-    |> element("button", "Add screening question")
-    |> render_click()
-
-    view
-    |> element("button", "Add screening question")
-    |> render_click()
-  end
-
-  def add_two_options_each_to_screening_questions(view) do
-    view
-    |> element(~s{button[name="form[screening_questions][0]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[screening_questions][0]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[screening_questions][1]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[screening_questions][1]"]}, "Add option")
-    |> render_click()
-
-    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][is_correct_option]"]})
-    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][value]"]})
-
-    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][is_correct_option]"]})
-    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][value]"]})
-
-    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][is_correct_option]"]})
-    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][value]"]})
-
-    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][is_correct_option]"]})
-    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][value]"]})
-
-    {:ok, view}
-  end
-
-  def submit_screeing_questions_form(view) do
-    view
-    |> form("form", form: @screening_questions_params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_screening_questions_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"screening_questions_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert SoonReady.Utils.is_equal_or_subset?(@screening_questions_params, query_params)
-  end
-
-  def add_two_demographic_questions(view) do
-    view
-    |> element("button", "Add demographic question")
-    |> render_click()
-
-    view
-    |> element("button", "Add demographic question")
-    |> render_click()
-  end
-
-  def add_two_options_each_to_demographic_questions(view) do
-    view
-    |> element(~s{button[name="form[demographic_questions][0]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[demographic_questions][0]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[demographic_questions][1]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[demographic_questions][1]"]}, "Add option")
-    |> render_click()
-  end
-
-  def submit_demographic_questions_form(view) do
-    view
-    |> form("form", form: @demographic_questions_params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_demographic_questions_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"demographic_questions_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert SoonReady.Utils.is_equal_or_subset?(@demographic_questions_params, query_params)
-  end
-
-  def add_two_mcq_context_questions(view) do
-    view
-    |> element("button", "Add Multiple Choice Question")
-    |> render_click()
-
-    view
-    |> element("button", "Add Multiple Choice Question")
-    |> render_click()
-  end
-
-  def add_two_options_each_to_context_questions(view) do
-    view
-    |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
-    |> render_click()
-
-    view
-    |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
-    |> render_click()
-  end
-
-  def submit_context_questions_form(view) do
-    view
-    |> form("form", form: %{context_questions: %{"0" => %{"prompt" => "Context Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Context Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
   setup %{conn: conn} do
     params = %{
       first_name: "John",
@@ -253,7 +51,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  describe "Market Definition" do
+  describe "Market Definition Page" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to submit market definition details, THEN: The desrired outcomes page is displayed", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
@@ -269,7 +67,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  describe "Desired Outcomes" do
+  describe "Desired Outcomes Page" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two job steps, THEN: Two job step fields should be on the page", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
@@ -317,7 +115,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  describe "Screening Questions" do
+  describe "Screening Questions Page" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two screening questions, THEN: Two screening question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
@@ -378,7 +176,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  describe "Demographic Questions" do
+  describe "Demographic Questions Page" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two demographic questions, THEN: Two demographic question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
       submit_landing_page_form(view)
@@ -446,7 +244,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
     end
   end
 
-  describe "Context Questions" do
+  describe "Context Questions Page" do
     # TODO: Add tests for other question types outside MCQ
     test "GIVEN: Forms in previous pages have been filled, WHEN: Researcher tries to add two context questions, THEN: Two context question fields are added", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/odi-survey/create")
@@ -518,5 +316,207 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLiveTest do
       flash = assert_redirect(view, ~p"/", @timeout)
       assert flash == %{"info" => "Survey published successfully!"}
     end
+  end
+
+  def submit_landing_page_form(view) do
+    view
+    |> form("form", form: @landing_page_query_params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def submit_market_definition_form(view) do
+    view
+    |> form("form", form: @market_definition_query_params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def add_two_job_steps(view) do
+    view
+    |> element("button", "Add Job Step")
+    |> render_click()
+
+    view
+    |> element("button", "Add Job Step")
+    |> render_click()
+  end
+
+  def add_two_desired_outcomes_each(view) do
+    view
+    |> element(~s{button[name="form[job_steps][0]"]}, "Add Desired Outcome")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[job_steps][0]"]}, "Add Desired Outcome")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[job_steps][1]"]}, "Add Desired Outcome")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[job_steps][1]"]}, "Add Desired Outcome")
+    |> render_click()
+  end
+
+  def submit_desired_outcomes_form(view) do
+    view
+    |> form("form", form: @desired_outcome_query_params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def add_two_screening_questions(view) do
+    view
+    |> element("button", "Add screening question")
+    |> render_click()
+
+    view
+    |> element("button", "Add screening question")
+    |> render_click()
+  end
+
+  def add_two_options_each_to_screening_questions(view) do
+    view
+    |> element(~s{button[name="form[screening_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[screening_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[screening_questions][1]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[screening_questions][1]"]}, "Add option")
+    |> render_click()
+
+    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][is_correct_option]"]})
+    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][0][value]"]})
+
+    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][is_correct_option]"]})
+    assert has_element?(view, ~s{input[name="form[screening_questions][0][options][1][value]"]})
+
+    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][is_correct_option]"]})
+    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][0][value]"]})
+
+    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][is_correct_option]"]})
+    assert has_element?(view, ~s{input[name="form[screening_questions][1][options][1][value]"]})
+
+    {:ok, view}
+  end
+
+  def submit_screeing_questions_form(view) do
+    view
+    |> form("form", form: @screening_questions_params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def add_two_demographic_questions(view) do
+    view
+    |> element("button", "Add demographic question")
+    |> render_click()
+
+    view
+    |> element("button", "Add demographic question")
+    |> render_click()
+  end
+
+  def add_two_options_each_to_demographic_questions(view) do
+    view
+    |> element(~s{button[name="form[demographic_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[demographic_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[demographic_questions][1]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[demographic_questions][1]"]}, "Add option")
+    |> render_click()
+  end
+
+  def submit_demographic_questions_form(view) do
+    view
+    |> form("form", form: @demographic_questions_params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def add_two_mcq_context_questions(view) do
+    view
+    |> element("button", "Add Multiple Choice Question")
+    |> render_click()
+
+    view
+    |> element("button", "Add Multiple Choice Question")
+    |> render_click()
+  end
+
+  def add_two_options_each_to_context_questions(view) do
+    view
+    |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[context_questions][0]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
+    |> render_click()
+
+    view
+    |> element(~s{button[name="form[context_questions][1]"]}, "Add option")
+    |> render_click()
+  end
+
+  def submit_context_questions_form(view) do
+    view
+    |> form("form", form: %{context_questions: %{"0" => %{"prompt" => "Context Question 1", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}, "1" => %{"prompt" => "Context Question 2", "options" => %{"0" => %{"value" => "Option 1"}, "1" => %{"value" => "Option 2"}}}}})
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def assert_landing_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"landing_page_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert query_params == @landing_page_query_params
+  end
+
+  def assert_market_definition_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"market_definition_form" => %{
+      "job_executor" => job_executor,
+      "job_to_be_done" => job_to_be_done
+    }} = Plug.Conn.Query.decode(query)
+    assert job_executor == @market_definition_query_params[:job_executor]
+    assert job_to_be_done == @market_definition_query_params[:job_to_be_done]
+  end
+
+  def assert_desired_outcomes_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"desired_outcomes_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert SoonReady.Utils.is_equal_or_subset?(@desired_outcome_query_params, query_params)
+  end
+
+  def assert_screening_questions_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"screening_questions_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert SoonReady.Utils.is_equal_or_subset?(@screening_questions_params, query_params)
+  end
+
+  def assert_demographic_questions_page_query_params(path) do
+    %{query: query} = URI.parse(path)
+    %{"demographic_questions_form" => query_params} = Plug.Conn.Query.decode(query)
+    assert SoonReady.Utils.is_equal_or_subset?(@demographic_questions_params, query_params)
   end
 end
