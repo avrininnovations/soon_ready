@@ -107,9 +107,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       screening_questions: normalized_params.screening_questions,
       demographic_questions: normalized_params.demographic_questions,
       context_questions: normalized_params.context_questions,
-      raw_screening_questions: normalized_params.raw_screening_questions,
-      raw_demographic_questions: normalized_params.raw_demographic_questions,
-      raw_context_questions: normalized_params.raw_context_questions,
     })
 
     socket =
@@ -163,9 +160,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions,
-      raw_screening_questions: screening_questions,
-      raw_demographic_questions: demographic_questions,
-      raw_context_questions: context_questions,
     }
   end
 end
