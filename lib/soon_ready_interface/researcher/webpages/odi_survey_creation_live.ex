@@ -17,12 +17,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   }
 
   def mount(_params, _session, socket) do
-    current_user = Map.get(socket.assigns, :current_user)
-
-    with %{is_researcher: true} <- current_user do
-      socket = assign(socket, :actor, current_user)
-      {:ok, socket, layout: {Layout, :layout}}
-    else
+    case Map.get(socket.assigns, :current_user) do
+      %{is_researcher: true} = current_user ->
+        socket = assign(socket, :actor, current_user)
+        {:ok, socket, layout: {Layout, :layout}}
       _ ->
         socket =
           socket
