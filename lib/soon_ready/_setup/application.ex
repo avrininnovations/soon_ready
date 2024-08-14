@@ -48,7 +48,6 @@ defmodule SoonReady.Application do
       SoonReady.IdentityAndAccessManagement.Supervisor,
 
       SoonReadyInterface.Respondents.Setup.Supervisor,
-      # SoonReadyInterface.Researcher.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
