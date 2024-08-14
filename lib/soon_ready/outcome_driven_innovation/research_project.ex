@@ -77,9 +77,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
       survey_id: command.survey_id,
       market: aggregate_state.market,
       job_steps: aggregate_state.job_steps,
-      screening_questions: command.raw_screening_questions,
-      demographic_questions: command.raw_demographic_questions,
-      context_questions: command.raw_context_questions,
+      screening_questions: command.screening_questions,
+      demographic_questions: command.demographic_questions,
+      context_questions: command.context_questions,
       trigger: %{name: CreateSurvey, id: command.project_id}
     }
 

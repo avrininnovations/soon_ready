@@ -101,9 +101,6 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions,
-      raw_screening_questions: screening_questions,
-      raw_demographic_questions: demographic_questions,
-      raw_context_questions: context_questions,
     })
 
 

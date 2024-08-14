@@ -9,6 +9,8 @@ defmodule SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager do
 
   alias SoonReady.OutcomeDrivenInnovation.Commands.MarkSurveyCreationAsSuccessful
 
+  alias SoonReady.SurveyManagement.DomainConcepts.{MultipleChoiceQuestion, OptionWithCorrectFlag}
+
   def handle(%SurveyPublishedV1{survey_id: survey_id, trigger: trigger} = event, _metadata) do
     case trigger do
       %{name: trigger_name, id: trigger_id} ->
@@ -98,9 +100,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager do
           questions: screening_questions,
           transitions: [
             %{destination_page_id: contact_details_page_id, condition: %{type: "all_true", conditions:
-              Enum.map(screening_questions, fn %{id: question_id, options: options} = _screening_question ->
-                correct_options = Enum.filter(options, fn option -> option.correct? end)
-                question_conditions = Enum.map(correct_options, fn %{value: value} = _option -> %{type: "response_equals", question_id: question_id, value: value} end)
+              Enum.map(screening_questions, fn %Ash.Union{value: %MultipleChoiceQuestion{id: question_id, options: options}} = _screening_question ->
+                correct_options = Enum.filter(options, fn %Ash.Union{value: %OptionWithCorrectFlag{correct?: correct?}} -> correct? end)
+                question_conditions = Enum.map(correct_options, fn %Ash.Union{value: %OptionWithCorrectFlag{value: value}} = _option -> %{type: "response_equals", question_id: question_id, value: value} end)
                 %{type: "any_true", conditions: question_conditions}
               end)
             }},

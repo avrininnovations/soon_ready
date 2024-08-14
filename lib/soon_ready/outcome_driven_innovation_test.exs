@@ -136,14 +136,12 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
           ]},
         ]
       })
+
       {:ok, %{survey_id: survey_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
         project_id: project_id,
         screening_questions: screening_questions,
         demographic_questions: demographic_questions,
         context_questions: context_questions,
-        raw_screening_questions: screening_questions,
-        raw_demographic_questions: demographic_questions,
-        raw_context_questions: context_questions,
       })
 
       assert_receive_event(Application, SurveyCreationRequestedV1,

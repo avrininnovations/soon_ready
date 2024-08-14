@@ -287,9 +287,6 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions,
-      raw_screening_questions: screening_questions,
-      raw_demographic_questions: demographic_questions,
-      raw_context_questions: context_questions,
     })
 
     %{survey_id: survey_id, survey: Survey.get_active!(survey_id)}

@@ -8,7 +8,7 @@ defmodule SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1 do
   attributes do
     attribute :survey_id, :uuid, allow_nil?: false, primary_key?: true, public?: true
     attribute :starting_page_id, :uuid, allow_nil?: false, public?: true
-    attribute :pages, {:array, :map}, public?: true
+    attribute :pages, {:array, SurveyPage}, public?: true
     attribute :trigger, Trigger, public?: true
   end
 
