@@ -11,12 +11,12 @@ defmodule SoonReady.SurveyManagement.Survey do
   alias SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
   alias SoonReady.SurveyManagement.DomainEvents.SurveyResponseSubmittedV1
 
-  alias SoonReady.SurveyManagement.DomainConcepts.Trigger
+  alias SoonReady.SurveyManagement.DomainConcepts.{SurveyPage, Trigger}
 
   attributes do
     attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
     attribute :starting_page_id, :uuid, allow_nil?: false, public?: true
-    attribute :pages, {:array, :map}, public?: true
+    attribute :pages, {:array, SurveyPage}, public?: true
     attribute :trigger, Trigger
   end
 
@@ -45,8 +45,12 @@ defmodule SoonReady.SurveyManagement.Survey do
   end
 
   def execute(aggregate_state, %PublishSurvey{survey_id: survey_id} = _command) do
+    pages_attribute = Ash.Resource.Info.attribute(aggregate_state, :pages)
+
+    {:ok, pages_dumped_data} = Ash.Type.dump_to_embedded(pages_attribute.type, aggregate_state.pages, pages_attribute.constraints)
+
     with {:ok, domain_event} <- DomainEvents.SurveyPublishedV1.new(%{survey_id: survey_id}),
-          {:ok, integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey_id, starting_page_id: aggregate_state.starting_page_id, pages: aggregate_state.pages, trigger: aggregate_state.trigger})
+          {:ok, integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey_id, starting_page_id: aggregate_state.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: aggregate_state.trigger})
     do
       {:ok, [domain_event, integration_event]}
     end

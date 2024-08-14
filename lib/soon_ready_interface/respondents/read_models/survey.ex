@@ -64,8 +64,18 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
     %{
       survey_id: survey_id,
       starting_page_id: starting_page_id,
-      pages: pages,
+      pages_dumped_data: pages_dumped_data,
+      trigger: trigger
     } = event
+
+    params = %{
+      survey_id: survey_id,
+      starting_page_id: starting_page_id,
+      pages_dumped_data: pages_dumped_data,
+      trigger: trigger
+    }
+
+    {:ok, %{pages: pages}} = SurveyPublishedV1.new(params)
 
     with {:ok, _active_odi_survey} <- __MODULE__.create(%{
       id: survey_id,
