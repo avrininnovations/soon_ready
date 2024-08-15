@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager do
+defmodule SoonReadyInterface.Researcher.ProcessManager.SurveyCreationProcessManager do
   use Commanded.Event.Handler,
     application: SoonReady.Application,
     name: "#{__MODULE__}"

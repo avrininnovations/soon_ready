@@ -19,7 +19,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     JobStep,
   }
 
-  alias SoonReady.OutcomeDrivenInnovation.Resources.SurveyManager
+  alias SoonReadyInterface.Researcher.ProcessManager.SurveyCreationProcessManager
 
   attributes do
     attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
@@ -70,7 +70,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     with {:ok, project_created_event} <- ProjectCreatedV1.new(%{project_id: project_id, brand_name: brand_name}),
           {:ok, market_defined_event} <- MarketDefinedV1.new(%{project_id: project_id, market: market}),
           {:ok, needs_defined_event} <- NeedsDefinedV1.new(%{project_id: project_id, job_steps: job_steps}),
-          {:ok, %{survey_id: ^survey_id}} <- SurveyManager.create_and_publish_survey(params),
+          {:ok, %{survey_id: ^survey_id}} <- SurveyCreationProcessManager.create_and_publish_survey(params),
           {:ok, survey_creation_requested_event} <- SurveyCreationRequestedV1.new(%{project_id: project_id, survey_id: survey_id})
     do
       [project_created_event, market_defined_event, needs_defined_event, survey_creation_requested_event]
