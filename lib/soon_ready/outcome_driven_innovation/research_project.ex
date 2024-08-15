@@ -14,6 +14,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     SurveyCreationSucceededV1,
   }
 
+  alias SoonReady.SurveyManagement.{DomainEvents, IntegrationEvents}
+  alias SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1
+
   alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
     Market,
     JobStep,
@@ -54,26 +57,22 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions,
+      survey: survey,
+      trigger: trigger,
+      pages_dumped_data: pages_dumped_data
     } = command
-
-    params = %{
-      project_id: project_id,
-      survey_id: survey_id,
-      market: market,
-      job_steps: job_steps,
-      screening_questions: screening_questions,
-      demographic_questions: demographic_questions,
-      context_questions: context_questions,
-      trigger: %{name: CreateSurvey, id: project_id}
-    }
 
     with {:ok, project_created_event} <- ProjectCreatedV1.new(%{project_id: project_id, brand_name: brand_name}),
           {:ok, market_defined_event} <- MarketDefinedV1.new(%{project_id: project_id, market: market}),
           {:ok, needs_defined_event} <- NeedsDefinedV1.new(%{project_id: project_id, job_steps: job_steps}),
-          {:ok, %{survey_id: ^survey_id}} <- SurveyCreationProcessManager.create_and_publish_survey(params),
-          {:ok, survey_creation_requested_event} <- SurveyCreationRequestedV1.new(%{project_id: project_id, survey_id: survey_id})
+          {:ok, survey_created_event} <- SurveyCreatedV1.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages: survey.pages, trigger: trigger}),
+          {:ok, survey_published_domain_event} <- DomainEvents.SurveyPublishedV1.new(%{survey_id: survey.survey_id}),
+          {:ok, survey_published_integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: trigger})
+
+          # {:ok, %{survey_id: ^survey_id}} <- SurveyCreationProcessManager.create_and_publish_survey(params),
+          # {:ok, survey_creation_requested_event} <- SurveyCreationRequestedV1.new(%{project_id: project_id, survey_id: survey_id})
     do
-      [project_created_event, market_defined_event, needs_defined_event, survey_creation_requested_event]
+      [project_created_event, market_defined_event, needs_defined_event, survey_created_event, survey_published_domain_event, survey_published_integration_event]
     end
   end
 
