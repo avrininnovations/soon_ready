@@ -17,12 +17,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   }
 
   def mount(_params, _session, socket) do
-    current_user = Map.get(socket.assigns, :current_user)
-
-    with %{is_researcher: true} <- current_user do
-      socket = assign(socket, :actor, current_user)
-      {:ok, socket, layout: {Layout, :layout}}
-    else
+    case Map.get(socket.assigns, :current_user) do
+      %{is_researcher: true} = current_user ->
+        socket = assign(socket, :actor, current_user)
+        {:ok, socket, layout: {Layout, :layout}}
       _ ->
         socket =
           socket
@@ -100,18 +98,13 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   def handle_info({:handle_submission, ContextQuestionsPage}, socket) do
     normalized_params = normalize(socket.assigns.params)
 
-    {:ok, %{project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_project(%{brand_name: normalized_params.brand_name})
-    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_market(%{project_id: project_id, market: normalized_params.market})
-    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_needs(%{project_id: project_id, job_steps: normalized_params.job_steps})
-
-    {:ok, %{survey_id: survey_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
-      project_id: project_id,
+    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
+      brand_name: normalized_params.brand_name,
+      market: normalized_params.market,
+      job_steps: normalized_params.job_steps,
       screening_questions: normalized_params.screening_questions,
       demographic_questions: normalized_params.demographic_questions,
       context_questions: normalized_params.context_questions,
-      raw_screening_questions: normalized_params.raw_screening_questions,
-      raw_demographic_questions: normalized_params.raw_demographic_questions,
-      raw_context_questions: normalized_params.raw_context_questions,
     })
 
     socket =
@@ -119,8 +112,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       |> push_redirect(to: ~p"/")
       |> put_flash(:info, "Survey published successfully!")
     {:noreply, socket}
-
-    # TODO: Wait for SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1 with this project_id to confirm?
   end
 
   defp normalize(params) do
@@ -165,9 +156,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions,
-      raw_screening_questions: screening_questions,
-      raw_demographic_questions: demographic_questions,
-      raw_context_questions: context_questions,
     }
   end
 end

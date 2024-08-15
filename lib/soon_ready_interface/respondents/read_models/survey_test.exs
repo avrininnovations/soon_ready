@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
 
   alias SoonReady.Application
   alias SoonReadyInterface.Respondents.ReadModels.Survey
-  alias SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1
+  alias SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1
 
 
   @survey_params %{
@@ -81,10 +81,9 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
       %{type: "multiple_choice_question", prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
     ]
 
-    {:ok, %{project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_project(%{brand_name: "A Big Brand"})
-    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_market(%{project_id: project_id, market: %{job_executor: "Persons", job_to_be_done: "Do what persons do"}})
-    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_needs(%{
-      project_id: project_id,
+    {:ok, %{survey_id: survey_id, project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
+      brand_name: "A Big Brand",
+      market: %{job_executor: "Persons", job_to_be_done: "Do what persons do"},
       job_steps: [
         %{name: "Job Step 1", desired_outcomes: [
           "Minimize the time it takes to do A",
@@ -94,21 +93,15 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
           "Minimize the time it takes to do C",
           "Minimize the likelihood that D occurs"
         ]},
-      ]
-    })
-    {:ok, %{survey_id: survey_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
-      project_id: project_id,
+      ],
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions,
-      raw_screening_questions: screening_questions,
-      raw_demographic_questions: demographic_questions,
-      raw_context_questions: context_questions,
     })
 
 
-    assert_receive_event(Application, SurveyCreationSucceededV1,
-      fn event -> event.project_id == project_id end,
+    assert_receive_event(Application, SurveyPublishedV1,
+      fn event -> event.survey_id == survey_id end,
       fn event ->
         {:ok, survey} = Survey.get_active(event.survey_id)
         assert survey.id == event.survey_id
