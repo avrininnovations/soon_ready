@@ -1,11 +1,11 @@
-defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcherTest do
+defmodule SoonReadyInterface.Admin.Commands.RegisterResearcherTest do
   use SoonReady.DataCase
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
 
   test "WHEN: An Admin tries to register a reseacher, THEN: A researcher is registered" do
-    {:ok, command} = SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher.dispatch(%{
+    {:ok, command} = SoonReadyInterface.Admin.Commands.RegisterResearcher.dispatch(%{
       first_name: "First",
       last_name: "Last",
       username: "username",

@@ -17,7 +17,7 @@ defmodule SoonReady.Application do
 
   router SoonReady.OutcomeDrivenInnovation.ResearchProject
   router SoonReady.SurveyManagement.Survey
-  router SoonReady.IdentityAndAccessManagement.Researcher
+  router SoonReadyInterface.Admin.Commands.Handlers.Researcher
 
   router SoonReady.Onboarding.Commands.Router
 

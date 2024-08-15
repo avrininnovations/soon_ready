@@ -1,11 +1,11 @@
 defmodule SoonReady.IdentityAndAccessManagement do
   use Ash.Domain
 
-  alias SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher
+  alias SoonReadyInterface.Admin.Commands.RegisterResearcher
 
   resources do
     # Aggregates
-    resource SoonReady.IdentityAndAccessManagement.Researcher
+    resource SoonReadyInterface.Admin.Commands.Handlers.Researcher
 
     # Resources
     resource SoonReady.IdentityAndAccessManagement.Resources.User
@@ -13,7 +13,7 @@ defmodule SoonReady.IdentityAndAccessManagement do
     resource SoonReady.IdentityAndAccessManagement.Resources.Researcher
 
     # Commands
-    resource SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
+    resource SoonReadyInterface.Admin.Commands.RegisterResearcher do
       define :initiate_researcher_registration, action: :dispatch
     end
 

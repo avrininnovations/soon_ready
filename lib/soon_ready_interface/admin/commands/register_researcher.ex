@@ -1,4 +1,4 @@
-defmodule SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher do
+defmodule SoonReadyInterface.Admin.Commands.RegisterResearcher do
   use Ash.Resource, domain: SoonReady.IdentityAndAccessManagement
 
   alias SoonReady.IdentityAndAccessManagement.Resources.{User, Researcher}

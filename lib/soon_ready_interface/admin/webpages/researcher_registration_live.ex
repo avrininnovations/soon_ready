@@ -51,7 +51,7 @@ defmodule SoonReadyInterface.Admin.Webpages.ResearcherRegistrationLive do
           password_confirmation: password_confirmation
         }
 
-        {:ok, command} = SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher.dispatch(params)
+        {:ok, command} = SoonReadyInterface.Admin.Commands.RegisterResearcher.dispatch(params)
 
         socket =
           socket
