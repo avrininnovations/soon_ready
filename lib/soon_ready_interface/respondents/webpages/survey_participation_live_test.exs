@@ -267,10 +267,9 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       %{type: "multiple_choice_question", prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
     ]
 
-    {:ok, %{project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_project(%{brand_name: "A Big Brand"})
-    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_market(%{project_id: project_id, market: %{job_executor: "Persons", job_to_be_done: "Do what persons do"}})
-    {:ok, _command} = SoonReady.OutcomeDrivenInnovation.define_needs(%{
-      project_id: project_id,
+    {:ok, %{survey_id: survey_id, project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
+      brand_name: "A Big Brand",
+      market: %{job_executor: "Persons", job_to_be_done: "Do what persons do"},
       job_steps: [
         %{name: "Job Step 1", desired_outcomes: [
           "Minimize the time it takes to do A",
@@ -280,10 +279,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
           "Minimize the time it takes to do C",
           "Minimize the likelihood that D occurs"
         ]},
-      ]
-    })
-    {:ok, %{survey_id: survey_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
-      project_id: project_id,
+      ],
       screening_questions: screening_questions,
       demographic_questions: demographic_questions,
       context_questions: context_questions,

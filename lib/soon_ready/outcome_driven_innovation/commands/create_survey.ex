@@ -9,7 +9,10 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
   alias SoonReady.SurveyManagement.DomainConcepts.Question
 
   attributes do
-    attribute :project_id, :uuid, primary_key?: true, allow_nil?: false
+    uuid_primary_key :project_id
+    attribute :brand_name, :string
+    attribute :market, Market
+    attribute :job_steps, {:array, JobStep}
     attribute :survey_id, :uuid, allow_nil?: false, default: &Ash.UUID.generate/0
     attribute :screening_questions, {:array, Question}
     attribute :demographic_questions, {:array, Question}
@@ -18,7 +21,9 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
 
   actions do
     default_accept [
-      :project_id,
+      :brand_name,
+      :market,
+      :job_steps,
       :survey_id,
       :screening_questions,
       :demographic_questions,
