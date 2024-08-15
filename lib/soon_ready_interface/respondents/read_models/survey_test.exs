@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
 
   alias SoonReady.Application
   alias SoonReadyInterface.Respondents.ReadModels.Survey
-  alias SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1
+  alias SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1
 
 
   @survey_params %{
@@ -100,8 +100,8 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
     })
 
 
-    assert_receive_event(Application, SurveyCreationSucceededV1,
-      fn event -> event.project_id == project_id end,
+    assert_receive_event(Application, SurveyPublishedV1,
+      fn event -> event.survey_id == survey_id end,
       fn event ->
         {:ok, survey} = Survey.get_active(event.survey_id)
         assert survey.id == event.survey_id
