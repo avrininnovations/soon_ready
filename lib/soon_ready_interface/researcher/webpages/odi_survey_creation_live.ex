@@ -112,8 +112,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
       |> push_redirect(to: ~p"/")
       |> put_flash(:info, "Survey published successfully!")
     {:noreply, socket}
-
-    # TODO: Wait for SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1 with this project_id to confirm?
   end
 
   defp normalize(params) do
