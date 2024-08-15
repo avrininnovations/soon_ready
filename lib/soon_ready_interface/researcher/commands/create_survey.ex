@@ -1,5 +1,5 @@
-defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
-  use Ash.Resource, domain: SoonReady.OutcomeDrivenInnovation
+defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
+  use Ash.Resource, domain: SoonReadyInterface.Researcher
 
   alias SoonReady.Application
   alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
@@ -70,7 +70,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey do
       Ash.Changeset.change_attribute(changeset, :pages_dumped_data, pages_dumped_data)
     end
   end
-  
+
   actions do
     default_accept [
       :brand_name,

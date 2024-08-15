@@ -59,7 +59,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
   end
 
   test "GIVEN: An ODI survey was created, THEN: The survey is active", %{user: user} do
-    # {:ok, %{project_id: project_id}} = SoonReady.OutcomeDrivenInnovation.create_survey(@survey_params)
+    # {:ok, %{project_id: project_id}} = SoonReadyInterface.Researcher.create_survey(@survey_params)
 
 
     screening_questions = [
@@ -81,7 +81,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.SurveyTest do
       %{type: "multiple_choice_question", prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
     ]
 
-    {:ok, %{survey_id: survey_id, project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
+    {:ok, %{survey_id: survey_id, project_id: project_id} = _command} = SoonReadyInterface.Researcher.create_survey(%{
       brand_name: "A Big Brand",
       market: %{job_executor: "Persons", job_to_be_done: "Do what persons do"},
       job_steps: [

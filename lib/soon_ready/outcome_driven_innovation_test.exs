@@ -127,7 +127,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
         %{type: "multiple_choice_question", prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
       ]
 
-      {:ok, %{survey_id: survey_id, project_id: project_id} = _command} = SoonReady.OutcomeDrivenInnovation.create_survey(%{
+      {:ok, %{survey_id: survey_id, project_id: project_id} = _command} = SoonReadyInterface.Researcher.create_survey(%{
         brand_name: "A Big Brand",
         market: %{job_executor: "Persons", job_to_be_done: "Do what persons do"},
         job_steps: [
