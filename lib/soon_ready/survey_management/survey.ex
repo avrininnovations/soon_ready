@@ -5,7 +5,6 @@ defmodule SoonReady.SurveyManagement.Survey do
   alias SoonReady.SurveyManagement.DomainEvents
   alias SoonReady.SurveyManagement.IntegrationEvents
 
-  alias SoonReady.SurveyManagement.Commands.{CreateSurvey, PublishSurvey}
   alias SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1
 
   alias SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
@@ -35,26 +34,7 @@ defmodule SoonReady.SurveyManagement.Survey do
     define :update
   end
 
-  dispatch CreateSurvey, to: __MODULE__, identity: :survey_id
-  dispatch PublishSurvey, to: __MODULE__, identity: :survey_id
   dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
-
-  # # TODO: Do something about this need to use raw data
-  def execute(_aggregate_state, %CreateSurvey{survey_id: survey_id, starting_page_id: starting_page_id, pages: pages, trigger: trigger} = _command) do
-    SurveyCreatedV1.new(%{survey_id: survey_id, starting_page_id: starting_page_id, pages: pages, trigger: trigger})
-  end
-
-  def execute(aggregate_state, %PublishSurvey{survey_id: survey_id} = _command) do
-    pages_attribute = Ash.Resource.Info.attribute(aggregate_state, :pages)
-
-    {:ok, pages_dumped_data} = Ash.Type.dump_to_embedded(pages_attribute.type, aggregate_state.pages, pages_attribute.constraints)
-
-    with {:ok, domain_event} <- DomainEvents.SurveyPublishedV1.new(%{survey_id: survey_id}),
-          {:ok, integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey_id, starting_page_id: aggregate_state.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: aggregate_state.trigger})
-    do
-      {:ok, [domain_event, integration_event]}
-    end
-  end
 
   def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, raw_responses_data: raw_responses_data} = command) do
     SurveyResponseSubmittedV1.new(%{

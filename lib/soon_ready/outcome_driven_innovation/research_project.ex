@@ -4,14 +4,11 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
 
   alias SoonReady.OutcomeDrivenInnovation.Commands.{
     CreateSurvey,
-    MarkSurveyCreationAsSuccessful,
   }
   alias SoonReady.OutcomeDrivenInnovation.DomainEvents.{
     ProjectCreatedV1,
     MarketDefinedV1,
     NeedsDefinedV1,
-    SurveyCreationRequestedV1,
-    SurveyCreationSucceededV1,
   }
 
   alias SoonReady.SurveyManagement.{DomainEvents, IntegrationEvents}
@@ -43,7 +40,6 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
   end
 
   dispatch CreateSurvey, to: __MODULE__, identity: :project_id
-  dispatch MarkSurveyCreationAsSuccessful, to: __MODULE__, identity: :project_id
 
   def execute(aggregate_state, %CreateSurvey{} = command) do
     %{
@@ -69,10 +65,6 @@ defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
     do
       [project_created_event, market_defined_event, needs_defined_event, survey_created_event, survey_published_domain_event, survey_published_integration_event]
     end
-  end
-
-  def execute(_aggregate_state, %MarkSurveyCreationAsSuccessful{project_id: project_id, survey_id: survey_id} = command) do
-    SurveyCreationSucceededV1.new(%{project_id: project_id, survey_id: survey_id})
   end
 
   def apply(state, _event) do

@@ -7,13 +7,10 @@ defmodule SoonReady.OutcomeDrivenInnovation do
     resource SoonReady.OutcomeDrivenInnovation.ResearchProject
 
     resource SoonReady.OutcomeDrivenInnovation.Commands.CreateSurvey
-    resource SoonReady.OutcomeDrivenInnovation.Commands.MarkSurveyCreationAsSuccessful
 
     resource SoonReady.OutcomeDrivenInnovation.DomainEvents.ProjectCreatedV1
     resource SoonReady.OutcomeDrivenInnovation.DomainEvents.MarketDefinedV1
     resource SoonReady.OutcomeDrivenInnovation.DomainEvents.NeedsDefinedV1
-    resource SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationRequestedV1
-    resource SoonReady.OutcomeDrivenInnovation.DomainEvents.SurveyCreationSucceededV1
   end
 
   authorization do
