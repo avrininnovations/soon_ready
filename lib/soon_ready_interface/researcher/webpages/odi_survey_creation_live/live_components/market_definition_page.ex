@@ -33,7 +33,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
 
   @impl true
   def update(_assigns, socket) do
-    socket = assign(socket, :form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, domain: SoonReadyInterface.Researcher.Domain))
+    socket = assign(socket, :form, AshPhoenix.Form.for_create(MarketDefinitionForm, :create, domain: SoonReadyInterface.Researcher))
 
     {:ok, socket}
   end
