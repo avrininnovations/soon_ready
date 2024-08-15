@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Admin.Webpages.ResearcherRegistrationLive do
   alias SoonReadyInterface.Admin.Webpages.ResearcherRegistrationLive.Forms.RegisterResearcherForm
 
   def mount(_params, _session, socket) do
-    form = AshPhoenix.Form.for_create(RegisterResearcherForm, :create, domain: SoonReadyInterface.Admin.Domain)
+    form = AshPhoenix.Form.for_create(RegisterResearcherForm, :create, domain: SoonReadyInterface.Admin)
 
     {:ok, assign(socket, form: form)}
   end

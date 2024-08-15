@@ -23,7 +23,7 @@ config :soon_ready, ash_domains: [
 
   SoonReadyInterface.Researcher.Domain,
   SoonReadyInterface.Respondents.Setup.Domain,
-  SoonReadyInterface.Admin.Domain,
+  SoonReadyInterface.Admin,
 ]
 
 config :soon_ready, token_signing_secret: "super secret"

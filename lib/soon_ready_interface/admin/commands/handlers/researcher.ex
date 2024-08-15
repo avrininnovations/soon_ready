@@ -1,5 +1,5 @@
 defmodule SoonReadyInterface.Admin.Commands.Handlers.Researcher do
-  use Ash.Resource, domain: SoonReady.IdentityAndAccessManagement
+  use Ash.Resource, domain: SoonReadyInterface.Admin
   use Commanded.Commands.Router
 
   alias SoonReadyInterface.Admin.Commands.RegisterResearcher

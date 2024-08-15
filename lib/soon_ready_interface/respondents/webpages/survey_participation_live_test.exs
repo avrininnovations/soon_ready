@@ -244,7 +244,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLiveTest do
       password: "outatime1985",
       password_confirmation: "outatime1985",
     }
-    {:ok, %{researcher_id: researcher_id} = command} = SoonReady.IdentityAndAccessManagement.initiate_researcher_registration(params)
+    {:ok, %{researcher_id: researcher_id} = command} = SoonReadyInterface.Admin.initiate_researcher_registration(params)
     {:ok, user} = SoonReady.IdentityAndAccessManagement.Resources.User.sign_in_with_password(params.username, params.password)
 
 
