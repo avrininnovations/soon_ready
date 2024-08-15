@@ -16,7 +16,7 @@ defmodule SoonReady.Application do
     ]
 
   router SoonReadyInterface.Researcher.Commands.Handlers.ResearchProject
-  router SoonReady.SurveyManagement.Survey
+  router SoonReadyInterface.Respondents.Commands.Handlers.Survey
   router SoonReadyInterface.Admin.Commands.Handlers.Researcher
 
   router SoonReady.Onboarding.Commands.Router

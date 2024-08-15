@@ -1,5 +1,5 @@
-defmodule SoonReady.SurveyManagement.Commands.SubmitSurveyResponse do
-  use Ash.Resource, domain: SoonReady.SurveyManagement
+defmodule SoonReadyInterface.Respondents.Commands.SubmitSurveyResponse do
+  use Ash.Resource, domain: SoonReadyInterface.Respondents
 
   alias SoonReady.Application
   alias SoonReady.SurveyManagement.DomainConcepts.Response
@@ -17,7 +17,7 @@ defmodule SoonReady.SurveyManagement.Commands.SubmitSurveyResponse do
       :responses,
       :raw_responses_data,
     ]
-    
+
     create :dispatch do
       argument :responses, {:array, :map}, allow_nil?: false
 

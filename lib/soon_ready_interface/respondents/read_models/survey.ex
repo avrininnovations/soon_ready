@@ -2,7 +2,7 @@ defmodule SoonReadyInterface.Respondents.ReadModels.Survey do
   # TODO: Restore to postgres
   # use Ash.Resource, data_layer: AshPostgres.DataLayer
   use Ash.Resource,
-    domain: SoonReadyInterface.Respondents.Setup.Domain,
+    domain: SoonReadyInterface.Respondents,
     data_layer: AshPostgres.DataLayer
     # data_layer: Ash.DataLayer.Ets
 

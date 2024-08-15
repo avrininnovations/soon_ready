@@ -1,5 +1,5 @@
-defmodule SoonReady.SurveyManagement.Survey do
-  use Ash.Resource, domain: SoonReady.SurveyManagement
+defmodule SoonReadyInterface.Respondents.Commands.Handlers.Survey do
+  use Ash.Resource, domain: SoonReadyInterface.Respondents
   use Commanded.Commands.Router
 
   alias SoonReady.SurveyManagement.DomainEvents
@@ -7,7 +7,7 @@ defmodule SoonReady.SurveyManagement.Survey do
 
   alias SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1
 
-  alias SoonReady.SurveyManagement.Commands.SubmitSurveyResponse
+  alias SoonReadyInterface.Respondents.Commands.SubmitSurveyResponse
   alias SoonReady.SurveyManagement.DomainEvents.SurveyResponseSubmittedV1
 
   alias SoonReady.SurveyManagement.DomainConcepts.{SurveyPage, Trigger}
