@@ -12,6 +12,6 @@ defmodule SoonReadyInterface.Admin do
     end
 
     # Command Handlers
-    resource SoonReadyInterface.Admin.Commands.Handler
+    resource SoonReadyInterface.Admin.Commands.Aggregate
   end
 end

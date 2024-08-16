@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Admin.Commands.Handler do
+defmodule SoonReadyInterface.Admin.Commands.Aggregate do
   use Ash.Resource, domain: SoonReadyInterface.Admin
   use Commanded.Commands.Router
 
