@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Respondent.ReadModels.SurveyTest do
 
   alias SoonReady.Application
   alias SoonReadyInterface.Respondent.ReadModels.Survey
-  alias SoonReady.SurveyManagement.V1.IntegrationEvents.SurveyPublished
+  alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished
 
 
   @survey_params %{

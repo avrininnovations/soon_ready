@@ -4,8 +4,6 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.V1.DomainEvents
-  alias SoonReady.SurveyManagement.V1.IntegrationEvents
 
   alias SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.{
     ProjectCreated,

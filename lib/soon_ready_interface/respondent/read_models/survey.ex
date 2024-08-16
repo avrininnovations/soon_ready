@@ -11,7 +11,7 @@ defmodule SoonReadyInterface.Respondent.ReadModels.Survey do
     name: "#{__MODULE__}",
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.SurveyManagement.V1.IntegrationEvents.SurveyPublished
+  alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished
   alias SoonReady.SurveyManagement.V1.DomainConcepts.SurveyPage
 
   attributes do

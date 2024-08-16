@@ -9,8 +9,7 @@ defmodule SoonReadyInterface.Researcher.Commands.Handler do
     NeedsDefined,
   }
 
-  alias SoonReady.SurveyManagement.V1.{DomainEvents, IntegrationEvents}
-  alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyCreated
+  alias SoonReady.SurveyManagement.V1.DomainEvents.{SurveyCreated, SurveyPublished}
 
   alias SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.{
     Market,
@@ -58,10 +57,9 @@ defmodule SoonReadyInterface.Researcher.Commands.Handler do
           {:ok, market_defined_event} <- MarketDefined.new(%{project_id: project_id, market: market}),
           {:ok, needs_defined_event} <- NeedsDefined.new(%{project_id: project_id, job_steps: job_steps}),
           {:ok, survey_created_event} <- SurveyCreated.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages: survey.pages, trigger: trigger}),
-          {:ok, survey_published_domain_event} <- DomainEvents.SurveyPublished.new(%{survey_id: survey.survey_id}),
-          {:ok, survey_published_integration_event} <- IntegrationEvents.SurveyPublished.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: trigger})
+          {:ok, survey_published_event} <- SurveyPublished.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: trigger})
     do
-      [project_created_event, market_defined_event, needs_defined_event, survey_created_event, survey_published_domain_event, survey_published_integration_event]
+      [project_created_event, market_defined_event, needs_defined_event, survey_created_event, survey_published_event]
     end
   end
 

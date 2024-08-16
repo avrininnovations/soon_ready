@@ -6,9 +6,6 @@ defmodule SoonReady.SurveyManagement do
     resource SoonReady.SurveyManagement.V1.DomainEvents.SurveyCreated
     resource SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished
     resource SoonReady.SurveyManagement.V1.DomainEvents.SurveyResponseSubmitted
-
-    # Integration Events
-    resource SoonReady.SurveyManagement.V1.IntegrationEvents.SurveyPublished
   end
 
   authorization do
