@@ -1,4 +1,4 @@
-# defmodule SoonReady.OutcomeDrivenInnovation.DomainConcepts.Survey.QuestionResponse do
+# defmodule SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.Survey.QuestionResponse do
 #   # TODO: Rename to SingleValueQuestionResponse
 #   # TODO: Create MultiValueQuestionResponse, :responses
 #   # TODO: GroupQuestionResponse, :group_prompt, :question_responses

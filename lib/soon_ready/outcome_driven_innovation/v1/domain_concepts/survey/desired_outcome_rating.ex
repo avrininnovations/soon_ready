@@ -1,4 +1,4 @@
-# defmodule SoonReady.OutcomeDrivenInnovation.DomainConcepts.Survey.DesiredOutcomeRating do
+# defmodule SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.Survey.DesiredOutcomeRating do
 #   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
 #   attributes do

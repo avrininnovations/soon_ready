@@ -3,7 +3,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.V1.Events.NeedsDefined do
     domain: SoonReady.OutcomeDrivenInnovation,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.JobStep
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.JobStep
 
   attributes do
     attribute :project_id, :uuid, allow_nil?: false, primary_key?: true, public?: true

@@ -3,7 +3,7 @@ defmodule SoonReady.OutcomeDrivenInnovation.V1.Events.MarketDefined do
     domain: SoonReady.OutcomeDrivenInnovation,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.Market
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.Market
 
   attributes do
     attribute :project_id, :uuid, allow_nil?: false, primary_key?: true, public?: true

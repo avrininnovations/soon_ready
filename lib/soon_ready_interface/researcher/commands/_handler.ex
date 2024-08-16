@@ -12,7 +12,7 @@ defmodule SoonReadyInterface.Researcher.Commands.Handler do
   alias SoonReady.SurveyManagement.{DomainEvents, IntegrationEvents}
   alias SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1
 
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.{
     Market,
     JobStep,
   }

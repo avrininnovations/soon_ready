@@ -1,4 +1,4 @@
-# defmodule SoonReady.OutcomeDrivenInnovation.DomainConcepts.Survey.ScreeningQuestion do
+# defmodule SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.Survey.ScreeningQuestion do
 #   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
 #   alias __MODULE__.Option

@@ -2,7 +2,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
   use Ash.Resource, domain: SoonReadyInterface.Researcher
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.{
     Market,
     JobStep,
   }

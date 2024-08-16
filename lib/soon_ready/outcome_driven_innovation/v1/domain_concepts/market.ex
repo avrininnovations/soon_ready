@@ -1,4 +1,4 @@
-defmodule SoonReady.OutcomeDrivenInnovation.DomainConcepts.Market do
+defmodule SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.Market do
   use Ash.Resource, data_layer: :embedded, extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   attributes do
