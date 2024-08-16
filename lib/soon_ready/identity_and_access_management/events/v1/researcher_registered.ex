@@ -133,17 +133,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
     change load(:password_confirmation)
   end
 
-  preparations do
-    prepare fn query, _context ->
-      query
-      |> Ash.Query.load(:first_name)
-      |> Ash.Query.load(:last_name)
-      |> Ash.Query.load(:username)
-      |> Ash.Query.load(:password)
-      |> Ash.Query.load(:password_confirmation)
-    end
-  end
-
   def encrypt(changeset, plain_field, cipher_field, encryption_key) do
     plain_text =
       changeset

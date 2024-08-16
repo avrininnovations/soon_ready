@@ -26,6 +26,9 @@ defmodule SoonReadyInterface.Admin.Commands.RegisterResearcher do
     create :dispatch do
       primary? true
 
+      # TODO: Validate username is not already taken
+      # Use a ETS based read model
+
       change fn changeset, context ->
         Ash.Changeset.after_action(changeset, fn changeset, command ->
           with :ok <- SoonReady.Application.dispatch(command) do
