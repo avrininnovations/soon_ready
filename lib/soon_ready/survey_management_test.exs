@@ -4,7 +4,7 @@
 #   import Commanded.Assertions.EventAssertions
 
 #   alias SoonReady.Application
-#   alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1, SurveyResponseSubmittedV1}
+#   alias SoonReady.SurveyManagement.V1.DomainEvents.{SurveyCreated, SurveyPublished, SurveyResponseSubmitted}
 
 #   @old_survey_details %{
 #     brand: "A Big Brand",
@@ -130,7 +130,7 @@
 #       {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-#       assert_receive_event(Application, SurveyResponseSubmittedV1,
+#       assert_receive_event(Application, SurveyResponseSubmitted,
 #         fn event -> event.response_id == response_id end,
 #         fn event ->
 #           assert event.survey_id == survey_id
@@ -166,7 +166,7 @@
 #       {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-#       assert_receive_event(Application, SurveyResponseSubmittedV1,
+#       assert_receive_event(Application, SurveyResponseSubmitted,
 #         fn event -> event.response_id == response_id end,
 #         fn event ->
 #           assert event.survey_id == survey_id
@@ -202,7 +202,7 @@
 #       {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-#       assert_receive_event(Application, SurveyResponseSubmittedV1,
+#       assert_receive_event(Application, SurveyResponseSubmitted,
 #         fn event -> event.response_id == response_id end,
 #         fn event ->
 #           assert event.survey_id == survey_id
@@ -238,7 +238,7 @@
 #       {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-#       assert_receive_event(Application, SurveyResponseSubmittedV1,
+#       assert_receive_event(Application, SurveyResponseSubmitted,
 #         fn event -> event.response_id == response_id end,
 #         fn event ->
 #           assert event.survey_id == survey_id
@@ -288,7 +288,7 @@
 #       {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-#       assert_receive_event(Application, SurveyResponseSubmittedV1,
+#       assert_receive_event(Application, SurveyResponseSubmitted,
 #         fn event -> event.response_id == response_id end,
 #         fn event ->
 #           assert event.survey_id == survey_id
@@ -333,7 +333,7 @@
 #       {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-#       assert_receive_event(Application, SurveyResponseSubmittedV1,
+#       assert_receive_event(Application, SurveyResponseSubmitted,
 #         fn event -> event.response_id == response_id end,
 #         fn event ->
 #           assert event.survey_id == survey_id
@@ -395,7 +395,7 @@
 #     {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
 
 
-#     assert_receive_event(Application, SurveyResponseSubmittedV1,
+#     assert_receive_event(Application, SurveyResponseSubmitted,
 #       fn event -> event.response_id == response_id end,
 #       fn event ->
 #         assert event.survey_id == survey_id

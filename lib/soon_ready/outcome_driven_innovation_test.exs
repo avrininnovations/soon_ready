@@ -4,8 +4,8 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
   import Commanded.Assertions.EventAssertions
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.DomainEvents
-  alias SoonReady.SurveyManagement.IntegrationEvents
+  alias SoonReady.SurveyManagement.V1.DomainEvents
+  alias SoonReady.SurveyManagement.V1.IntegrationEvents
 
   alias SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.{
     ProjectCreated,
@@ -13,7 +13,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
     NeedsDefined,
   }
 
-  alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
+  alias SoonReady.SurveyManagement.V1.DomainEvents.{SurveyCreated, SurveyPublished}
 
 
   @survey_details %{
@@ -161,12 +161,12 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
         fn _event -> :ok end
       )
 
-      assert_receive_event(Application, SurveyCreatedV1,
+      assert_receive_event(Application, SurveyCreated,
         fn event -> event.survey_id == survey_id end,
         fn _event -> :ok end
       )
 
-      assert_receive_event(Application, SurveyPublishedV1,
+      assert_receive_event(Application, SurveyPublished,
         fn event -> event.survey_id == survey_id end,
         fn _event -> :ok end
       )

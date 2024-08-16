@@ -11,7 +11,7 @@ defmodule SoonReadyInterface.Respondent.ReadModels.Survey do
     name: "#{__MODULE__}",
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
-  alias SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1
+  alias SoonReady.SurveyManagement.V1.IntegrationEvents.SurveyPublished
   alias SoonReady.SurveyManagement.V1.DomainConcepts.SurveyPage
 
   attributes do
@@ -60,7 +60,7 @@ defmodule SoonReadyInterface.Respondent.ReadModels.Survey do
 
 
   # TODO: Check
-  def handle(%SurveyPublishedV1{} = event, _metadata) do
+  def handle(%SurveyPublished{} = event, _metadata) do
     %{
       survey_id: survey_id,
       starting_page_id: starting_page_id,
@@ -75,7 +75,7 @@ defmodule SoonReadyInterface.Respondent.ReadModels.Survey do
       trigger: trigger
     }
 
-    {:ok, %{pages: pages}} = SurveyPublishedV1.new(params)
+    {:ok, %{pages: pages}} = SurveyPublished.new(params)
 
     with {:ok, _active_odi_survey} <- __MODULE__.create(%{
       id: survey_id,
