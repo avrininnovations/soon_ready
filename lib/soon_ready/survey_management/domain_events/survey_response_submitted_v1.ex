@@ -4,9 +4,9 @@ defmodule SoonReady.SurveyManagement.DomainEvents.SurveyResponseSubmittedV1 do
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
   require Logger
-  alias SoonReady.SurveyManagement.DomainConcepts.Response
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.Response
 
-  # alias SoonReady.SurveyManagement.DomainConcepts.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
+  # alias SoonReady.SurveyManagement.V1.DomainConcepts.{Participant, HashedParticipant, QuestionResponse, JobStepRating}
   # alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
 

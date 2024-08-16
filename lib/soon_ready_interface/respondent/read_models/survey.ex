@@ -12,7 +12,7 @@ defmodule SoonReadyInterface.Respondent.ReadModels.Survey do
     consistency: Application.get_env(:soon_ready, :consistency, :eventual)
 
   alias SoonReady.SurveyManagement.IntegrationEvents.SurveyPublishedV1
-  alias SoonReady.SurveyManagement.DomainConcepts.SurveyPage
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.SurveyPage
 
   attributes do
     attribute :id, :uuid, allow_nil?: false, primary_key?: true

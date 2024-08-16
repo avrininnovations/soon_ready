@@ -3,7 +3,7 @@ defmodule SoonReady.SurveyManagement.DomainEvents.SurveyCreatedV1 do
     domain: SoonReady.SurveyManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  alias SoonReady.SurveyManagement.DomainConcepts.{SurveyPage, Trigger}
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.{SurveyPage, Trigger}
 
   attributes do
     attribute :survey_id, :uuid, allow_nil?: false, primary_key?: true, public?: true

@@ -10,7 +10,7 @@ defmodule SoonReadyInterface.Respondent.Commands.Handler do
   alias SoonReadyInterface.Respondent.Commands.SubmitSurveyResponse
   alias SoonReady.SurveyManagement.DomainEvents.SurveyResponseSubmittedV1
 
-  alias SoonReady.SurveyManagement.DomainConcepts.{SurveyPage, Trigger}
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.{SurveyPage, Trigger}
 
   attributes do
     attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false

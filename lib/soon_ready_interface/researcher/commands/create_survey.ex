@@ -6,7 +6,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
     Market,
     JobStep,
   }
-  alias SoonReady.SurveyManagement.DomainConcepts.{
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.{
     Question,
     Survey,
     SurveyPage,
