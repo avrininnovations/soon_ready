@@ -8,7 +8,7 @@ defmodule SoonReadyInterface.Respondent.ReadModels.SurveyTest do
 
 
   @survey_params %{
-    survey_id: Ecto.UUID.generate(),
+    survey_id: Ash.UUID.generate(),
     brand: "A Big Brand",
     market: %{
       job_executor: "Persons",

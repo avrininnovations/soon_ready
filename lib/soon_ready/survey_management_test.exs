@@ -103,8 +103,8 @@
 
 #   describe "Test Each Question Type" do
 #     test "GIVEN: A survey with a short answer question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-#       page_id = Ecto.UUID.generate()
-#       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id,
+#       page_id = Ash.UUID.generate()
+#       survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_id,
 #         pages: [
 #           %{
 #             id: page_id,
@@ -141,8 +141,8 @@
 #     end
 
 #     test "GIVEN: A survey with a paragraph question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-#       page_id = Ecto.UUID.generate()
-#       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id, pages: [
+#       page_id = Ash.UUID.generate()
+#       survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_id, pages: [
 #         %{
 #           id: page_id,
 #           title: "Page Title",
@@ -177,8 +177,8 @@
 #     end
 
 #     test "GIVEN: A survey with a multiple choice question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-#       page_id = Ecto.UUID.generate()
-#       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id, pages: [
+#       page_id = Ash.UUID.generate()
+#       survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_id, pages: [
 #         %{
 #           id: page_id,
 #           title: "Page Title",
@@ -213,8 +213,8 @@
 #     end
 
 #     test "GIVEN: A survey with a checkbox question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-#       page_id = Ecto.UUID.generate()
-#       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id, pages: [
+#       page_id = Ash.UUID.generate()
+#       survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_id, pages: [
 #         %{
 #           id: page_id,
 #           title: "Page Title",
@@ -248,8 +248,8 @@
 #     end
 
 #     test "GIVEN: A survey with a short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-#       page_id = Ecto.UUID.generate()
-#       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id, pages: [
+#       page_id = Ash.UUID.generate()
+#       survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_id, pages: [
 #         %{
 #           id: page_id,
 #           title: "Page Title",
@@ -271,8 +271,8 @@
 
 #       %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey, 0, 0)
 
-#       batch_1_response_id = Ecto.UUID.generate()
-#       batch_2_response_id = Ecto.UUID.generate()
+#       batch_1_response_id = Ash.UUID.generate()
+#       batch_2_response_id = Ash.UUID.generate()
 
 #       survey_response = %{
 #         survey_id: survey_id,
@@ -299,8 +299,8 @@
 #     end
 
 #     test "GIVEN: A survey with a multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-#       page_id = Ecto.UUID.generate()
-#       survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_id, pages: [
+#       page_id = Ash.UUID.generate()
+#       survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_id, pages: [
 #         %{
 #           id: page_id,
 #           title: "Page Title",
@@ -345,12 +345,12 @@
 #   end
 
 #   test "GIVEN: A survey with three pages has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-#     page_1_id = Ecto.UUID.generate()
-#     page_2_id = Ecto.UUID.generate()
-#     page_3_id = Ecto.UUID.generate()
-#     final_page_id = Ecto.UUID.generate()
+#     page_1_id = Ash.UUID.generate()
+#     page_2_id = Ash.UUID.generate()
+#     page_3_id = Ash.UUID.generate()
+#     final_page_id = Ash.UUID.generate()
 
-#     survey = %{survey_id: Ecto.UUID.generate(), starting_page_id: page_1_id, pages: [
+#     survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_1_id, pages: [
 #       %{
 #         id: page_1_id,
 #         title: "Page 1 Title",
