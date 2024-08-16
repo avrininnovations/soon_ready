@@ -35,11 +35,23 @@ defmodule SoonReady.SurveyManagement.V1.DomainEvents.SurveyCreated do
 
     create :new
 
-    update :regenerate
+    create :regenerate do
+      argument :event, :struct, constraints: [instance_of: __MODULE__], allow_nil?: false
+
+      change fn changeset, _context ->
+        event = Ash.Changeset.get_argument(changeset, :event)
+
+        changeset
+        |> Ash.Changeset.change_attribute(:survey_id, event.survey_id)
+        |> Ash.Changeset.change_attribute(:starting_page_id, event.starting_page_id)
+        |> Ash.Changeset.change_attribute(:pages_dumped_data, event.pages_dumped_data)
+        |> Ash.Changeset.change_attribute(:trigger, event.trigger)
+      end
+    end
   end
 
   code_interface do
     define :new
-    define :regenerate
+    define :regenerate, args: [:event]
   end
 end
