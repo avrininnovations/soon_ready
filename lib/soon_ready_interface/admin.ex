@@ -12,6 +12,6 @@ defmodule SoonReadyInterface.Admin do
     end
 
     # Command Handlers
-    resource SoonReadyInterface.Admin.Commands.Handlers.Researcher
+    resource SoonReadyInterface.Admin.Commands.Handler
   end
 end
