@@ -15,9 +15,9 @@ defmodule SoonReady.Application do
       consistency: Application.get_env(:soon_ready, :consistency, :eventual)
     ]
 
-  router SoonReadyInterface.Researcher.Commands.Handlers.ResearchProject
-  router SoonReadyInterface.Respondents.Commands.Handlers.Survey
-  router SoonReadyInterface.Admin.Commands.Handlers.Researcher
+  router SoonReadyInterface.Researcher.Commands.Handler
+  router SoonReadyInterface.Respondents.Commands.Handler
+  router SoonReadyInterface.Admin.Commands.Handler
 
   router SoonReady.Onboarding.Commands.Router
 

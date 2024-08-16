@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondents.Commands.Handlers.Survey do
+defmodule SoonReadyInterface.Respondents.Commands.Handler do
   use Ash.Resource, domain: SoonReadyInterface.Respondents
   use Commanded.Commands.Router
 

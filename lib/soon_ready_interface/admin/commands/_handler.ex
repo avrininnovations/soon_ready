@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Admin.Commands.Handlers.Researcher do
+defmodule SoonReadyInterface.Admin.Commands.Handler do
   use Ash.Resource, domain: SoonReadyInterface.Admin
   use Commanded.Commands.Router
 
