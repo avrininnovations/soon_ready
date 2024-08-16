@@ -16,7 +16,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
   alias SoonReadyInterface.Respondent.ReadModels.Survey
 
 
-  alias SoonReady.SurveyManagement.DomainConcepts.{
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.{
     ShortAnswerQuestion,
     MultipleChoiceQuestion,
     ParagraphQuestion,
@@ -24,7 +24,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
     MultipleChoiceQuestionGroup,
   }
   alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel
-  alias SoonReady.SurveyManagement.DomainConcepts.PageAction.ChangePage
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.PageAction.ChangePage
 
   def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
     # TODO: Make asyncronous

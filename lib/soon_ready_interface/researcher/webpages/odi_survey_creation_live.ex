@@ -96,16 +96,10 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
   end
 
   def handle_info({:handle_submission, ContextQuestionsPage}, socket) do
-    normalized_params = normalize(socket.assigns.params)
-
-    {:ok, _command} = SoonReadyInterface.Researcher.create_survey(%{
-      brand_name: normalized_params.brand_name,
-      market: normalized_params.market,
-      job_steps: normalized_params.job_steps,
-      screening_questions: normalized_params.screening_questions,
-      demographic_questions: normalized_params.demographic_questions,
-      context_questions: normalized_params.context_questions,
-    })
+    {:ok, _command} =
+      socket.assigns.params
+      |> normalize()
+      |> SoonReadyInterface.Researcher.create_survey()
 
     socket =
       socket

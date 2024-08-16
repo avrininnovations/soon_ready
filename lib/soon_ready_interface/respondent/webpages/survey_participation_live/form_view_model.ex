@@ -4,7 +4,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormVie
   import SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Components.Form
   import SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Components.Layout
 
-  alias SoonReady.SurveyManagement.DomainConcepts.{
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.{
     Transition,
     ShortAnswerQuestion,
     MultipleChoiceQuestion,
@@ -15,7 +15,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormVie
     MultipleChoiceQuestionGroup,
   }
 
-  alias SoonReady.SurveyManagement.DomainConcepts.Transition.{Always, ResponseEquals, AnyTrue, AllTrue}
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.Transition.{Always, ResponseEquals, AnyTrue, AllTrue}
   alias __MODULE__.Response
 
   attributes do

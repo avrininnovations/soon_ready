@@ -2,11 +2,11 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
   use Ash.Resource, domain: SoonReadyInterface.Researcher
 
   alias SoonReady.Application
-  alias SoonReady.OutcomeDrivenInnovation.DomainConcepts.{
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainConcepts.{
     Market,
     JobStep,
   }
-  alias SoonReady.SurveyManagement.DomainConcepts.{
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.{
     Question,
     Survey,
     SurveyPage,
@@ -110,14 +110,14 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
       context_questions: context_questions,
     } = attributes
 
-    landing_page_id = Ecto.UUID.generate()
-    screening_page_id = Ecto.UUID.generate()
-    contact_details_page_id = Ecto.UUID.generate()
-    demographics_page_id = Ecto.UUID.generate()
-    context_page_id = Ecto.UUID.generate()
-    comparison_page_id = Ecto.UUID.generate()
-    desired_outcome_rating_page_id = Ecto.UUID.generate()
-    thank_you_page_id = Ecto.UUID.generate()
+    landing_page_id = Ash.UUID.generate()
+    screening_page_id = Ash.UUID.generate()
+    contact_details_page_id = Ash.UUID.generate()
+    demographics_page_id = Ash.UUID.generate()
+    context_page_id = Ash.UUID.generate()
+    comparison_page_id = Ash.UUID.generate()
+    desired_outcome_rating_page_id = Ash.UUID.generate()
+    thank_you_page_id = Ash.UUID.generate()
 
     desired_outcome_rating_questions =
       job_steps

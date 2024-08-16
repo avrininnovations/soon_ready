@@ -2,7 +2,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponse do
   use Ash.Resource, domain: SoonReadyInterface.Respondent
 
   alias SoonReady.Application
-  alias SoonReady.SurveyManagement.DomainConcepts.Response
+  alias SoonReady.SurveyManagement.V1.DomainConcepts.Response
 
   attributes do
     uuid_primary_key :response_id
