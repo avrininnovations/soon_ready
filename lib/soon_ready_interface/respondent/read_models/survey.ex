@@ -1,15 +1,14 @@
 defmodule SoonReadyInterface.Respondent.ReadModels.Survey do
-  # TODO: Restore to postgres
-  # use Ash.Resource, data_layer: AshPostgres.DataLayer
   use Ash.Resource,
     domain: SoonReadyInterface.Respondent,
     data_layer: AshPostgres.DataLayer
-    # data_layer: Ash.DataLayer.Ets
+
+  @consistency Application.compile_env(:soon_ready, :consistency, :eventual)
 
   use Commanded.Event.Handler,
     application: SoonReady.Application,
     name: "#{__MODULE__}",
-    consistency: Application.get_env(:soon_ready, :consistency, :eventual)
+    consistency: @consistency
 
   alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished
   alias SoonReady.SurveyManagement.V1.DomainConcepts.SurveyPage
@@ -52,35 +51,18 @@ defmodule SoonReadyInterface.Respondent.ReadModels.Survey do
     define :update
   end
 
-  # TODO: Check all postgres names for issues
   postgres do
     repo SoonReady.Repo
     table "respondents__read_models__survey"
   end
 
-
-  # TODO: Check
   def handle(%SurveyPublished{} = event, _metadata) do
-    %{
-      survey_id: survey_id,
-      starting_page_id: starting_page_id,
-      pages_dumped_data: pages_dumped_data,
-      trigger: trigger
-    } = event
-
-    params = %{
-      survey_id: survey_id,
-      starting_page_id: starting_page_id,
-      pages_dumped_data: pages_dumped_data,
-      trigger: trigger
-    }
-
-    {:ok, %{pages: pages}} = SurveyPublished.new(params)
+    {:ok, event} = SurveyPublished.regenerate(event)
 
     with {:ok, _active_odi_survey} <- __MODULE__.create(%{
-      id: survey_id,
-      starting_page_id: starting_page_id,
-      pages: pages,
+      id: event.survey_id,
+      starting_page_id: event.starting_page_id,
+      pages: event.pages,
       is_active: true,
     }) do
       :ok
