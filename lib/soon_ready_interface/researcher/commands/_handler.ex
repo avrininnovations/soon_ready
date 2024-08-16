@@ -3,10 +3,10 @@ defmodule SoonReadyInterface.Researcher.Commands.Handler do
   use Commanded.Commands.Router
 
   alias SoonReadyInterface.Researcher.Commands.CreateSurvey
-  alias SoonReady.OutcomeDrivenInnovation.DomainEvents.{
-    ProjectCreatedV1,
-    MarketDefinedV1,
-    NeedsDefinedV1,
+  alias SoonReady.OutcomeDrivenInnovation.V1.Events.{
+    ProjectCreated,
+    MarketDefined,
+    NeedsDefined,
   }
 
   alias SoonReady.SurveyManagement.{DomainEvents, IntegrationEvents}
@@ -54,9 +54,9 @@ defmodule SoonReadyInterface.Researcher.Commands.Handler do
       pages_dumped_data: pages_dumped_data
     } = command
 
-    with {:ok, project_created_event} <- ProjectCreatedV1.new(%{project_id: project_id, brand_name: brand_name}),
-          {:ok, market_defined_event} <- MarketDefinedV1.new(%{project_id: project_id, market: market}),
-          {:ok, needs_defined_event} <- NeedsDefinedV1.new(%{project_id: project_id, job_steps: job_steps}),
+    with {:ok, project_created_event} <- ProjectCreated.new(%{project_id: project_id, brand_name: brand_name}),
+          {:ok, market_defined_event} <- MarketDefined.new(%{project_id: project_id, market: market}),
+          {:ok, needs_defined_event} <- NeedsDefined.new(%{project_id: project_id, job_steps: job_steps}),
           {:ok, survey_created_event} <- SurveyCreatedV1.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages: survey.pages, trigger: trigger}),
           {:ok, survey_published_domain_event} <- DomainEvents.SurveyPublishedV1.new(%{survey_id: survey.survey_id}),
           {:ok, survey_published_integration_event} <- IntegrationEvents.SurveyPublishedV1.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: trigger})

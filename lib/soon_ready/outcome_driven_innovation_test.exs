@@ -7,10 +7,10 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
   alias SoonReady.SurveyManagement.DomainEvents
   alias SoonReady.SurveyManagement.IntegrationEvents
 
-  alias SoonReady.OutcomeDrivenInnovation.DomainEvents.{
-    ProjectCreatedV1,
-    MarketDefinedV1,
-    NeedsDefinedV1,
+  alias SoonReady.OutcomeDrivenInnovation.V1.Events.{
+    ProjectCreated,
+    MarketDefined,
+    NeedsDefined,
   }
 
   alias SoonReady.SurveyManagement.DomainEvents.{SurveyCreatedV1, SurveyPublishedV1}
@@ -146,17 +146,17 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
       })
 
       # TODO: Improve inner assertions
-      assert_receive_event(Application, ProjectCreatedV1,
+      assert_receive_event(Application, ProjectCreated,
         fn event -> event.project_id == project_id end,
         fn _event -> :ok end
       )
 
-      assert_receive_event(Application, MarketDefinedV1,
+      assert_receive_event(Application, MarketDefined,
         fn event -> event.project_id == project_id end,
         fn _event -> :ok end
       )
 
-      assert_receive_event(Application, NeedsDefinedV1,
+      assert_receive_event(Application, NeedsDefined,
         fn event -> event.project_id == project_id end,
         fn _event -> :ok end
       )
