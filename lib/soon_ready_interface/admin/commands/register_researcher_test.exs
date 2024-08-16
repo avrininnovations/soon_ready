@@ -2,7 +2,7 @@ defmodule SoonReadyInterface.Admin.Commands.RegisterResearcherTest do
   use SoonReady.DataCase
   import Commanded.Assertions.EventAssertions
 
-  alias SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
+  alias SoonReady.IdentityAndAccessManagement.V1.Events.ResearcherRegistered
 
   test "WHEN: An Admin tries to register a reseacher, THEN: A researcher is registered" do
     {:ok, command} = SoonReadyInterface.Admin.register_researcher(%{

@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Admin.Commands.Handler do
   use Commanded.Commands.Router
 
   alias SoonReadyInterface.Admin.Commands.RegisterResearcher
-  alias SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
+  alias SoonReady.IdentityAndAccessManagement.V1.Events.ResearcherRegistered
 
   attributes do
     uuid_primary_key :researcher_id
