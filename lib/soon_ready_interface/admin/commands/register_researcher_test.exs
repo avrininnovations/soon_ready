@@ -2,10 +2,10 @@ defmodule SoonReadyInterface.Admin.Commands.RegisterResearcherTest do
   use SoonReady.DataCase
   import Commanded.Assertions.EventAssertions
 
-  alias SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
+  alias SoonReady.IdentityAndAccessManagement.V1.Events.ResearcherRegistered
 
   test "WHEN: An Admin tries to register a reseacher, THEN: A researcher is registered" do
-    {:ok, command} = SoonReadyInterface.Admin.Commands.RegisterResearcher.dispatch(%{
+    {:ok, command} = SoonReadyInterface.Admin.register_researcher(%{
       first_name: "First",
       last_name: "Last",
       username: "username",
@@ -14,29 +14,9 @@ defmodule SoonReadyInterface.Admin.Commands.RegisterResearcherTest do
     })
 
     assert_receive_event(SoonReady.Application, ResearcherRegistered,
-      fn event -> event.researcher_id == command.researcher_id && event.user_id == command.user_id end,
+      fn event -> event.researcher_id == command.researcher_id end,
       fn event ->
-        %{
-          researcher_id: researcher_id,
-          user_id: user_id,
-          first_name_hash: first_name_hash,
-          last_name_hash: last_name_hash,
-          username_hash: username_hash,
-          password_hash: password_hash,
-          password_confirmation_hash: password_confirmation_hash,
-        } = event
-
-        params = %{
-          researcher_id: researcher_id,
-          user_id: user_id,
-          first_name_hash: first_name_hash,
-          last_name_hash: last_name_hash,
-          username_hash: username_hash,
-          password_hash: password_hash,
-          password_confirmation_hash: password_confirmation_hash,
-        }
-
-        {:ok, event} = ResearcherRegistered.decrypt(params)
+        {:ok, event} = ResearcherRegistered.decrypt(event)
 
         assert event.first_name == command.first_name
         assert event.last_name == command.last_name

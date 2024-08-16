@@ -8,7 +8,7 @@ defmodule SoonReadyInterface.Admin do
   resources do
     # Commands
     resource SoonReadyInterface.Admin.Commands.RegisterResearcher do
-      define :initiate_researcher_registration, action: :dispatch
+      define :register_researcher, action: :dispatch
     end
 
     # Command Handlers

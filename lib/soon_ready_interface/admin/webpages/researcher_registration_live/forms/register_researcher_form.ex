@@ -11,6 +11,10 @@ defmodule SoonReadyInterface.Admin.Webpages.ResearcherRegistrationLive.Forms.Reg
     attribute :password_confirmation, :string, allow_nil?: false, public?: true
   end
 
+  validations do
+    validate confirm(:password, :password_confirmation)
+  end
+
   actions do
     default_accept [
       :first_name,

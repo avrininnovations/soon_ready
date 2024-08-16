@@ -1,9 +1,11 @@
-defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered do
+defmodule SoonReady.IdentityAndAccessManagement.V1.Events.ResearcherRegistered do
   use Ash.Resource,
     domain: SoonReady.IdentityAndAccessManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
-
+    
   require Logger
+
+  alias SoonReady.IdentityAndAccessManagement.Resources.{User, Researcher}
   alias SoonReady.Encryption.Resources.PersonalIdentifiableInformationEncryptionKey
 
   attributes do
@@ -20,7 +22,7 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
     defaults [:read]
 
     create :create do
-      accept [:researcher_id, :user_id]
+      accept [:researcher_id]
 
       primary? true
 
@@ -29,6 +31,23 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
       argument :username, :ci_string, allow_nil?:  false
       argument :password, :string, allow_nil?: false
       argument :password_confirmation, :string, allow_nil?: false
+
+      change fn changeset, _context ->
+        username = Ash.Changeset.get_argument(changeset, :username)
+        password = Ash.Changeset.get_argument(changeset, :password)
+        password_confirmation = Ash.Changeset.get_argument(changeset, :password_confirmation)
+
+
+        {:ok, %{id: user_id} = user} = User.register_user_with_password(username, password, password_confirmation)
+
+        researcher_id = Ash.Changeset.get_attribute(changeset, :researcher_id)
+
+        with {:error, _error} <- Researcher.create(%{id: researcher_id, user_id: user_id}) do
+          :ok = User.delete(user)
+        end
+
+        Ash.Changeset.change_attribute(changeset, :user_id, user_id)
+      end
 
       change fn changeset, _context ->
         researcher_id = Ash.Changeset.get_attribute(changeset, :researcher_id)
@@ -46,15 +65,20 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
     end
 
     create :decrypt do
-      accept [
-        :researcher_id,
-        :user_id,
-        :first_name_hash,
-        :last_name_hash,
-        :username_hash,
-        :password_hash,
-        :password_confirmation_hash,
-      ]
+      argument :event, :struct, constraints: [instance_of: __MODULE__], allow_nil?: false
+
+      change fn changeset, _context ->
+        event = Ash.Changeset.get_argument(changeset, :event)
+
+        changeset
+        |> Ash.Changeset.change_attribute(:researcher_id, event.researcher_id)
+        |> Ash.Changeset.change_attribute(:user_id, event.user_id)
+        |> Ash.Changeset.change_attribute(:first_name_hash, event.first_name_hash)
+        |> Ash.Changeset.change_attribute(:last_name_hash, event.last_name_hash)
+        |> Ash.Changeset.change_attribute(:username_hash, event.username_hash)
+        |> Ash.Changeset.change_attribute(:password_hash, event.password_hash)
+        |> Ash.Changeset.change_attribute(:password_confirmation_hash, event.password_confirmation_hash)
+      end
     end
   end
 
@@ -109,17 +133,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
     change load(:password_confirmation)
   end
 
-  preparations do
-    prepare fn query, _context ->
-      query
-      |> Ash.Query.load(:first_name)
-      |> Ash.Query.load(:last_name)
-      |> Ash.Query.load(:username)
-      |> Ash.Query.load(:password)
-      |> Ash.Query.load(:password_confirmation)
-    end
-  end
-
   def encrypt(changeset, plain_field, cipher_field, encryption_key) do
     plain_text =
       changeset
@@ -137,6 +150,6 @@ defmodule SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered d
 
   code_interface do
     define :create
-    define :decrypt
+    define :decrypt, args: [:event]
   end
 end

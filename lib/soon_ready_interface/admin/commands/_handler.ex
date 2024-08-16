@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Admin.Commands.Handler do
   use Commanded.Commands.Router
 
   alias SoonReadyInterface.Admin.Commands.RegisterResearcher
-  alias SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
+  alias SoonReady.IdentityAndAccessManagement.V1.Events.ResearcherRegistered
 
   attributes do
     uuid_primary_key :researcher_id
@@ -22,7 +22,6 @@ defmodule SoonReadyInterface.Admin.Commands.Handler do
   def execute(_aggregate_state, %RegisterResearcher{} = command) do
     %{
       researcher_id: researcher_id,
-      user_id: user_id,
       first_name: first_name,
       last_name: last_name,
       username: username,
@@ -32,7 +31,6 @@ defmodule SoonReadyInterface.Admin.Commands.Handler do
 
     params = %{
       researcher_id: researcher_id,
-      user_id: user_id,
       first_name: first_name,
       last_name: last_name,
       username: username,

@@ -8,6 +8,6 @@ defmodule SoonReady.IdentityAndAccessManagement do
     resource SoonReady.IdentityAndAccessManagement.Resources.Researcher
 
     # DomainEvents
-    resource SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
+    resource SoonReady.IdentityAndAccessManagement.V1.Events.ResearcherRegistered
   end
 end
