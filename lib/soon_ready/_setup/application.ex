@@ -16,7 +16,7 @@ defmodule SoonReady.Application do
     ]
 
   router SoonReadyInterface.Researcher.Commands.Handler
-  router SoonReadyInterface.Respondents.Commands.Handler
+  router SoonReadyInterface.Respondent.Commands.Handler
   router SoonReadyInterface.Admin.Commands.Handler
 
   router SoonReady.Onboarding.Commands.Router
@@ -47,7 +47,7 @@ defmodule SoonReady.Application do
       SoonReady.SurveyManagement.Supervisor,
       SoonReady.IdentityAndAccessManagement.Supervisor,
 
-      SoonReadyInterface.Respondents.Setup.Supervisor,
+      SoonReadyInterface.Respondent.Setup.Supervisor,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

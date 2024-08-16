@@ -48,7 +48,7 @@ defmodule SoonReadyInterface.Router do
     end
   end
 
-  scope "/", SoonReadyInterface.Respondents.Webpages do
+  scope "/", SoonReadyInterface.Respondent.Webpages do
     pipe_through :browser
 
     live "/survey/participate/:survey_id", SurveyParticipationLive
