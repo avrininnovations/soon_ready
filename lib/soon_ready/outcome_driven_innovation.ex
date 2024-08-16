@@ -2,9 +2,9 @@ defmodule SoonReady.OutcomeDrivenInnovation do
   use Ash.Domain
 
   resources do
-    resource SoonReady.OutcomeDrivenInnovation.V1.Events.ProjectCreated
-    resource SoonReady.OutcomeDrivenInnovation.V1.Events.MarketDefined
-    resource SoonReady.OutcomeDrivenInnovation.V1.Events.NeedsDefined
+    resource SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.ProjectCreated
+    resource SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.MarketDefined
+    resource SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.NeedsDefined
   end
 
   authorization do

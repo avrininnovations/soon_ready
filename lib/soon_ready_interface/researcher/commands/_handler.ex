@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Researcher.Commands.Handler do
   use Commanded.Commands.Router
 
   alias SoonReadyInterface.Researcher.Commands.CreateSurvey
-  alias SoonReady.OutcomeDrivenInnovation.V1.Events.{
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.{
     ProjectCreated,
     MarketDefined,
     NeedsDefined,

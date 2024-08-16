@@ -7,7 +7,7 @@ defmodule SoonReady.OutcomeDrivenInnovationTest do
   alias SoonReady.SurveyManagement.DomainEvents
   alias SoonReady.SurveyManagement.IntegrationEvents
 
-  alias SoonReady.OutcomeDrivenInnovation.V1.Events.{
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.{
     ProjectCreated,
     MarketDefined,
     NeedsDefined,
