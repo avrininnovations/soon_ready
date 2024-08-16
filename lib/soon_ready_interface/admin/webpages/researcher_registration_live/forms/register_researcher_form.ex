@@ -1,7 +1,7 @@
 defmodule SoonReadyInterface.Admin.Webpages.ResearcherRegistrationLive.Forms.RegisterResearcherForm do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReady.IdentityAndAccessManagement.Commands.RegisterResearcher
+  alias SoonReadyInterface.Admin.Commands.RegisterResearcher
 
   attributes do
     attribute :first_name, :string, allow_nil?: false, public?: true

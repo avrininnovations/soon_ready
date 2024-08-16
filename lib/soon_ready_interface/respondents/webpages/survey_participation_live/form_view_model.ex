@@ -1,6 +1,6 @@
 defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormViewModel do
   use SoonReadyInterface, :live_component
-  use Ash.Resource, domain: SoonReadyInterface.Respondents.Setup.Domain
+  use Ash.Resource, domain: SoonReadyInterface.Respondents
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Form
   import SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.Components.Layout
 
@@ -71,7 +71,7 @@ defmodule SoonReadyInterface.Respondents.Webpages.SurveyParticipationLive.FormVi
       socket
       |> assign(:has_mcq_group_question, assigns.has_mcq_group_question)
       |> assign(:current_page, assigns.current_page)
-      |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondents.Setup.Domain, forms: [auto?: true]))
+      |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondents, forms: [auto?: true]))
 
     {:ok, socket}
   end

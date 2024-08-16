@@ -21,9 +21,9 @@ config :soon_ready, ash_domains: [
 
   SoonReady.Onboarding.Setup.Domain,
 
-  SoonReadyInterface.Researcher.Domain,
-  SoonReadyInterface.Respondents.Setup.Domain,
-  SoonReadyInterface.Admin.Domain,
+  SoonReadyInterface.Researcher,
+  SoonReadyInterface.Respondents,
+  SoonReadyInterface.Admin,
 ]
 
 config :soon_ready, token_signing_secret: "super secret"

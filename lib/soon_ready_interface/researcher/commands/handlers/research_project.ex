@@ -1,10 +1,8 @@
-defmodule SoonReady.OutcomeDrivenInnovation.ResearchProject do
-  use Ash.Resource, domain: SoonReady.OutcomeDrivenInnovation
+defmodule SoonReadyInterface.Researcher.Commands.Handlers.ResearchProject do
+  use Ash.Resource, domain: SoonReadyInterface.Researcher
   use Commanded.Commands.Router
 
-  alias SoonReady.OutcomeDrivenInnovation.Commands.{
-    CreateSurvey,
-  }
+  alias SoonReadyInterface.Researcher.Commands.CreateSurvey
   alias SoonReady.OutcomeDrivenInnovation.DomainEvents.{
     ProjectCreatedV1,
     MarketDefinedV1,
