@@ -14,7 +14,7 @@ defmodule SoonReadyInterface.Admin.Commands.RegisterResearcherTest do
     })
 
     assert_receive_event(SoonReady.Application, ResearcherRegistered,
-      fn event -> event.researcher_id == command.researcher_id && event.user_id == command.user_id end,
+      fn event -> event.researcher_id == command.researcher_id end,
       fn event ->
         {:ok, event} = ResearcherRegistered.decrypt(event)
 
