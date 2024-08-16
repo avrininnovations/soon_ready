@@ -64,22 +64,7 @@ defmodule SoonReady.IdentityAndAccessManagement.V1.DomainEvents.ResearcherRegist
       end
     end
 
-    create :decrypt do
-      argument :event, :struct, constraints: [instance_of: __MODULE__], allow_nil?: false
-
-      change fn changeset, _context ->
-        event = Ash.Changeset.get_argument(changeset, :event)
-
-        changeset
-        |> Ash.Changeset.change_attribute(:researcher_id, event.researcher_id)
-        |> Ash.Changeset.change_attribute(:user_id, event.user_id)
-        |> Ash.Changeset.change_attribute(:first_name_hash, event.first_name_hash)
-        |> Ash.Changeset.change_attribute(:last_name_hash, event.last_name_hash)
-        |> Ash.Changeset.change_attribute(:username_hash, event.username_hash)
-        |> Ash.Changeset.change_attribute(:password_hash, event.password_hash)
-        |> Ash.Changeset.change_attribute(:password_confirmation_hash, event.password_confirmation_hash)
-      end
-    end
+    update :decrypt
   end
 
   calculations do
@@ -150,6 +135,6 @@ defmodule SoonReady.IdentityAndAccessManagement.V1.DomainEvents.ResearcherRegist
 
   code_interface do
     define :create
-    define :decrypt, args: [:event]
+    define :decrypt
   end
 end

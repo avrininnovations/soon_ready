@@ -32,11 +32,15 @@ defmodule SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished do
       :trigger,
     ]
     defaults [:read]
+
     create :new
+
+    update :regenerate
   end
 
   code_interface do
     define :new
+    define :regenerate
   end
 
   def normalize(map) do
