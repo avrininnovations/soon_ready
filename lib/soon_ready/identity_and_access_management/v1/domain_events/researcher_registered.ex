@@ -1,8 +1,8 @@
-defmodule SoonReady.IdentityAndAccessManagement.V1.Events.ResearcherRegistered do
+defmodule SoonReady.IdentityAndAccessManagement.V1.DomainEvents.ResearcherRegistered do
   use Ash.Resource,
     domain: SoonReady.IdentityAndAccessManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
-    
+
   require Logger
 
   alias SoonReady.IdentityAndAccessManagement.Resources.{User, Researcher}
