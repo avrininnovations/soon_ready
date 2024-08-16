@@ -55,8 +55,4 @@ defmodule SoonReadyInterface.Admin.Commands.RegisterResearcher do
       end
     end
   end
-
-  code_interface do
-    define :dispatch
-  end
 end

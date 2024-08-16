@@ -5,7 +5,7 @@ defmodule SoonReadyInterface.Admin.Commands.RegisterResearcherTest do
   alias SoonReady.IdentityAndAccessManagement.Events.V1.ResearcherRegistered
 
   test "WHEN: An Admin tries to register a reseacher, THEN: A researcher is registered" do
-    {:ok, command} = SoonReadyInterface.Admin.Commands.RegisterResearcher.dispatch(%{
+    {:ok, command} = SoonReadyInterface.Admin.register_researcher(%{
       first_name: "First",
       last_name: "Last",
       username: "username",

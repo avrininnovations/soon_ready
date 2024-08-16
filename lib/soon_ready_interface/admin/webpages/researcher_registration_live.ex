@@ -35,23 +35,10 @@ defmodule SoonReadyInterface.Admin.Webpages.ResearcherRegistrationLive do
     form_params = Map.get(params, "form", %{})
     case AshPhoenix.Form.submit(socket.assigns.form, params: form_params) do
       {:ok, form} ->
-        %{
-          first_name: first_name,
-          last_name: last_name,
-          username: username,
-          password: password,
-          password_confirmation: password_confirmation
-        } = form
-
-        params = %{
-          first_name: first_name,
-          last_name: last_name,
-          username: username,
-          password: password,
-          password_confirmation: password_confirmation
-        }
-
-        {:ok, command} = SoonReadyInterface.Admin.Commands.RegisterResearcher.dispatch(params)
+        {:ok, command} =
+          form
+          |> normalize()
+          |> SoonReadyInterface.Admin.register_researcher()
 
         socket =
           socket
@@ -63,5 +50,23 @@ defmodule SoonReadyInterface.Admin.Webpages.ResearcherRegistrationLive do
       {:error, form_with_error} ->
         {:noreply, assign(socket, form: form_with_error)}
     end
+  end
+
+  defp normalize(form) do
+    %{
+      first_name: first_name,
+      last_name: last_name,
+      username: username,
+      password: password,
+      password_confirmation: password_confirmation
+    } = form
+
+    %{
+      first_name: first_name,
+      last_name: last_name,
+      username: username,
+      password: password,
+      password_confirmation: password_confirmation
+    }
   end
 end
