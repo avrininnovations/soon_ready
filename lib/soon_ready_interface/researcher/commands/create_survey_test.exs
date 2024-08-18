@@ -92,7 +92,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurveyTest do
       fn event ->
         {:ok, event} = SurveyCreated.regenerate(event)
         assert event.starting_page_id == command.survey.starting_page_id
-        assert Jason.encode(event.pages) == Jason.encode(command.survey.pages)
+        assert Jason.encode!(event.pages) == Jason.encode!(command.survey.pages)
         assert event.trigger == command.trigger
       end
     )
@@ -102,7 +102,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurveyTest do
       fn event ->
         {:ok, event} = SurveyPublished.regenerate(event)
         assert event.starting_page_id == command.survey.starting_page_id
-        assert Jason.encode(event.pages) == Jason.encode(command.survey.pages)
+        assert Jason.encode!(event.pages) == Jason.encode!(command.survey.pages)
         assert event.trigger == command.trigger
       end
     )
