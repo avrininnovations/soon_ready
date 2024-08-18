@@ -89,12 +89,22 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurveyTest do
 
     assert_receive_event(Application, SurveyCreated,
       fn event -> event.survey_id == command.survey_id end,
-      fn _event -> :ok end
+      fn event ->
+        {:ok, event} = SurveyCreated.regenerate(event)
+        assert event.starting_page_id == command.survey.starting_page_id
+        assert Jason.encode(event.pages) == Jason.encode(command.survey.pages)
+        assert event.trigger == command.trigger
+      end
     )
 
     assert_receive_event(Application, SurveyPublished,
       fn event -> event.survey_id == command.survey_id end,
-      fn _event -> :ok end
+      fn event ->
+        {:ok, event} = SurveyPublished.regenerate(event)
+        assert event.starting_page_id == command.survey.starting_page_id
+        assert Jason.encode(event.pages) == Jason.encode(command.survey.pages)
+        assert event.trigger == command.trigger
+      end
     )
   end
 end
