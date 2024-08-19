@@ -28,8 +28,6 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
 
     attribute :survey, Survey, allow_nil?: false
     attribute :trigger, Trigger, allow_nil?: false
-
-    attribute :pages_dumped_data, {:array, :map}, allow_nil?: false
   end
 
   changes do
@@ -59,15 +57,6 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
     change fn changeset, _context ->
       project_id = Ash.Changeset.get_attribute(changeset, :project_id)
       Ash.Changeset.change_attribute(changeset, :trigger, %{name: __MODULE__, id: project_id})
-    end
-
-    change fn changeset, _context ->
-      {:ok, record} = Ash.Changeset.apply_attributes(changeset, force?: true)
-
-      pages_attribute = Ash.Resource.Info.attribute(record.survey, :pages)
-      {:ok, pages_dumped_data} = Ash.Type.dump_to_embedded(pages_attribute.type, record.survey.pages, pages_attribute.constraints)
-
-      Ash.Changeset.change_attribute(changeset, :pages_dumped_data, pages_dumped_data)
     end
   end
 

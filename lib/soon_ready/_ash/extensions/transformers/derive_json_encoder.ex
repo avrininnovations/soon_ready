@@ -6,7 +6,7 @@ defmodule SoonReady.Ash.Extensions.Transformers.DeriveJsonEncoder do
   def transform(dsl) do
     public_attribute_names =
       dsl
-      |> Ash.Resource.Info.public_attributes()
+      |> Ash.Resource.Info.public_fields()
       |> Enum.map(&(&1.name))
 
     block = quote do
