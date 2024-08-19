@@ -33,7 +33,17 @@ defmodule SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished do
     ]
     defaults [:read]
 
-    create :new
+    create :new do
+      argument :pages, {:array, SurveyPage}
+
+      change fn changeset, _context ->
+        pages = Ash.Changeset.get_argument(changeset, :pages)
+
+        {:ok, pages_dumped_data} = Ash.Type.dump_to_embedded({:array, SurveyPage}, pages, [])
+
+        Ash.Changeset.change_attribute(changeset, :pages_dumped_data, pages_dumped_data)
+      end
+    end
 
     create :regenerate do
       argument :event, :struct, constraints: [instance_of: __MODULE__], allow_nil?: false

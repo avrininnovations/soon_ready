@@ -63,7 +63,6 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurveyTest do
       context_questions: context_questions,
     })
 
-    # TODO: Improve inner assertions
     assert_receive_event(Application, ProjectCreated,
       fn event -> event.project_id == command.project_id end,
       fn event ->

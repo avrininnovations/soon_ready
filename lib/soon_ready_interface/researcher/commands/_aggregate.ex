@@ -50,14 +50,13 @@ defmodule SoonReadyInterface.Researcher.Commands.Aggregate do
       context_questions: context_questions,
       survey: survey,
       trigger: trigger,
-      pages_dumped_data: pages_dumped_data
     } = command
 
     with {:ok, project_created_event} <- ProjectCreated.new(%{project_id: project_id, brand_name: brand_name}),
           {:ok, market_defined_event} <- MarketDefined.new(%{project_id: project_id, market: market}),
           {:ok, needs_defined_event} <- NeedsDefined.new(%{project_id: project_id, job_steps: job_steps}),
-          {:ok, survey_created_event} <- SurveyCreated.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: trigger}),
-          {:ok, survey_published_event} <- SurveyPublished.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages_dumped_data: pages_dumped_data, trigger: trigger})
+          {:ok, survey_created_event} <- SurveyCreated.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages: survey.pages, trigger: trigger}),
+          {:ok, survey_published_event} <- SurveyPublished.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages: survey.pages, trigger: trigger})
     do
       [project_created_event, market_defined_event, needs_defined_event, survey_created_event, survey_published_event]
     end
