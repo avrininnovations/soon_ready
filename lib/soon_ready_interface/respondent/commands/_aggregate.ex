@@ -2,15 +2,8 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
   use Ash.Resource, domain: SoonReadyInterface.Respondent
   use Commanded.Commands.Router
 
-  alias SoonReady.SurveyManagement.V1.DomainEvents
-  alias SoonReady.SurveyManagement.V1.IntegrationEvents
-
-  alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished
-
   alias SoonReadyInterface.Respondent.Commands.SubmitSurveyResponse
-  alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyResponseSubmitted
-
-  alias SoonReady.SurveyManagement.V1.DomainConcepts.{SurveyPage, Trigger}
+  alias SoonReady.SurveyManagement.V1.DomainEvents.{SurveyPublished, SurveyResponseSubmitted}
 
   attributes do
     attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
@@ -20,12 +13,11 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
     default_accept [
       :survey_id,
     ]
-    defaults [:create, :read, :update]
+    defaults [:create]
   end
 
   code_interface do
     define :create
-    define :update
   end
 
   dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
