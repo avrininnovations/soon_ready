@@ -1,9 +1,15 @@
 defmodule SoonReady.SurveyManagement.V1.DomainEvents.Helpers do
   alias SoonReady.SurveyManagement.V1.DomainConcepts.SurveyPage
 
+  # TODO: Generalize
   def cast_stored(pages_dumped_data) do
     pages_dumped_data = Enum.map(pages_dumped_data, &normalize/1)
     Ash.Type.cast_stored({:array, SurveyPage}, pages_dumped_data, [])
+  end
+
+  def cast_stored(type, data, constraints) do
+    data = Enum.map(data, &normalize/1)
+    Ash.Type.cast_stored(type, data, constraints)
   end
 
   defp normalize(map) do

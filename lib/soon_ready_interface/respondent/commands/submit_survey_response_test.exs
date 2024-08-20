@@ -20,14 +20,6 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
     %{user: user}
   end
 
-  defp get_question(survey, page_index, question_index) do
-    survey.pages
-    |> Enum.at(page_index)
-    |> then(fn %{questions: questions} -> questions end)
-    |> Enum.at(question_index)
-    |> then(fn %{value: value} -> value end)
-  end
-
   describe "Test Each Question Type" do
     test "GIVEN: A survey with a short answer question has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
       page_id = Ash.UUID.generate()
@@ -45,26 +37,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
         ]
       }
 
-      {:ok, survey_created_event} = SurveyCreated.new(survey)
-      {:ok, survey_published_event} = SurveyPublished.new(survey)
-
-      causation_id = Ash.UUID.generate()
-      correlation_id = Ash.UUID.generate()
-
-      event_data =
-        Enum.map([survey_created_event, survey_published_event], fn event ->
-          %Commanded.EventStore.EventData{
-            causation_id: causation_id,
-            correlation_id: correlation_id,
-            event_type: Commanded.EventStore.TypeProvider.to_string(event),
-            data: event,
-            metadata: %{},
-          }
-        end)
-
-      expected_version = 0
-      :ok = Commanded.EventStore.append_to_stream(SoonReady.Application, survey_id, expected_version, event_data)
-
+      {:ok, [survey_created_event, survey_published_event]} = append_events_to_stream(survey)
       short_answer_question = get_question(survey_published_event, 0, 0)
 
       survey_response = %{
@@ -73,14 +46,15 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
         ]
       }
-      {:ok, %{response_id: response_id} = command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
-        fn event -> event.response_id == response_id end,
+        fn event -> event.response_id == command.response_id end,
         fn event ->
-          assert event.survey_id == survey_id
-          assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
+          {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+          assert event.survey_id == command.survey_id
+          assert Jason.encode(event.responses) == Jason.encode(command.responses)
         end
       )
 
@@ -352,4 +326,37 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
   # end
 
   # TODO: Test trigger
+
+
+  defp get_question(survey, page_index, question_index) do
+    survey.pages
+    |> Enum.at(page_index)
+    |> then(fn %{questions: questions} -> questions end)
+    |> Enum.at(question_index)
+    |> then(fn %{value: value} -> value end)
+  end
+
+  defp append_events_to_stream(%{survey_id: survey_id} = survey) do
+    {:ok, survey_created_event} = SurveyCreated.new(survey)
+    {:ok, survey_published_event} = SurveyPublished.new(survey)
+
+    causation_id = Ash.UUID.generate()
+    correlation_id = Ash.UUID.generate()
+
+    event_data =
+      Enum.map([survey_created_event, survey_published_event], fn event ->
+        %Commanded.EventStore.EventData{
+          causation_id: causation_id,
+          correlation_id: correlation_id,
+          event_type: Commanded.EventStore.TypeProvider.to_string(event),
+          data: event,
+          metadata: %{},
+        }
+      end)
+
+    expected_version = 0
+    :ok = Commanded.EventStore.append_to_stream(SoonReady.Application, survey_id, expected_version, event_data)
+
+    {:ok, [survey_created_event, survey_published_event]}
+  end
 end

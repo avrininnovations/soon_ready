@@ -22,11 +22,11 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
 
   dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
 
-  def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, raw_responses_data: raw_responses_data} = command) do
+  def execute(_aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, responses: responses} = command) do
     SurveyResponseSubmitted.new(%{
       response_id: response_id,
       survey_id: survey_id,
-      responses: raw_responses_data,
+      responses: responses,
     })
   end
 
