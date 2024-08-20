@@ -5,7 +5,7 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
   alias SoonReady.SurveyManagement.V1.DomainEvents
   alias SoonReady.SurveyManagement.V1.IntegrationEvents
 
-  alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyCreated
+  alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished
 
   alias SoonReadyInterface.Respondent.Commands.SubmitSurveyResponse
   alias SoonReady.SurveyManagement.V1.DomainEvents.SurveyResponseSubmitted
@@ -14,17 +14,11 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
 
   attributes do
     attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
-    attribute :starting_page_id, :uuid, allow_nil?: false, public?: true
-    attribute :pages, {:array, SurveyPage}, public?: true
-    attribute :trigger, Trigger
   end
 
   actions do
     default_accept [
       :survey_id,
-      :starting_page_id,
-      :pages,
-      :trigger,
     ]
     defaults [:create, :read, :update]
   end
@@ -44,8 +38,8 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
     })
   end
 
-  def apply(state, %SurveyCreated{survey_id: survey_id, starting_page_id: starting_page_id, pages: pages, trigger: trigger}) do
-    __MODULE__.create!(%{survey_id: survey_id, starting_page_id: starting_page_id, pages: pages, trigger: trigger})
+  def apply(state, %SurveyPublished{survey_id: survey_id} = event) do
+    __MODULE__.create!(%{survey_id: survey_id})
   end
 
   def apply(state, _event) do
