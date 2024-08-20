@@ -6,11 +6,13 @@ defmodule SoonReady.SurveyManagement.V1.DomainEvents.Helpers do
     Ash.Type.cast_stored(type, data, constraints)
   end
 
-  defp normalize(map) do
+  defp normalize(map) when is_map(map) do
     map
     |> Enum.map(&do_normalize/1)
     |> Enum.into(%{})
   end
+
+  defp normalize(value), do: value
 
   defp do_normalize({key, value}) when key in ["type", :type] do
     value =
