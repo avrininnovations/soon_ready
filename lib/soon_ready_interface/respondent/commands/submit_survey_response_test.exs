@@ -173,56 +173,56 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
       )
     end
 
-    # test "GIVEN: A survey with a short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-    #   page_id = Ash.UUID.generate()
-    #   survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_id, pages: [
-    #     %{
-    #       id: page_id,
-    #       title: "Page Title",
-    #       questions: [
-    #         %{
-    #           type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
-    #             %{prompt: "The prompt 1"},
-    #             %{prompt: "The prompt 2"},
-    #           ],
-    #           # TODO: Nothing really tests this
-    #           add_button_label: "Add Question"
-    #         },
-    #       ]
-    #     }
-    #   ]}
+    test "GIVEN: A survey with a short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
 
-    #   {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
-    #   {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+      survey = %{survey_id: survey_id, starting_page_id: page_id, pages: [
+        %{
+          id: page_id,
+          title: "Page Title",
+          questions: [
+            %{
+              type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
+                %{prompt: "The prompt 1"},
+                %{prompt: "The prompt 2"},
+              ],
+              # TODO: Nothing really tests this
+              add_button_label: "Add Question"
+            },
+          ]
+        }
+      ]}
 
-    #   %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey, 0, 0)
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+      %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey_published_event, 0, 0)
 
-    #   batch_1_response_id = Ash.UUID.generate()
-    #   batch_2_response_id = Ash.UUID.generate()
+      batch_1_response_id = Ash.UUID.generate()
+      batch_2_response_id = Ash.UUID.generate()
 
-    #   survey_response = %{
-    #     survey_id: survey_id,
-    #     responses: [
-    #       %{group_id: short_answer_question_group.id, type: "short_answer_question_group_responses", responses: [
-    #         %{batch_id: batch_1_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
-    #         %{batch_id: batch_1_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
-    #         %{batch_id: batch_2_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
-    #         %{batch_id: batch_2_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
-    #       ]},
-    #     ]
-    #   }
-    #   {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
+      survey_response = %{
+        survey_id: survey_id,
+        responses: [
+          %{group_id: short_answer_question_group.id, type: "short_answer_question_group_responses", responses: [
+            %{batch_id: batch_1_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
+            %{batch_id: batch_1_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
+            %{batch_id: batch_2_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
+            %{batch_id: batch_2_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
+          ]},
+        ]
+      }
+      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
 
 
-    #   assert_receive_event(Application, SurveyResponseSubmitted,
-    #     fn event -> event.response_id == response_id end,
-    #     fn event ->
-    #       assert event.survey_id == survey_id
-    #       assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
-    #     end
-    #   )
-
-    # end
+      assert_receive_event(Application, SurveyResponseSubmitted,
+        fn event -> event.response_id == command.response_id end,
+        fn event ->
+          {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+          assert event.survey_id == command.survey_id
+          assert Jason.encode(event.responses) == Jason.encode(command.responses)
+        end
+      )
+    end
 
     # test "GIVEN: A survey with a multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
     #   page_id = Ash.UUID.generate()
