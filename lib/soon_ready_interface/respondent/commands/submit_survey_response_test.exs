@@ -270,66 +270,68 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
     end
   end
 
-  # test "GIVEN: A survey with three pages has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
-  #   page_1_id = Ash.UUID.generate()
-  #   page_2_id = Ash.UUID.generate()
-  #   page_3_id = Ash.UUID.generate()
-  #   final_page_id = Ash.UUID.generate()
+  describe "Test Multiple Pages" do
+    test "GIVEN: A survey with three pages has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+      page_1_id = Ash.UUID.generate()
+      page_2_id = Ash.UUID.generate()
+      page_3_id = Ash.UUID.generate()
+      final_page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
 
-  #   survey = %{survey_id: Ash.UUID.generate(), starting_page_id: page_1_id, pages: [
-  #     %{
-  #       id: page_1_id,
-  #       title: "Page 1 Title",
-  #       transitions: [%{condition: :always, destination_page_id: page_2_id}],
-  #       questions: [
-  #         %{type: "short_answer_question", prompt: "The short answer prompt"},
-  #       ]
-  #     },
-  #     %{
-  #       id: page_2_id,
-  #       title: "Page 2 Title",
-  #       transitions: [%{condition: :always, destination_page_id: page_3_id}],
-  #       questions: [
-  #         %{type: "short_answer_question", prompt: "The short answer prompt"},
-  #       ]
-  #     },
-  #     %{
-  #       id: page_3_id,
-  #       title: "Page 3 Title",
-  #       transitions: [%{condition: :always, destination_page_id: final_page_id, submit_response?: true}],
-  #       questions: [
-  #         %{type: "short_answer_question", prompt: "The short answer prompt"},
-  #       ]
-  #     },
-  #     %{
-  #       id: final_page_id,
-  #       title: "Final Page Title",
-  #     },
-  #   ]}
+      survey = %{survey_id: survey_id, starting_page_id: page_1_id, pages: [
+        %{
+          id: page_1_id,
+          title: "Page 1 Title",
+          transitions: [%{condition: :always, destination_page_id: page_2_id}],
+          questions: [
+            %{type: "short_answer_question", prompt: "The short answer prompt"},
+          ]
+        },
+        %{
+          id: page_2_id,
+          title: "Page 2 Title",
+          transitions: [%{condition: :always, destination_page_id: page_3_id}],
+          questions: [
+            %{type: "short_answer_question", prompt: "The short answer prompt"},
+          ]
+        },
+        %{
+          id: page_3_id,
+          title: "Page 3 Title",
+          transitions: [%{condition: :always, destination_page_id: final_page_id, submit_response?: true}],
+          questions: [
+            %{type: "short_answer_question", prompt: "The short answer prompt"},
+          ]
+        },
+        %{
+          id: final_page_id,
+          title: "Final Page Title",
+        },
+      ]}
 
-  #   {:ok, %{survey_id: survey_id} = survey} = SoonReady.SurveyManagement.create_survey(survey)
-  #   {:ok, %{survey_id: ^survey_id}} = SoonReady.SurveyManagement.publish_survey(%{survey_id: survey_id})
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
 
-  #   short_answer_question = get_question(survey, 0, 0)
+      short_answer_question = get_question(survey_published_event, 0, 0)
 
-  #   survey_response = %{
-  #     survey_id: survey_id,
-  #     responses: [
-  #       %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
-  #     ]
-  #   }
-  #   {:ok, %{response_id: response_id} = command} = SoonReady.SurveyManagement.submit_response(survey_response)
+      survey_response = %{
+        survey_id: survey_id,
+        responses: [
+          %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
+        ]
+      }
+      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
 
 
-  #   assert_receive_event(Application, SurveyResponseSubmitted,
-  #     fn event -> event.response_id == response_id end,
-  #     fn event ->
-  #       assert event.survey_id == survey_id
-  #       assert SoonReady.Utils.is_equal_or_subset?(survey_response.responses, event.responses)
-  #     end
-  #   )
-
-  # end
+      assert_receive_event(Application, SurveyResponseSubmitted,
+        fn event -> event.response_id == command.response_id end,
+        fn event ->
+          {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+          assert event.survey_id == command.survey_id
+          assert Jason.encode(event.responses) == Jason.encode(command.responses)
+        end
+      )
+    end
+  end
 
   # TODO: Test trigger
 
