@@ -15,7 +15,9 @@ defmodule SoonReady.SurveyManagement.V1.DomainEvents.SurveyPublished do
 
   calculations do
     calculate :pages, {:array, SurveyPage}, fn [record], _context ->
-      {:ok, pages} = Helpers.cast_stored(record.pages_dumped_data)
+      %{arguments: [%{type: {:array, SurveyPage}} = pages_argument]} = Ash.Resource.Info.action(record, :new)
+      {:ok, pages} = Helpers.cast_stored(pages_argument.type, record.pages_dumped_data, pages_argument.constraints)
+      
       {:ok, [pages]}
     end
   end
