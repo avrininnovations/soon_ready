@@ -46,7 +46,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
         ]
       }
-      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
@@ -84,7 +84,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           %{question_id: paragraph_question.id, type: "paragraph_question_response", response: "The paragraph answer"},
         ]
       }
-      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
@@ -122,7 +122,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           %{question_id: multiple_choice_question.id, type: "multiple_choice_question_response", response: "Option 1"},
         ]
       }
-      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
@@ -160,7 +160,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           %{question_id: checkbox_question.id, type: "checkbox_question_response", responses: ["Option 1", "Option 2"]},
         ]
       }
-      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
@@ -211,7 +211,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           ]},
         ]
       }
-      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
@@ -256,7 +256,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           ]},
         ]
       }
-      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
@@ -319,7 +319,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
         ]
       }
-      {:ok, command} = SoonReadyInterface.Respondent.submit_response(survey_response)
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 
 
       assert_receive_event(Application, SurveyResponseSubmitted,
@@ -332,8 +332,6 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
       )
     end
   end
-
-  # TODO: Test trigger
 
 
   defp get_question(survey, page_index, question_index) do

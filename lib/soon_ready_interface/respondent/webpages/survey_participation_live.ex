@@ -84,7 +84,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
     if submit_response? do
       params
       |> normalize_response(socket.assigns.survey)
-      |> SoonReady.SurveyManagement.submit_response()
+      |> SoonReady.SurveyManagement.submit_survey_response()
       |> case do
         {:ok, _aggregate} ->
           socket =
