@@ -3,7 +3,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
 
   require Logger
 
-  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveComponents.Page
+  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveComponents.SurveyPage
 
   alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.{
     NicknameForm,
@@ -53,7 +53,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
 
   def render(assigns) do
     ~H"""
-    <.live_component module={Page} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
+    <.live_component module={SurveyPage} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
     """
   end
 

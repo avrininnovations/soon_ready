@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveComponents.Page do
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveComponents.SurveyPage do
   use SoonReadyInterface, :live_component
 
   import SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Components.Form
