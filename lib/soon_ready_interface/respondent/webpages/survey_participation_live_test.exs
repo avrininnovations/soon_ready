@@ -73,39 +73,6 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
     }
   }
 
-
-  # QUERY PARAMS
-
-  @landing_page_query_params %{"nickname" => "A Nickname"}
-
-  @screening_page_query_params %{
-    "0" => %{"prompt" => "What is the answer to screening question 1?", "response" => "Option 1"},
-    "1" => %{"prompt" => "What is the answer to screening question 2?", "response" => "Option 1"}
-  }
-
-  @contact_details_page_query_params %{
-    "email" => "hello@example.com",
-    "phone_number" => "1234567890"
-  }
-
-  @demographics_page_query_params %{
-    "0" => %{"prompt" => "What is the answer to demographic question 1?", "response" => "Option 1"},
-    "1" => %{"prompt" => "What is the answer to demographic question 2?", "response" => "Option 1"}
-  }
-
-  @context_page_query_params %{
-    "0" => %{"prompt" => "What is the answer to context question 1?", "response" => "Option 1"},
-    "1" => %{"prompt" => "What is the answer to context question 2?", "response" => "Option 1"}
-  }
-
-  @comparison_page_query_params %{
-    "0" => %{"prompt" => "What products, services or platforms have you used to do what persons do?", "response" => "Product 1, Service 2, Platform 3"},
-    "1" => %{"prompt" => "What additional things do you usually use/require when you're using any of the above?", "response" => "Thing 1, Thing 2"},
-    "2" => %{"prompt" => "In total, how much would you estimate that you spend annually to do what persons do?", "response" => "1000"},
-    "3" => %{"prompt" => "Would you be willing to pay more for a better solution?", "response" => "Yes"},
-    "4" => %{"prompt" => "If yes, how much extra would you be willing to pay annually to get the job done perfectly?", "response" => "1000"}
-  }
-
   setup do
     params = %{
       first_name: "John",
