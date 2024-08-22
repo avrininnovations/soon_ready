@@ -187,7 +187,6 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
                 %{prompt: "The prompt 1"},
                 %{prompt: "The prompt 2"},
               ],
-              # TODO: Nothing really tests this
               add_button_label: "Add Question"
             },
           ]

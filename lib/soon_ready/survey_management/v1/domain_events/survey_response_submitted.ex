@@ -3,7 +3,6 @@ defmodule SoonReady.SurveyManagement.V1.DomainEvents.SurveyResponseSubmitted do
     domain: SoonReady.SurveyManagement,
     extensions: [SoonReady.Ash.Extensions.JsonEncoder]
 
-  require Logger
   alias SoonReady.SurveyManagement.V1.DomainConcepts.Response
   alias SoonReady.SurveyManagement.V1.DomainEvents.Helpers
 
