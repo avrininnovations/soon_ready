@@ -168,7 +168,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
     test "GIVEN: Respondent has visited the survey participation url, WHEN: Respondent tries to submit a nickname, THEN: The screening questions page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
 
-      _resulting_html = submit_nickname_form_response(view)
+      _resulting_html = submit_form_response(view, @nickname_form_params)
 
       landing_page = get_page_by_title(pages, "Welcome to our Survey!")
       screening_page = get_page_by_title(pages, "Screening Questions")
@@ -183,10 +183,10 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
   describe "Screening Questions Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond correctly to the screening questions, THEN: The contact details page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
-      _ = submit_nickname_form_response(view)
+      _ = submit_form_response(view, @nickname_form_params)
       _ = assert_patch(view)
 
-      _resulting_html = submit_screening_form_response(view, @correct_screening_form_params)
+      _resulting_html = submit_form_response(view, @correct_screening_form_params)
 
       screening_page = get_page_by_title(pages, "Screening Questions")
       contact_details_page = get_page_by_title(pages, "Contact Details")
@@ -199,10 +199,10 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
 
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to respond incorrectly to the screening questions, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
-      _ = submit_nickname_form_response(view)
+      _ = submit_form_response(view, @nickname_form_params)
       _ = assert_patch(view)
 
-      _resulting_html = submit_screening_form_response(view, @incorrect_screening_form_params)
+      _resulting_html = submit_form_response(view, @incorrect_screening_form_params)
 
       thank_you_page = get_page_by_title(pages, "Thank You!")
 
@@ -215,12 +215,12 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
   describe "Contact Details Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their contact details, THEN: The demographics page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
-      _ = submit_nickname_form_response(view)
+      _ = submit_form_response(view, @nickname_form_params)
       _ = assert_patch(view)
-      _ = submit_screening_form_response(view)
+      _ = submit_form_response(view, @correct_screening_form_params)
       _ = assert_patch(view)
 
-      _resulting_html = submit_contact_details_form_response(view)
+      _resulting_html = submit_form_response(view, @contact_details_form_params)
 
       contact_details_page = get_page_by_title(pages, "Contact Details")
       demographics_page = get_page_by_title(pages, "Demographics")
@@ -235,14 +235,14 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
   describe "Demographics Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their demographic details, THEN: The context page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
-      _ = submit_nickname_form_response(view)
+      _ = submit_form_response(view, @nickname_form_params)
       _ = assert_patch(view)
-      _ = submit_screening_form_response(view)
+      _ = submit_form_response(view, @correct_screening_form_params)
       _ = assert_patch(view)
-      _ = submit_contact_details_form_response(view)
+      _ = submit_form_response(view, @contact_details_form_params)
       _ = assert_patch(view)
 
-      _resulting_html = submit_demographics_form_response(view, @demographics_form_params)
+      _resulting_html = submit_form_response(view, @demographics_form_params)
 
       demographics_page = get_page_by_title(pages, "Demographics")
       context_page = get_page_by_title(pages, "Context")
@@ -257,16 +257,16 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
   describe "Context Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their context details, THEN: The comparison page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
-      _ = submit_nickname_form_response(view)
+      _ = submit_form_response(view, @nickname_form_params)
       _ = assert_patch(view)
-      _ = submit_screening_form_response(view)
+      _ = submit_form_response(view, @correct_screening_form_params)
       _ = assert_patch(view)
-      _ = submit_contact_details_form_response(view)
+      _ = submit_form_response(view, @contact_details_form_params)
       _ = assert_patch(view)
-      _ = submit_demographics_form_response(view)
+      _ = submit_form_response(view, @demographics_form_params)
       _ = assert_patch(view)
 
-      _resulting_html = submit_context_form_response(view, @context_form_params)
+      _resulting_html = submit_form_response(view, @context_form_params)
 
       demographics_page = get_page_by_title(pages, "Demographics")
       comparison_page = get_page_by_title(pages, "Comparison")
@@ -281,18 +281,18 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
   describe "Comparison Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their comparison details, THEN: The desired outcome rating page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
-      _ = submit_nickname_form_response(view)
+      _ = submit_form_response(view, @nickname_form_params)
       _ = assert_patch(view)
-      _ = submit_screening_form_response(view)
+      _ = submit_form_response(view, @correct_screening_form_params)
       _ = assert_patch(view)
-      _ = submit_contact_details_form_response(view)
+      _ = submit_form_response(view, @contact_details_form_params)
       _ = assert_patch(view)
-      _ = submit_demographics_form_response(view)
+      _ = submit_form_response(view, @demographics_form_params)
       _ = assert_patch(view)
-      _ = submit_context_form_response(view)
+      _ = submit_form_response(view, @context_form_params)
       _ = assert_patch(view)
 
-      _resulting_html = submit_comparison_form_response(view, @comparison_form_params)
+      _resulting_html = submit_form_response(view, @comparison_form_params)
 
       comparison_page = get_page_by_title(pages, "Comparison")
       desired_outcome_ratings_page = get_page_by_title(pages, "Desired Outcome Ratings")
@@ -307,20 +307,20 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
   describe "Desired Outcome Rating Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
-      _ = submit_nickname_form_response(view)
+      _ = submit_form_response(view, @nickname_form_params)
       _ = assert_patch(view)
-      _ = submit_screening_form_response(view)
+      _ = submit_form_response(view, @correct_screening_form_params)
       _ = assert_patch(view)
-      _ = submit_contact_details_form_response(view)
+      _ = submit_form_response(view, @contact_details_form_params)
       _ = assert_patch(view)
-      _ = submit_demographics_form_response(view)
+      _ = submit_form_response(view, @demographics_form_params)
       _ = assert_patch(view)
-      _ = submit_context_form_response(view)
+      _ = submit_form_response(view, @context_form_params)
       _ = assert_patch(view)
-      _ = submit_comparison_form_response(view)
+      _ = submit_form_response(view, @comparison_form_params)
       _ = assert_patch(view)
 
-      _resulting_html = submit_desired_outcome_rating_form_response(view, @desired_outcome_form_params)
+      _resulting_html = submit_form_response(view, @desired_outcome_form_params)
 
       thank_you_page = get_page_by_title(pages, "Thank You!")
 
@@ -330,49 +330,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
     end
   end
 
-  def submit_nickname_form_response(view, params \\ @nickname_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def submit_screening_form_response(view, params \\ @correct_screening_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def submit_contact_details_form_response(view, params \\ @contact_details_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def submit_demographics_form_response(view, params \\ @demographics_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def submit_context_form_response(view, params \\ @context_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def submit_comparison_form_response(view, params \\ @comparison_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
+  def submit_form_response(view, params) do
     view
     |> form("form", form: params)
     |> put_submitter("button[name=submit]")
