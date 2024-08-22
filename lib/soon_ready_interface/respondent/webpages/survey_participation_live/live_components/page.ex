@@ -19,13 +19,18 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
 
   @impl true
   def update(assigns, socket) do
-    view_model = create_response_view_model(assigns.current_page)
-
     socket =
       socket
       |> assign(:has_mcq_group_question, assigns.has_mcq_group_question)
       |> assign(:current_page, assigns.current_page)
-      |> assign(:form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondent, forms: [auto?: true]))
+
+    socket =
+      if assigns.current_page.questions do
+        view_model = create_response_view_model(assigns.current_page)
+        assign(socket, :form, AshPhoenix.Form.for_update(view_model, :submit, domain: SoonReadyInterface.Respondent, forms: [auto?: true]))
+      else
+        socket
+      end
 
     {:ok, socket}
   end
@@ -40,56 +45,68 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
         %{}
       end
     assigns = assign(assigns, :accordion_attrs, accordion_attrs)
+
     ~H"""
     <div>
-      <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
-        <div {@accordion_attrs}>
-          <.inputs_for :let={ff} field={f[:responses]}>
-            <%= case ff.source.resource do %>
-              <% FormViewModel.ShortAnswerQuestionResponse -> %>
-                <.text_field
-                  field={ff[:response]}
-                  label={ff.data.prompt}
-                  class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                />
-              <% FormViewModel.MultipleChoiceQuestionResponse -> %>
-                <.radio_group
-                  field={ff[:response]}
-                  label={ff.data.prompt}
-                  options={Enum.map(ff.data.options, fn option -> {option, option} end)}
-                />
-              <% FormViewModel.CheckboxQuestionResponse -> %>
-                <.checkbox_group
-                  field={ff[:responses]}
-                  label={ff.data.prompt}
-                  options={Enum.map(ff.data.options, fn option -> {option, option} end)}
-                />
-              <% FormViewModel.ParagraphQuestionResponse -> %>
-                <.textarea
-                  field={ff[:response]}
-                  label={ff.data.prompt}
-                  class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                />
-              <% FormViewModel.MultipleChoiceQuestionGroupResponse -> %>
-                <.mcq_group
-                  form={ff}
-                  index={ff.index}
-                  title={ff.data.title}
-                  questions={ff.data.questions}
-                />
-              <% FormViewModel.ShortAnswerQuestionGroupResponse -> %>
-                <.short_answer_group
-                  form={ff}
-                  group_prompt={ff.data.group_prompt}
-                  add_button_label={ff.data.add_button_label}
-                  target={@myself}
-                />
-            <% end %>
-          </.inputs_for>
-        </div>
+      <.page is_wide={@has_mcq_group_question}>
+        <:title>
+          <%= @current_page.title %>
+        </:title>
+        <:subtitle>
+          <%= @current_page.description %>
+        </:subtitle>
 
-        <button type="submit" name="submit" class="mt-4 py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed</button>
-      </.form>
+        <%= if @current_page.questions do %>
+          <.form :let={f} for={@form} phx-change="validate" phx-submit="submit" phx-target={@myself} class="flex flex-col gap-2">
+            <div {@accordion_attrs}>
+              <.inputs_for :let={ff} field={f[:responses]}>
+                <%= case ff.source.resource do %>
+                  <% FormViewModel.ShortAnswerQuestionResponse -> %>
+                    <.text_field
+                      field={ff[:response]}
+                      label={ff.data.prompt}
+                      class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                    />
+                  <% FormViewModel.MultipleChoiceQuestionResponse -> %>
+                    <.radio_group
+                      field={ff[:response]}
+                      label={ff.data.prompt}
+                      options={Enum.map(ff.data.options, fn option -> {option, option} end)}
+                    />
+                  <% FormViewModel.CheckboxQuestionResponse -> %>
+                    <.checkbox_group
+                      field={ff[:responses]}
+                      label={ff.data.prompt}
+                      options={Enum.map(ff.data.options, fn option -> {option, option} end)}
+                    />
+                  <% FormViewModel.ParagraphQuestionResponse -> %>
+                    <.textarea
+                      field={ff[:response]}
+                      label={ff.data.prompt}
+                      class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                    />
+                  <% FormViewModel.MultipleChoiceQuestionGroupResponse -> %>
+                    <.mcq_group
+                      form={ff}
+                      index={ff.index}
+                      title={ff.data.title}
+                      questions={ff.data.questions}
+                    />
+                  <% FormViewModel.ShortAnswerQuestionGroupResponse -> %>
+                    <.short_answer_group
+                      form={ff}
+                      group_prompt={ff.data.group_prompt}
+                      add_button_label={ff.data.add_button_label}
+                      target={@myself}
+                    />
+                <% end %>
+              </.inputs_for>
+            </div>
+
+            <button type="submit" name="submit" class="mt-4 py-3 px-5 my-auto text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed</button>
+          </.form>
+        <% end %>
+      </.page>
     </div>
     """
   end
@@ -186,6 +203,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
     </div>
     """
   end
+
   def create_response_view_model(%{questions: questions, transitions: page_transitions} = _survey_page) do
     responses =
       questions

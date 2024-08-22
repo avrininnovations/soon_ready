@@ -1,6 +1,5 @@
 defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
   use SoonReadyInterface, :live_view
-  import SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Components.Form
 
   require Logger
 
@@ -54,18 +53,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
 
   def render(assigns) do
     ~H"""
-    <.page is_wide={@has_mcq_group_question}>
-      <:title>
-        <%= @current_page.title %>
-      </:title>
-      <:subtitle>
-        <%= @current_page.description %>
-      </:subtitle>
-
-      <%= if @current_page.questions do %>
-        <.live_component module={Page} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
-      <% end %>
-    </.page>
+    <.live_component module={Page} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
     """
   end
 
