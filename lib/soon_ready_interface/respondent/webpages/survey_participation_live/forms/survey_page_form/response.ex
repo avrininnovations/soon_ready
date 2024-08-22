@@ -1,5 +1,5 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.Response do
-  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.{
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.Response do
+  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.{
     ShortAnswerQuestionResponse,
     MultipleChoiceQuestionResponse,
     CheckboxQuestionResponse,

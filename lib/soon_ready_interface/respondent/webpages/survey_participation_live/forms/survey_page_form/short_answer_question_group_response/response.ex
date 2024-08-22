@@ -1,7 +1,7 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestionGroupResponse.Response do
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.ShortAnswerQuestionGroupResponse.Response do
   use Ash.Resource, data_layer: :embedded
 
-  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestionGroupResponse.QuestionResponse
+  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.ShortAnswerQuestionGroupResponse.QuestionResponse
 
   attributes do
     uuid_primary_key :id

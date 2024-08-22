@@ -15,7 +15,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
     MultipleChoiceQuestionGroup,
   }
 
-  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel
+  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm
 
   @impl true
   def update(assigns, socket) do
@@ -61,38 +61,38 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
             <div {@accordion_attrs}>
               <.inputs_for :let={ff} field={f[:responses]}>
                 <%= case ff.source.resource do %>
-                  <% FormViewModel.ShortAnswerQuestionResponse -> %>
+                  <% SurveyPageForm.ShortAnswerQuestionResponse -> %>
                     <.text_field
                       field={ff[:response]}
                       label={ff.data.prompt}
                       class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                     />
-                  <% FormViewModel.MultipleChoiceQuestionResponse -> %>
+                  <% SurveyPageForm.MultipleChoiceQuestionResponse -> %>
                     <.radio_group
                       field={ff[:response]}
                       label={ff.data.prompt}
                       options={Enum.map(ff.data.options, fn option -> {option, option} end)}
                     />
-                  <% FormViewModel.CheckboxQuestionResponse -> %>
+                  <% SurveyPageForm.CheckboxQuestionResponse -> %>
                     <.checkbox_group
                       field={ff[:responses]}
                       label={ff.data.prompt}
                       options={Enum.map(ff.data.options, fn option -> {option, option} end)}
                     />
-                  <% FormViewModel.ParagraphQuestionResponse -> %>
+                  <% SurveyPageForm.ParagraphQuestionResponse -> %>
                     <.textarea
                       field={ff[:response]}
                       label={ff.data.prompt}
                       class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                     />
-                  <% FormViewModel.MultipleChoiceQuestionGroupResponse -> %>
+                  <% SurveyPageForm.MultipleChoiceQuestionGroupResponse -> %>
                     <.mcq_group
                       form={ff}
                       index={ff.index}
                       title={ff.data.title}
                       questions={ff.data.questions}
                     />
-                  <% FormViewModel.ShortAnswerQuestionGroupResponse -> %>
+                  <% SurveyPageForm.ShortAnswerQuestionGroupResponse -> %>
                     <.short_answer_group
                       form={ff}
                       group_prompt={ff.data.group_prompt}
@@ -255,7 +255,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
           %{type: "multiple_choice_question_group_response", id: id, title: title, prompts: prompts, questions: questions, prompt_responses: prompt_responses}
       end)
 
-      FormViewModel.create!(%{page_transitions: page_transitions, responses: responses})
+      SurveyPageForm.create!(%{page_transitions: page_transitions, responses: responses})
   end
 
   @impl true

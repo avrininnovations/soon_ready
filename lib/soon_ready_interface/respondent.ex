@@ -7,7 +7,7 @@ defmodule SoonReadyInterface.Respondent do
     end
     resource SoonReadyInterface.Respondent.Commands.Aggregate
     resource SoonReadyInterface.Respondent.ReadModels.Survey
-    resource SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel
+    resource SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm
   end
 
 end

@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel do
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm do
   use SoonReadyInterface, :live_component
   use Ash.Resource, domain: SoonReadyInterface.Respondent
 
