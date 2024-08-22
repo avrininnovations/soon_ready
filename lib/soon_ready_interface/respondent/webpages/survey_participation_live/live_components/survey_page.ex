@@ -1,8 +1,7 @@
 defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveComponents.SurveyPage do
   use SoonReadyInterface, :live_component
 
-  import SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Components.Form
-  import SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Components.Layout
+  import __MODULE__.Components
 
   alias SoonReady.SurveyManagement.V1.DomainConcepts.{
     Transition,
@@ -109,99 +108,6 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
           </.form>
         <% end %>
       </.page>
-    </div>
-    """
-  end
-
-  def mcq_group(assigns) do
-    # TODO: How do I handle index?
-
-    # TODO: Rename ODI related component, attr and slot names
-    ~H"""
-    <.accordion index={@index}>
-      <:title><%= @title %></:title>
-
-      <.rating_section>
-        <.rating_section_header questions={@questions} />
-
-        <.rating_section_body>
-          <.inputs_for :let={prompt_form} field={@form[:prompt_responses]}>
-            <.outcome_rating desired_outcome={prompt_form.data.prompt}>
-              <.inputs_for :let={question_form} field={prompt_form[:question_responses]}>
-                <.rating_radio_group field={question_form[:response]} options={question_form.data.options} />
-              </.inputs_for>
-            </.outcome_rating>
-          </.inputs_for>
-        </.rating_section_body>
-      </.rating_section>
-    </.accordion>
-    """
-  end
-
-  def short_answer_group(assigns) do
-    ~H"""
-    <div>
-      <h3 class="block mb-2 font-medium text-gray-900 dark:text-white"><%= @group_prompt %></h3>
-
-      <.inputs_for :let={f} field={@form[:responses]}>
-        <div class="flex my-2 gap-2">
-          <.inputs_for :let={ff} field={f[:question_responses]}>
-            <.hidden_input field={ff[:id]} />
-            <.hidden_input field={ff[:prompt]} />
-            <.text_field
-              field={ff[:response]}
-              label={ff.source.source.attributes.prompt}
-              class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-            />
-          </.inputs_for>
-          <.thrash_button action="remove-short-answer-group-response" name={f.name} target={@target} sr_description="Remove Response" />
-        </div>
-      </.inputs_for>
-
-      <.add_button name={@form.name} index={@form.index} target={@target} action="add-short-answer-group-response" field={@form[:responses]}><%= @add_button_label %></.add_button>
-    </div>
-    """
-  end
-
-  attr :field, Phoenix.HTML.FormField, required: true
-  attr :name, :string, required: true
-  attr :index, :string, required: true
-  attr :action, :string, required: true
-  attr :target, :string, required: true
-  slot :inner_block, required: true
-  def add_button(assigns) do
-    ~H"""
-    <button name={@name} phx-click={@action} phx-target={@target} phx-value-name={@name} phx-value-index={@index} type="button"
-      class="p-2 text-primary-600 hover:underline hover:border-primary-500 rounded-lg border border-gray-300 shadow-sm"
-    >
-      <%= render_slot(@inner_block) %>
-    </button>
-    <.errors field={@field} />
-    """
-  end
-
-  attr :action, :string, required: true
-  attr :name, :string, required: true
-  attr :target, :string, required: true
-  attr :sr_description, :string, required: true
-  def thrash_button(assigns) do
-    ~H"""
-    <button type="button" phx-click={@action} phx-value-name={@name} phx-target={@target} class="text-primary-700 border border-primary-700 hover:bg-primary-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center dark:border-primary-500 dark:text-primary-500 dark:hover:text-white dark:focus:ring-primary-800 dark:hover:bg-primary-500">
-      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-      </svg>
-      <span class="sr-only"><%= @sr_description %></span>
-    </button>
-    """
-  end
-
-  attr :field, Phoenix.HTML.FormField, required: true
-  attr :rest, :global
-
-  def hidden_input(assigns) do
-    ~H"""
-    <div>
-      <%= hidden_input(@field.form, @field.field, Keyword.new(@rest)) %>
     </div>
     """
   end
