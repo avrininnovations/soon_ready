@@ -27,66 +27,13 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
 
     socket =
       if assigns.current_page.questions do
-        form = create_form(assigns.current_page)
+        form = create_survey_page_form(assigns.current_page)
         assign(socket, :form, AshPhoenix.Form.for_update(form, :submit, domain: SoonReadyInterface.Respondent, forms: [auto?: true]))
       else
         socket
       end
 
     {:ok, socket}
-  end
-
-  def create_form(%{questions: questions, transitions: page_transitions} = _survey_page) do
-    responses =
-      questions
-      |> Enum.map(fn
-        %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} ->
-          %{type: "short_answer_question_response", id: id, prompt: prompt}
-        %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
-          options = Enum.map(options, fn
-            %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
-              value
-            %Ash.Union{type: :ci_string, value: value} ->
-              value
-          end)
-          %{type: "multiple_choice_question_response", id: id, prompt: prompt, options: options}
-        %Ash.Union{type: CheckboxQuestion, value: %CheckboxQuestion{id: id, prompt: prompt, options: options, correct_answer_criteria: correct_answer_criteria}} ->
-          options = Enum.map(options, fn
-            %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
-              value
-            %Ash.Union{type: :ci_string, value: value} ->
-              value
-          end)
-          %{type: "checkbox_question_response", id: id, prompt: prompt, options: options, correct_answer_criteria: correct_answer_criteria}
-        %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
-          %{type: "paragraph_question_response", id: id, prompt: prompt}
-        %Ash.Union{type: ShortAnswerQuestionGroup, value: %ShortAnswerQuestionGroup{id: id, group_prompt: group_prompt, add_button_label: add_button_label, questions: questions}} ->
-          questions = Enum.map(questions, fn %{id: id, prompt: prompt} = _question ->
-            %{id: id, prompt: prompt}
-          end)
-          %{type: "short_answer_question_group_response", id: id, group_prompt: group_prompt, add_button_label: add_button_label, questions: questions}
-        %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, title: title, prompts: prompts, questions: questions}} ->
-          prompt_responses = Enum.map(prompts, fn %{id: id, prompt: prompt} ->
-            question_responses = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} ->
-              options = Enum.map(options, fn
-                %Ash.Union{value: option, type: :ci_string} -> option
-              end)
-              %{id: id, prompt: prompt, options: options}
-            end)
-            %{id: id, prompt: prompt, question_responses: question_responses}
-          end)
-
-          prompts = Enum.map(prompts, fn %{id: id, prompt: prompt} = _prompt -> %{id: id, prompt: prompt} end)
-          questions = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} = _question ->
-            options = Enum.map(options, fn
-              %Ash.Union{value: option, type: :ci_string} -> option
-            end)
-            %{id: id, prompt: prompt, options: options}
-          end)
-          %{type: "multiple_choice_question_group_response", id: id, title: title, prompts: prompts, questions: questions, prompt_responses: prompt_responses}
-      end)
-
-      SurveyPageForm.create!(%{page_transitions: page_transitions, responses: responses})
   end
 
   @impl true
@@ -207,5 +154,58 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
       {:error, form_with_error} ->
         {:noreply, assign(socket, form: form_with_error)}
     end
+  end
+
+  def create_survey_page_form(%{questions: questions, transitions: page_transitions} = _survey_page) do
+    responses =
+      questions
+      |> Enum.map(fn
+        %Ash.Union{type: ShortAnswerQuestion, value: %ShortAnswerQuestion{id: id, prompt: prompt}} ->
+          %{type: "short_answer_question_response", id: id, prompt: prompt}
+        %Ash.Union{type: MultipleChoiceQuestion, value: %MultipleChoiceQuestion{id: id, prompt: prompt, options: options}} ->
+          options = Enum.map(options, fn
+            %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
+              value
+            %Ash.Union{type: :ci_string, value: value} ->
+              value
+          end)
+          %{type: "multiple_choice_question_response", id: id, prompt: prompt, options: options}
+        %Ash.Union{type: CheckboxQuestion, value: %CheckboxQuestion{id: id, prompt: prompt, options: options, correct_answer_criteria: correct_answer_criteria}} ->
+          options = Enum.map(options, fn
+            %Ash.Union{type: OptionWithCorrectFlag, value: %OptionWithCorrectFlag{value: value}} ->
+              value
+            %Ash.Union{type: :ci_string, value: value} ->
+              value
+          end)
+          %{type: "checkbox_question_response", id: id, prompt: prompt, options: options, correct_answer_criteria: correct_answer_criteria}
+        %Ash.Union{type: ParagraphQuestion, value: %ParagraphQuestion{id: id, prompt: prompt}} ->
+          %{type: "paragraph_question_response", id: id, prompt: prompt}
+        %Ash.Union{type: ShortAnswerQuestionGroup, value: %ShortAnswerQuestionGroup{id: id, group_prompt: group_prompt, add_button_label: add_button_label, questions: questions}} ->
+          questions = Enum.map(questions, fn %{id: id, prompt: prompt} = _question ->
+            %{id: id, prompt: prompt}
+          end)
+          %{type: "short_answer_question_group_response", id: id, group_prompt: group_prompt, add_button_label: add_button_label, questions: questions}
+        %Ash.Union{type: MultipleChoiceQuestionGroup, value: %MultipleChoiceQuestionGroup{id: id, title: title, prompts: prompts, questions: questions}} ->
+          prompt_responses = Enum.map(prompts, fn %{id: id, prompt: prompt} ->
+            question_responses = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} ->
+              options = Enum.map(options, fn
+                %Ash.Union{value: option, type: :ci_string} -> option
+              end)
+              %{id: id, prompt: prompt, options: options}
+            end)
+            %{id: id, prompt: prompt, question_responses: question_responses}
+          end)
+
+          prompts = Enum.map(prompts, fn %{id: id, prompt: prompt} = _prompt -> %{id: id, prompt: prompt} end)
+          questions = Enum.map(questions, fn %{id: id, prompt: prompt, options: options} = _question ->
+            options = Enum.map(options, fn
+              %Ash.Union{value: option, type: :ci_string} -> option
+            end)
+            %{id: id, prompt: prompt, options: options}
+          end)
+          %{type: "multiple_choice_question_group_response", id: id, title: title, prompts: prompts, questions: questions, prompt_responses: prompt_responses}
+      end)
+
+      SurveyPageForm.create!(%{page_transitions: page_transitions, responses: responses})
   end
 end
