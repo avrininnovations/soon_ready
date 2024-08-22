@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.CheckboxQuestionResponse do
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.CheckboxQuestionResponse do
   use Ash.Resource, data_layer: :embedded
 
   attributes do

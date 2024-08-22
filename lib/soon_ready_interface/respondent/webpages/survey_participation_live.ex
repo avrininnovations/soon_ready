@@ -1,8 +1,9 @@
 defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
   use SoonReadyInterface, :live_view
-  import SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Components.Form
 
   require Logger
+
+  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveComponents.SurveyPage
 
   alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.{
     NicknameForm,
@@ -23,7 +24,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
     ShortAnswerQuestionGroup,
     MultipleChoiceQuestionGroup,
   }
-  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel
+  alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm
   alias SoonReady.SurveyManagement.V1.DomainConcepts.PageAction.ChangePage
 
   def mount(%{"survey_id" => survey_id} = _params, _session, socket) do
@@ -45,26 +46,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
 
     current_page = get_page(survey, page_id)
 
-    has_mcq_group_question = Enum.any?(current_page.questions || [], fn question -> question.type == MultipleChoiceQuestionGroup end)
-
-    {:noreply, assign(socket, params: params, current_page: current_page, has_mcq_group_question: has_mcq_group_question)}
-  end
-
-  def render(assigns) do
-    ~H"""
-    <.page is_wide={@has_mcq_group_question}>
-      <:title>
-        <%= @current_page.title %>
-      </:title>
-      <:subtitle>
-        <%= @current_page.description %>
-      </:subtitle>
-
-      <%= if @current_page.questions do %>
-        <.live_component module={FormViewModel} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
-      <% end %>
-    </.page>
-    """
+    {:noreply, assign(socket, params: params, current_page: current_page)}
   end
 
   def get_page(%{pages: pages} = _survey, page_id) do
@@ -73,18 +55,22 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
     |> Enum.at(0)
   end
 
-  def handle_info({:transition_from_page, %{transition: %{destination_page_id: destination_page_id, submit_response?: submit_response?}} = view_model}, socket) do
-    socket.assigns.params
+  def render(assigns) do
+    ~H"""
+    <.live_component id="survey_page" module={SurveyPage} current_page={@current_page} />
+    """
+  end
 
+  def handle_info({:transition_from_page, %{transition: %{destination_page_id: destination_page_id, submit_response?: submit_response?}} = form}, socket) do
     params =
-      view_model
+      form
       |> extract_query_params(socket.assigns.current_page)
       |> deep_merge(socket.assigns.params)
 
     if submit_response? do
       params
       |> normalize_response(socket.assigns.survey)
-      |> SoonReady.SurveyManagement.submit_response()
+      |> SoonReadyInterface.Respondent.submit_survey_response()
       |> case do
         {:ok, _aggregate} ->
           socket =
@@ -108,19 +94,19 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
     end
   end
 
-  def extract_query_params(%FormViewModel{responses: responses}, %{id: page_id} = _current_page) do
+  def extract_query_params(%SurveyPageForm{responses: responses}, %{id: page_id} = _current_page) do
     responses =
       responses
       |> Enum.reduce(%{}, fn
         %{type: type, value: %{id: question_id, response: response}}, question_params when type in [
-          FormViewModel.ShortAnswerQuestionResponse,
-          FormViewModel.ParagraphQuestionResponse,
-          FormViewModel.MultipleChoiceQuestionResponse,
+          SurveyPageForm.ShortAnswerQuestionResponse,
+          SurveyPageForm.ParagraphQuestionResponse,
+          SurveyPageForm.MultipleChoiceQuestionResponse,
         ] ->
           Map.put(question_params, question_id, response)
-        %{type: FormViewModel.CheckboxQuestionResponse, value: %{id: question_id, responses: responses}}, question_params ->
+        %{type: SurveyPageForm.CheckboxQuestionResponse, value: %{id: question_id, responses: responses}}, question_params ->
           Map.put(question_params, question_id, responses)
-        %{type: FormViewModel.ShortAnswerQuestionGroupResponse, value: %{id: group_id, responses: responses}}, question_params ->
+        %{type: SurveyPageForm.ShortAnswerQuestionGroupResponse, value: %{id: group_id, responses: responses}}, question_params ->
           responses = Enum.reduce(responses, %{}, fn %{id: batch_id, question_responses: question_responses}, responses_params ->
             question_responses = Enum.reduce(question_responses, %{}, fn %{id: question_id, response: response}, question_responses_params ->
               Map.put(question_responses_params, question_id, response)
@@ -128,7 +114,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
             Map.put(responses_params, batch_id, question_responses)
           end)
           Map.put(question_params, group_id, responses)
-        %{type: FormViewModel.MultipleChoiceQuestionGroupResponse, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
+        %{type: SurveyPageForm.MultipleChoiceQuestionGroupResponse, value: %{id: question_id, prompt_responses: prompt_responses}}, question_params ->
           response = Enum.reduce(prompt_responses, %{}, fn %{id: prompt_id, question_responses: question_responses}, prompt_response_params ->
             prompt_response = Enum.reduce(question_responses, %{}, fn %{id: question_response_id, response: response}, question_response_params ->
               Map.put(question_response_params, question_response_id, response)
@@ -138,10 +124,8 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
           Map.put(question_params, question_id, response)
       end)
     %{"pages" => %{page_id => %{"responses" => responses}}}
-    # %{"page_responses" => %{page_id => %{"questions" => responses}}}
   end
 
-  # TODO: Avoid collision
   defp deep_merge(map1, map2) do
     Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
   end
@@ -164,19 +148,12 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
 
           normalized_response =
             case question do
-              # TODO: Simplify to simple maps
               %ShortAnswerQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "short_answer_question_response")
+                %{"type" => "short_answer_question_response", "question_id" => question_id, "response" => response}
               %MultipleChoiceQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "multiple_choice_question_response")
+                %{"type" => "multiple_choice_question_response", "question_id" => question_id, "response" => response}
               %ParagraphQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "paragraph_question_response")
+                %{"type" => "paragraph_question_response", "question_id" => question_id, "response" => response}
               %ShortAnswerQuestionGroup{} ->
                 responses = Enum.reduce(response, [], fn {batch_id, batch_response}, responses ->
                   Enum.reduce(batch_response, responses, fn {question_id, question_response}, responses ->

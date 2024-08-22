@@ -1,16 +1,15 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionResponse do
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.ParagraphQuestionResponse do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false, public?: true
     attribute :prompt, :string, allow_nil?: false, public?: true
-    attribute :options, {:array, :string}, allow_nil?: false, public?: true
     # TODO: nil is always allowed. Resolve.
     attribute :response, :string, allow_nil?: true, public?: true
   end
 
   actions do
-    default_accept [:id, :prompt, :options, :response]
+    default_accept [:id, :prompt, :response]
     defaults [:read, :update, :destroy]
 
     create :create do

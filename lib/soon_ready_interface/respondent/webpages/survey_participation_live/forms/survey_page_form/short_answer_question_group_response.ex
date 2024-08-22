@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.ShortAnswerQuestionGroupResponse do
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.ShortAnswerQuestionGroupResponse do
   use Ash.Resource, data_layer: :embedded
 
   alias __MODULE__.{Response, Question}

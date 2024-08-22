@@ -1,4 +1,4 @@
-defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.FormViewModel.MultipleChoiceQuestionGroupResponse.Prompt do
+defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm.ShortAnswerQuestionGroupResponse.Question do
   use Ash.Resource, data_layer: :embedded
 
   attributes do
