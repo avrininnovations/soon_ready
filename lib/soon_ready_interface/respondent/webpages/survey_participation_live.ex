@@ -24,7 +24,6 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
     ShortAnswerQuestionGroup,
     MultipleChoiceQuestionGroup,
   }
-  # TODO
   alias SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.Forms.SurveyPageForm
   alias SoonReady.SurveyManagement.V1.DomainConcepts.PageAction.ChangePage
 
@@ -125,10 +124,8 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
           Map.put(question_params, question_id, response)
       end)
     %{"pages" => %{page_id => %{"responses" => responses}}}
-    # %{"page_responses" => %{page_id => %{"questions" => responses}}}
   end
 
-  # TODO: Avoid collision
   defp deep_merge(map1, map2) do
     Map.merge(map1, map2, fn _key, submap1, submap2 -> deep_merge(submap1, submap2) end)
   end
@@ -151,19 +148,12 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
 
           normalized_response =
             case question do
-              # TODO: Simplify to simple maps
               %ShortAnswerQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "short_answer_question_response")
+                %{"type" => "short_answer_question_response", "question_id" => question_id, "response" => response}
               %MultipleChoiceQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "multiple_choice_question_response")
+                %{"type" => "multiple_choice_question_response", "question_id" => question_id, "response" => response}
               %ParagraphQuestion{} ->
-                %{"response" => response}
-                |> Map.put("question_id", question_id)
-                |> Map.put("type", "paragraph_question_response")
+                %{"type" => "paragraph_question_response", "question_id" => question_id, "response" => response}
               %ShortAnswerQuestionGroup{} ->
                 responses = Enum.reduce(response, [], fn {batch_id, batch_response}, responses ->
                   Enum.reduce(batch_response, responses, fn {question_id, question_response}, responses ->
