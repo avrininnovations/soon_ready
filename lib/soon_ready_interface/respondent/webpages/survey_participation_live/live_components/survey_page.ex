@@ -19,10 +19,12 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive.LiveCom
 
   @impl true
   def update(assigns, socket) do
+    has_mcq_group_question = Enum.any?(assigns.current_page.questions || [], fn question -> question.type == MultipleChoiceQuestionGroup end)
+
     socket =
       socket
-      |> assign(:has_mcq_group_question, assigns.has_mcq_group_question)
       |> assign(:current_page, assigns.current_page)
+      |> assign(:has_mcq_group_question, has_mcq_group_question)
 
     socket =
       if assigns.current_page.questions do

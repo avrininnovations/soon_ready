@@ -47,15 +47,7 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
 
     current_page = get_page(survey, page_id)
 
-    has_mcq_group_question = Enum.any?(current_page.questions || [], fn question -> question.type == MultipleChoiceQuestionGroup end)
-
-    {:noreply, assign(socket, params: params, current_page: current_page, has_mcq_group_question: has_mcq_group_question)}
-  end
-
-  def render(assigns) do
-    ~H"""
-    <.live_component module={SurveyPage} current_page={@current_page} has_mcq_group_question={@has_mcq_group_question} id="form_view_model" />
-    """
+    {:noreply, assign(socket, params: params, current_page: current_page)}
   end
 
   def get_page(%{pages: pages} = _survey, page_id) do
@@ -64,11 +56,15 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
     |> Enum.at(0)
   end
 
-  def handle_info({:transition_from_page, %{transition: %{destination_page_id: destination_page_id, submit_response?: submit_response?}} = view_model}, socket) do
-    socket.assigns.params
+  def render(assigns) do
+    ~H"""
+    <.live_component id="survey_page" module={SurveyPage} current_page={@current_page} />
+    """
+  end
 
+  def handle_info({:transition_from_page, %{transition: %{destination_page_id: destination_page_id, submit_response?: submit_response?}} = form}, socket) do
     params =
-      view_model
+      form
       |> extract_query_params(socket.assigns.current_page)
       |> deep_merge(socket.assigns.params)
 
