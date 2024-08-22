@@ -4,43 +4,6 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
 
   alias SoonReadyInterface.Respondent.ReadModels.Survey
 
-  @survey_params %{
-    survey_id: Ash.UUID.generate(),
-    brand: "A Big Brand",
-    market: %{
-      job_executor: "Persons",
-      job_to_be_done: "Do what persons do"
-    },
-    job_steps: [
-      %{name: "Job Step 1", desired_outcomes: [
-        "Minimize the time it takes to do A",
-        "Minimize the likelihood that B occurs"
-      ]},
-      %{name: "Job Step 2", desired_outcomes: [
-        "Minimize the time it takes to do C",
-        "Minimize the likelihood that D occurs"
-      ]},
-    ],
-    screening_questions: [
-      %{prompt: "What is the answer to screening question 1?", options: [
-        %{value: "Option 1", is_correct: true},
-        %{value: "Option 2", is_correct: false},
-      ]},
-      %{prompt: "What is the answer to screening question 2?", options: [
-        %{value: "Option 1", is_correct: true},
-        %{value: "Option 2", is_correct: false},
-      ]}
-    ],
-    demographic_questions: [
-      %{prompt: "What is the answer to demographic question 1?", options: ["Option 1", "Option 2"]},
-      %{prompt: "What is the answer to demographic question 2?", options: ["Option 1", "Option 2"]}
-    ],
-    context_questions: [
-      %{prompt: "What is the answer to context question 1?", options: ["Option 1", "Option 2"]},
-      %{prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
-    ]
-  }
-
   @desired_outcome_form_params %{
     "responses" => %{
       "0" => %{
@@ -136,105 +99,6 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
   }
 
   @landing_page_query_params %{"nickname" => "A Nickname"}
-
-  def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def submit_comparison_form_response(view, params \\ @comparison_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_comparison_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"comparison_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert query_params == @comparison_page_query_params
-  end
-
-  def submit_context_form_response(view, params \\ @context_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_context_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"context_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert query_params == @context_page_query_params
-  end
-
-  def submit_demographics_form_response(view, params \\ @demographics_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_demographics_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"demographics_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert query_params == @demographics_page_query_params
-  end
-
-  def submit_contact_details_form_response(view, params \\ @contact_details_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_contact_details_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"contact_details_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert query_params == @contact_details_page_query_params
-  end
-
-  def submit_screening_form_response(view, params \\ @correct_screening_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_screening_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"screening_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert query_params == @screening_page_query_params
-  end
-
-  def submit_nickname_form_response(view, params \\ @nickname_form_params) do
-    view
-    |> form("form", form: params)
-    |> put_submitter("button[name=submit]")
-    |> render_submit()
-  end
-
-  def assert_landing_page_query_params(path) do
-    %{query: query} = URI.parse(path)
-    %{"nickname_form" => query_params} = Plug.Conn.Query.decode(query)
-    assert query_params == @landing_page_query_params
-  end
-
-  def assert_page_response_in_query_params(path, page_id) do
-    %{query: query} = URI.parse(path)
-    %{"pages" => pages_query_params} = Plug.Conn.Query.decode(query)
-    assert Map.get(pages_query_params, page_id) != nil
-  end
-
-  def get_page_by_title(pages, title) do
-    pages
-    |> Enum.filter(fn page ->
-      to_string(page.title) == title
-    end)
-    |> Enum.at(0)
-  end
 
   setup do
     params = %{
@@ -440,7 +304,6 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
     end
   end
 
-  # TODO: Fix failing test
   describe "Desired Outcome Rating Form" do
     test "GIVEN: Forms in previous pages have been filled, WHEN: Respondent tries to submit their desired outcome ratings, THEN: The thank you page is displayed", %{conn: conn, survey_id: survey_id, survey: %{starting_page_id: starting_page_id, pages: pages} = survey} do
       {:ok, view, html} = live(conn, ~p"/survey/participate/#{survey_id}/pages/#{starting_page_id}")
@@ -465,5 +328,68 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLiveTest do
       assert path =~ ~p"/survey/participate/#{survey_id}/pages/#{thank_you_page.id}"
       assert has_element?(view, "h2", "Thank You!")
     end
+  end
+
+  def submit_nickname_form_response(view, params \\ @nickname_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def submit_screening_form_response(view, params \\ @correct_screening_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def submit_contact_details_form_response(view, params \\ @contact_details_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def submit_demographics_form_response(view, params \\ @demographics_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def submit_context_form_response(view, params \\ @context_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def submit_comparison_form_response(view, params \\ @comparison_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def submit_desired_outcome_rating_form_response(view, params \\ @desired_outcome_form_params) do
+    view
+    |> form("form", form: params)
+    |> put_submitter("button[name=submit]")
+    |> render_submit()
+  end
+
+  def assert_page_response_in_query_params(path, page_id) do
+    %{query: query} = URI.parse(path)
+    %{"pages" => pages_query_params} = Plug.Conn.Query.decode(query)
+    assert Map.get(pages_query_params, page_id) != nil
+  end
+
+  def get_page_by_title(pages, title) do
+    pages
+    |> Enum.filter(fn page ->
+      to_string(page.title) == title
+    end)
+    |> Enum.at(0)
   end
 end
