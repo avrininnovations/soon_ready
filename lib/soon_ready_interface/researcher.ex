@@ -6,6 +6,6 @@ defmodule SoonReadyInterface.Researcher do
       define :create_survey, action: :dispatch
     end
 
-    resource SoonReadyInterface.Researcher.Commands.Aggregate
+    resource SoonReadyInterface.Aggregates.Survey
   end
 end

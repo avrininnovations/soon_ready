@@ -1,8 +1,10 @@
-defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
-  use Ash.Resource, domain: SoonReadyInterface.Respondent
+defmodule SoonReadyInterface.Aggregates.Survey do
+  use Ash.Resource, domain: SoonReadyInterface.Researcher
   use Commanded.Commands.Router
 
+  alias SoonReadyInterface.Researcher.Commands.CreateSurvey
   alias SoonReadyInterface.Respondent.Commands.SubmitSurveyResponse
+
   alias SoonReady.SurveyManagement.V1.DomainConcepts.SurveyPage
   alias SoonReady.SurveyManagement.V1.DomainConcepts.{
     ShortAnswerQuestion,
@@ -20,7 +22,14 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
     ShortAnswerQuestionGroupResponses,
     MultipleChoiceQuestionGroupResponses,
   }
-  alias SoonReady.SurveyManagement.V1.DomainEvents.{SurveyPublished, SurveyResponseSubmitted}
+
+  alias SoonReady.OutcomeDrivenInnovation.V1.DomainEvents.{
+    ProjectCreated,
+    MarketDefined,
+    NeedsDefined,
+  }
+
+  alias SoonReady.SurveyManagement.V1.DomainEvents.{SurveyCreated, SurveyPublished, SurveyResponseSubmitted}
 
   attributes do
     attribute :survey_id, :uuid, primary_key?: true, allow_nil?: false
@@ -39,7 +48,32 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
     define :create
   end
 
-  # dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
+  dispatch CreateSurvey, to: __MODULE__, identity: :survey_id
+  dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
+
+  def execute(aggregate_state, %CreateSurvey{} = command) do
+    %{
+      project_id: project_id,
+      survey_id: survey_id,
+      brand_name: brand_name,
+      market: market,
+      job_steps: job_steps,
+      screening_questions: screening_questions,
+      demographic_questions: demographic_questions,
+      context_questions: context_questions,
+      survey: survey,
+      trigger: trigger,
+    } = command
+
+    with {:ok, project_created_event} <- ProjectCreated.new(%{project_id: project_id, brand_name: brand_name}),
+          {:ok, market_defined_event} <- MarketDefined.new(%{project_id: project_id, market: market}),
+          {:ok, needs_defined_event} <- NeedsDefined.new(%{project_id: project_id, job_steps: job_steps}),
+          {:ok, survey_created_event} <- SurveyCreated.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages: survey.pages, trigger: trigger}),
+          {:ok, survey_published_event} <- SurveyPublished.new(%{survey_id: survey.survey_id, starting_page_id: survey.starting_page_id, pages: survey.pages, trigger: trigger})
+    do
+      [project_created_event, market_defined_event, needs_defined_event, survey_created_event, survey_published_event]
+    end
+  end
 
   def execute(%{pages: pages} = _aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, responses: responses} = command) do
     with :ok <- validate_all_required_questions_are_answered(pages, responses) do
