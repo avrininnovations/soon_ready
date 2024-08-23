@@ -26,6 +26,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
                 <.card_header>
                   <:title>Prompt</:title>
                   <:thrash_button click="remove-screening-question" name={"#{ff.name}"} target={@myself}>Remove Screening Question</:thrash_button>
+                  <:checkbox field={ff[:required?]} />
                   <:text_input field={ff[:prompt]} placeholder="Enter prompt" />
                 </.card_header>
               </:header>

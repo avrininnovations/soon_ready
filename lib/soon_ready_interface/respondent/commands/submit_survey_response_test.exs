@@ -31,7 +31,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "short_answer_question", prompt: "The short answer prompt"},
+              %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
             ]
           }
         ]
@@ -42,6 +42,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
         ]
@@ -69,7 +70,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "paragraph_question", prompt: "The paragraph prompt"},
+              %{type: "paragraph_question", required?: true, prompt: "The paragraph prompt"},
             ]
           }
         ]
@@ -80,6 +81,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: paragraph_question.id, type: "paragraph_question_response", response: "The paragraph answer"},
         ]
@@ -107,7 +109,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+              %{type: "multiple_choice_question", required?: true, prompt: "The prompt", options: ["Option 1", "Option 2"]},
             ]
           }
         ]
@@ -118,6 +120,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: multiple_choice_question.id, type: "multiple_choice_question_response", response: "Option 1"},
         ]
@@ -145,7 +148,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "checkbox_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
+              %{type: "checkbox_question", required?: true, prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
             ]
           }
         ]
@@ -156,6 +159,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: checkbox_question.id, type: "checkbox_question_response", responses: ["Option 1", "Option 2"]},
         ]
@@ -184,8 +188,8 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           questions: [
             %{
               type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
-                %{prompt: "The prompt 1"},
-                %{prompt: "The prompt 2"},
+                %{prompt: "The prompt 1", required?: true},
+                %{prompt: "The prompt 2", required?: true},
               ],
               add_button_label: "Add Question"
             },
@@ -201,6 +205,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{group_id: short_answer_question_group.id, type: "short_answer_question_group_responses", responses: [
             %{batch_id: batch_1_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
@@ -234,8 +239,8 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           questions: [
             %{type: "multiple_choice_question_group", title: "Question Group 1",
               prompts: ["Statement 1", "Statement 2"], questions: [
-              %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
-              %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: true},
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: true},
             ]},
           ]
         }
@@ -246,6 +251,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{group_id: multiple_choice_question_group.id, type: "multiple_choice_question_group_responses", responses: [
             %{prompt_id: prompt_1.id, question_id: question_1.id, response: "Option 1"},
@@ -283,7 +289,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           title: "Page 1 Title",
           transitions: [%{condition: :always, destination_page_id: page_2_id}],
           questions: [
-            %{type: "short_answer_question", prompt: "The short answer prompt"},
+            %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
           ]
         },
         %{
@@ -291,7 +297,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           title: "Page 2 Title",
           transitions: [%{condition: :always, destination_page_id: page_3_id}],
           questions: [
-            %{type: "short_answer_question", prompt: "The short answer prompt"},
+            %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
           ]
         },
         %{
@@ -299,7 +305,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           title: "Page 3 Title",
           transitions: [%{condition: :always, destination_page_id: final_page_id, submit_response?: true}],
           questions: [
-            %{type: "short_answer_question", prompt: "The short answer prompt"},
+            %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
           ]
         },
         %{
@@ -310,13 +316,235 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
 
+      question_1 = get_question(survey_published_event, 0, 0)
+      question_2 = get_question(survey_published_event, 1, 0)
+      question_3 = get_question(survey_published_event, 2, 0)
+
+      survey_response = %{
+        survey_id: survey_id,
+        pages_touched: [page_1_id, page_2_id, page_3_id],
+        responses: [
+          %{question_id: question_1.id, type: "short_answer_question_response", response: "The short answer"},
+          %{question_id: question_2.id, type: "short_answer_question_response", response: "The short answer"},
+          %{question_id: question_3.id, type: "short_answer_question_response", response: "The short answer"},
+        ]
+      }
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+
+      assert_receive_event(Application, SurveyResponseSubmitted,
+        fn event -> event.response_id == command.response_id end,
+        fn event ->
+          {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+          assert event.survey_id == command.survey_id
+          assert Jason.encode(event.responses) == Jason.encode(command.responses)
+        end
+      )
+    end
+  end
+
+
+  describe "Test Required Question Flag" do
+    test "GIVEN: A survey with a required short answer question has been published, WHEN: A participant tries to submit a response without that question answered, THEN: A survey response is not submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id,
+        pages: [
+          %{
+            id: page_id,
+            title: "Page Title",
+            questions: [
+              %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
+            ]
+          }
+        ]
+      }
+
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
       short_answer_question = get_question(survey_published_event, 0, 0)
 
       survey_response = %{
         survey_id: survey_id,
-        responses: [
-          %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
+        pages_touched: [page_id],
+        responses: []
+      }
+
+      {:error, %Ash.Error.Unknown{errors: [%Ash.Error.Unknown.UnknownError{error: [unanswered_questions: [%Ash.Union{value: unanswered_question}]]}]}} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+      assert unanswered_question.id == short_answer_question.id
+    end
+
+    test "GIVEN: A survey with an unrequired short answer question has been published, WHEN: A participant tries to submit a response without that question answered, THEN: A survey response is submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id,
+        pages: [
+          %{
+            id: page_id,
+            title: "Page Title",
+            questions: [
+              %{type: "short_answer_question", required?: false, prompt: "The short answer prompt"},
+            ]
+          }
         ]
+      }
+
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+      short_answer_question = get_question(survey_published_event, 0, 0)
+
+      survey_response = %{
+        survey_id: survey_id,
+        pages_touched: [page_id],
+        responses: []
+      }
+
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+      assert_receive_event(Application, SurveyResponseSubmitted,
+        fn event -> event.response_id == command.response_id end,
+        fn event ->
+          {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+          assert event.survey_id == command.survey_id
+          assert Jason.encode(event.responses) == Jason.encode(command.responses)
+        end
+      )
+    end
+
+    test "GIVEN: A survey with a partially required short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is not submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id, pages: [
+        %{
+          id: page_id,
+          title: "Page Title",
+          questions: [
+            %{
+              type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
+                %{prompt: "The prompt 1", required?: true},
+                %{prompt: "The prompt 2", required?: false},
+              ],
+              add_button_label: "Add Question"
+            },
+          ]
+        }
+      ]}
+
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+      short_answer_question_group = get_question(survey_published_event, 0, 0)
+
+      survey_response = %{
+        survey_id: survey_id,
+        pages_touched: [page_id],
+        responses: []
+      }
+
+
+      {:error, %Ash.Error.Unknown{errors: [%Ash.Error.Unknown.UnknownError{error: [unanswered_questions: [%Ash.Union{value: unanswered_question}]]}]}} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+      assert unanswered_question.id == short_answer_question_group.id
+    end
+
+    test "GIVEN: A survey with an unrequired short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id, pages: [
+        %{
+          id: page_id,
+          title: "Page Title",
+          questions: [
+            %{
+              type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
+                %{prompt: "The prompt 1", required?: false},
+                %{prompt: "The prompt 2", required?: false},
+              ],
+              add_button_label: "Add Question"
+            },
+          ]
+        }
+      ]}
+
+      {:ok, [_survey_created_event, _survey_published_event]} = append_events_to_stream(survey)
+
+      survey_response = %{
+        survey_id: survey_id,
+        pages_touched: [page_id],
+        responses: []
+      }
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+
+      assert_receive_event(Application, SurveyResponseSubmitted,
+        fn event -> event.response_id == command.response_id end,
+        fn event ->
+          {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+          assert event.survey_id == command.survey_id
+          assert Jason.encode(event.responses) == Jason.encode(command.responses)
+        end
+      )
+    end
+
+    # TODO: Clarify all test names in this group
+    test "GIVEN: A survey with a partially required multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is not submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id, pages: [
+        %{
+          id: page_id,
+          title: "Page Title",
+          questions: [
+            %{type: "multiple_choice_question_group", title: "Question Group 1",
+              prompts: ["Statement 1", "Statement 2"], questions: [
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: true},
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: false},
+            ]},
+          ]
+        }
+      ]}
+
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+      multiple_choice_question_group = get_question(survey_published_event, 0, 0)
+
+      survey_response = %{
+        survey_id: survey_id,
+        pages_touched: [page_id],
+        responses: []
+      }
+
+
+      {:error, %Ash.Error.Unknown{errors: [%Ash.Error.Unknown.UnknownError{error: [unanswered_questions: [%Ash.Union{value: unanswered_question}]]}]}} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+      assert unanswered_question.id == multiple_choice_question_group.id
+    end
+
+    test "GIVEN: A survey with an unrequired multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id, pages: [
+        %{
+          id: page_id,
+          title: "Page Title",
+          questions: [
+            %{type: "multiple_choice_question_group", title: "Question Group 1",
+              prompts: ["Statement 1", "Statement 2"], questions: [
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: false},
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: false},
+            ]},
+          ]
+        }
+      ]}
+
+      {:ok, [_survey_created_event, _survey_published_event]} = append_events_to_stream(survey)
+
+      survey_response = %{
+        survey_id: survey_id,
+        pages_touched: [page_id],
+        responses: []
       }
       {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
 

@@ -7,12 +7,14 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponse do
   attributes do
     uuid_primary_key :response_id
     attribute :survey_id, :uuid, allow_nil?: false
+    attribute :pages_touched, {:array, :uuid}
     attribute :responses, {:array, Response}, allow_nil?: false
   end
 
   actions do
     default_accept [
       :survey_id,
+      :pages_touched,
       :responses,
     ]
 

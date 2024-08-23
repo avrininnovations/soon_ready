@@ -8,7 +8,7 @@ defmodule SoonReady.SurveyManagement.V1.DomainConcepts.SurveyPage do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false, public?: true
     attribute :title, :ci_string, allow_nil?: false, public?: true
     attribute :description, :ci_string, public?: true
-    attribute :questions, {:array, Question}, public?: true
+    attribute :questions, {:array, Question}, public?: true, default: []
     attribute :transitions, {:array, Transition}, public?: true
   end
 end

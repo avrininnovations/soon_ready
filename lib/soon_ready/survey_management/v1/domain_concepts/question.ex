@@ -4,8 +4,9 @@ defmodule SoonReady.SurveyManagement.V1.DomainConcepts.Question do
     ParagraphQuestion,
     MultipleChoiceQuestion,
     CheckboxQuestion,
+    MultipleChoiceQuestionGroup,
+    ShortAnswerQuestionGroup,
   }
-  alias SoonReady.SurveyManagement.V1.DomainConcepts.{MultipleChoiceQuestionGroup, ShortAnswerQuestionGroup}
 
   use Ash.Type.NewType, subtype_of: :union, constraints: [types: [
     {ShortAnswerQuestion, [type: ShortAnswerQuestion, tag: :type, tag_value: "short_answer_question"]},

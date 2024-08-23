@@ -110,7 +110,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
 
   defp normalize(params) do
     screening_questions = Enum.map(params["screening_questions_form"]["screening_questions"], fn {_index, screening_question} ->
-      %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: screening_question["prompt"],
+      %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: screening_question["prompt"], required?: screening_question["required?"],
         options: Enum.map(screening_question["options"], fn {_index, option} ->
           %{type: "option_with_correct_flag", value: option["value"], correct?: option["is_correct_option"] == "true"}
         end)
@@ -118,23 +118,23 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive do
     end)
 
     demographic_questions = Enum.map(params["demographic_questions_form"]["demographic_questions"], fn {_index, demographic_question} ->
-      %{type: "multiple_choice_question", prompt: demographic_question["prompt"],
+      %{type: "multiple_choice_question", prompt: demographic_question["prompt"], required?: demographic_question["required?"],
         options: Enum.map(demographic_question["options"], fn {_index, option} -> option["value"] end)
       }
     end)
 
     context_questions = Enum.map(params["context_questions_form"]["context_questions"], fn
       {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.MultipleChoiceQuestion"} = context_question} ->
-        %{type: "multiple_choice_question", prompt: context_question["prompt"],
+        %{type: "multiple_choice_question", prompt: context_question["prompt"], required?: context_question["required?"],
           options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
         }
       {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.CheckboxQuestion"} = context_question} ->
-        %{type: "checkbox_question", prompt: context_question["prompt"],
+        %{type: "checkbox_question", prompt: context_question["prompt"], required?: context_question["required?"],
           options: Enum.map(context_question["options"], fn {_index, option} -> option["value"] end)
         }
       {_index, %{"_union_type" => "Elixir.SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.ContextQuestionsForm.ShortAnswerQuestionGroup"} = context_question} ->
         %{type: "short_answer_question_group", group_prompt: context_question["group_prompt"], add_button_label: context_question["add_button_label"],
-        questions: Enum.map(context_question["questions"], fn {_index, question} -> %{prompt: question["prompt"]} end)
+        questions: Enum.map(context_question["questions"], fn {_index, question} -> %{required?: question["required?"], prompt: question["prompt"]} end)
         }
     end)
 

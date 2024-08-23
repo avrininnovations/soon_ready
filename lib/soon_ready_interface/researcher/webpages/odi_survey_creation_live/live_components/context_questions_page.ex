@@ -58,6 +58,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
         <.card_header>
           <:title>MCQ Prompt</:title>
           <:thrash_button click="remove-context-question" name={"#{@form.name}"} target={@target}>Remove Context Question</:thrash_button>
+          <:checkbox field={@form[:required?]} />
           <:text_input field={@form[:prompt]} placeholder="Enter prompt" />
         </.card_header>
       </:header>
@@ -81,6 +82,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
         <.card_header>
           <:title>Checkbox Prompt</:title>
           <:thrash_button click="remove-context-question" name={"#{@form.name}"} target={@target}>Remove Context Question</:thrash_button>
+          <:checkbox field={@form[:required?]} />
           <:text_input field={@form[:prompt]} placeholder="Enter prompt" />
         </.card_header>
       </:header>
@@ -111,6 +113,7 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.LiveCompo
       <:body>
         <.inputs_for :let={f} field={@form[:questions]}>
           <.card_field>
+            <:checkbox field={f[:required?]} />
             <:text_input field={f[:prompt]} placeholder="Question Prompt (can be blank)" />
             <:thrash_button click="remove-short-answer-question-group-question-prompt" name={"#{f.name}"} target={@target}>Remove Short Answer Question Group Question</:thrash_button>
           </.card_field>

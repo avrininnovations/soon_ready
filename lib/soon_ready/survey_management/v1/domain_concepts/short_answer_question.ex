@@ -4,5 +4,6 @@ defmodule SoonReady.SurveyManagement.V1.DomainConcepts.ShortAnswerQuestion do
   attributes do
     uuid_primary_key :id, public?: true
     attribute :prompt, :ci_string, allow_nil?: false, public?: true
+    attribute :required?, :boolean, allow_nil?: false, public?: true
   end
 end
