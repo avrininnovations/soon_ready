@@ -3,6 +3,6 @@ defmodule SoonReadyInterface.Researcher.Webpages.OdiSurveyCreationLive.Forms.Con
 
   attributes do
     attribute :prompt, :string, allow_nil?: false, public?: true
-    attribute :required?, :boolean, allow_nil?: false, public?: true, default: true
+    attribute :required?, :boolean, allow_nil?: false, public?: true
   end
 end

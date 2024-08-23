@@ -7,7 +7,7 @@ defmodule SoonReady.SurveyManagement.V1.DomainConcepts.MultipleChoiceQuestion do
     attribute :id, :uuid, primary_key?: true, allow_nil?: false, public?: true, default: &Ash.UUID.generate/0
     attribute :prompt, :ci_string, allow_nil?: false, public?: true
     attribute :options, {:array, Option}, allow_nil?: false, public?: true, constraints: [min_length: 2]
-    attribute :required?, :boolean, allow_nil?: false, public?: true, default: true
+    attribute :required?, :boolean, allow_nil?: false, public?: true
   end
 
   validations do

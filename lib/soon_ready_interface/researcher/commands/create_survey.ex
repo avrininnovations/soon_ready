@@ -118,6 +118,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
           questions: [
             %{
               prompt: "When you #{String.downcase(job_step.name)}, how important is it to you to:",
+              required?: true,
               options: [
                 "Not At All Important",
                 "Somewhat Important",
@@ -128,6 +129,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
             },
             %{
               prompt: "Given the solutions you currently have, how satisfied are you with your ability to:",
+              required?: true,
               options: [
                 "Not At All Satisfied",
                 "Somewhat Satisfied",
@@ -149,7 +151,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
           transitions: [%{condition: :always, destination_page_id: screening_page_id}],
           title: "Welcome to our Survey!",
           questions: [
-            %{type: "short_answer_question", prompt: "Your nickname"},
+            %{type: "short_answer_question", prompt: "Your nickname", required?: true},
           ]
         },
         %{
@@ -193,10 +195,10 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
           title: "Comparison",
           transitions: [%{condition: :always, destination_page_id: desired_outcome_rating_page_id}],
           questions: [
-            %{type: "paragraph_question", prompt: "What products, services or platforms have you used to #{String.downcase(market.job_to_be_done)}?"},
-            %{type: "paragraph_question", prompt: "What additional things do you usually use/require when you're using any of the above?"},
-            %{type: "short_answer_question", prompt: "In total, how much would you estimate that you spend annually to #{String.downcase(market.job_to_be_done)}?"},
-            %{type: "multiple_choice_question", prompt: "Would you be willing to pay more for a better solution?", options: ["Yes", "No"]},
+            %{type: "paragraph_question", prompt: "What products, services or platforms have you used to #{String.downcase(market.job_to_be_done)}?", required?: true},
+            %{type: "paragraph_question", prompt: "What additional things do you usually use/require when you're using any of the above?", required?: true},
+            %{type: "short_answer_question", prompt: "In total, how much would you estimate that you spend annually to #{String.downcase(market.job_to_be_done)}?", required?: true},
+            %{type: "multiple_choice_question", prompt: "Would you be willing to pay more for a better solution?", options: ["Yes", "No"], required?: true},
             %{type: "short_answer_question", prompt: "If yes, how much extra would you be willing to pay annually to get the job done perfectly?", required?: false},
           ]
         },
