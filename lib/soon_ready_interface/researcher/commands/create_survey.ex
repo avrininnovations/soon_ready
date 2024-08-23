@@ -172,8 +172,8 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
           transitions: [%{condition: :always, destination_page_id: demographics_page_id}],
           title: "Contact Details",
           questions: [
-            %{type: "short_answer_question", prompt: "Email"},
-            %{type: "short_answer_question", prompt: "Phone Number"},
+            %{type: "short_answer_question", prompt: "Email", required?: false},
+            %{type: "short_answer_question", prompt: "Phone Number", required?: false},
           ]
         },
         %{
@@ -197,7 +197,7 @@ defmodule SoonReadyInterface.Researcher.Commands.CreateSurvey do
             %{type: "paragraph_question", prompt: "What additional things do you usually use/require when you're using any of the above?"},
             %{type: "short_answer_question", prompt: "In total, how much would you estimate that you spend annually to #{String.downcase(market.job_to_be_done)}?"},
             %{type: "multiple_choice_question", prompt: "Would you be willing to pay more for a better solution?", options: ["Yes", "No"]},
-            %{type: "short_answer_question", prompt: "If yes, how much extra would you be willing to pay annually to get the job done perfectly?"},
+            %{type: "short_answer_question", prompt: "If yes, how much extra would you be willing to pay annually to get the job done perfectly?", required?: false},
           ]
         },
         %{
