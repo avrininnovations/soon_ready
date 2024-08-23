@@ -333,6 +333,75 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
   end
 
 
+  describe "Test Required Question Flag" do
+    test "GIVEN: A survey with a required short answer question has been published, WHEN: A participant tries to submit a response without that question answered, THEN: A survey response is not submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id,
+        pages: [
+          %{
+            id: page_id,
+            title: "Page Title",
+            questions: [
+              %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
+            ]
+          }
+        ]
+      }
+
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+      short_answer_question = get_question(survey_published_event, 0, 0)
+
+      survey_response = %{
+        survey_id: survey_id,
+        responses: []
+      }
+
+      {:error, %Ash.Error.Unknown{errors: [%Ash.Error.Unknown.UnknownError{error: [unanswered_questions: [%Ash.Union{value: unanswered_question}]]}]}} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+      assert unanswered_question.id == short_answer_question.id
+    end
+
+    test "GIVEN: A survey with an unrequired short answer question has been published, WHEN: A participant tries to submit a response without that question answered, THEN: A survey response is submitted", %{user: user} do
+      page_id = Ash.UUID.generate()
+      survey_id = Ash.UUID.generate()
+
+      survey = %{survey_id: survey_id, starting_page_id: page_id,
+        pages: [
+          %{
+            id: page_id,
+            title: "Page Title",
+            questions: [
+              %{type: "short_answer_question", required?: false, prompt: "The short answer prompt"},
+            ]
+          }
+        ]
+      }
+
+      {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+      short_answer_question = get_question(survey_published_event, 0, 0)
+
+      survey_response = %{
+        survey_id: survey_id,
+        responses: []
+      }
+
+      {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+      assert_receive_event(Application, SurveyResponseSubmitted,
+        fn event -> event.response_id == command.response_id end,
+        fn event ->
+          {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+          assert event.survey_id == command.survey_id
+          assert Jason.encode(event.responses) == Jason.encode(command.responses)
+        end
+      )
+    end
+
+  end
+
+
   defp get_question(survey, page_index, question_index) do
     survey.pages
     |> Enum.at(page_index)
