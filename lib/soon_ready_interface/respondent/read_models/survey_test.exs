@@ -22,22 +22,22 @@ defmodule SoonReadyInterface.Respondent.ReadModels.SurveyTest do
 
   test "GIVEN: An ODI survey was created, THEN: The survey is active", %{user: user} do
     screening_questions = [
-      %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: "What is the answer to screening question 1?", options: [
+      %{type: "multiple_choice_question", required?: true, id: Ash.UUID.generate(), prompt: "What is the answer to screening question 1?", options: [
         %{type: "option_with_correct_flag", value: "Option 1", correct?: true},
         %{type: "option_with_correct_flag", value: "Option 2", correct?: false},
       ]},
-      %{type: "multiple_choice_question", id: Ash.UUID.generate(), prompt: "What is the answer to screening question 2?", options: [
+      %{type: "multiple_choice_question", required?: true, id: Ash.UUID.generate(), prompt: "What is the answer to screening question 2?", options: [
         %{type: "option_with_correct_flag", value: "Option 1", correct?: true},
         %{type: "option_with_correct_flag", value: "Option 2", correct?: false},
       ]}
     ]
     demographic_questions = [
-      %{type: "multiple_choice_question", prompt: "What is the answer to demographic question 1?", options: ["Option 1", "Option 2"]},
-      %{type: "multiple_choice_question", prompt: "What is the answer to demographic question 2?", options: ["Option 1", "Option 2"]}
+      %{type: "multiple_choice_question", required?: true, prompt: "What is the answer to demographic question 1?", options: ["Option 1", "Option 2"]},
+      %{type: "multiple_choice_question", required?: true, prompt: "What is the answer to demographic question 2?", options: ["Option 1", "Option 2"]}
     ]
     context_questions = [
-      %{type: "multiple_choice_question", prompt: "What is the answer to context question 1?", options: ["Option 1", "Option 2"]},
-      %{type: "multiple_choice_question", prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
+      %{type: "multiple_choice_question", required?: true, prompt: "What is the answer to context question 1?", options: ["Option 1", "Option 2"]},
+      %{type: "multiple_choice_question", required?: true, prompt: "What is the answer to context question 2?", options: ["Option 1", "Option 2"]}
     ]
 
     {:ok, %{survey_id: survey_id, project_id: project_id} = _command} = SoonReadyInterface.Researcher.create_survey(%{

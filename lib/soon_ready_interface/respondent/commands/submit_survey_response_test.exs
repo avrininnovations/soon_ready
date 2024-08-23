@@ -31,7 +31,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "short_answer_question", prompt: "The short answer prompt"},
+              %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
             ]
           }
         ]
@@ -69,7 +69,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "paragraph_question", prompt: "The paragraph prompt"},
+              %{type: "paragraph_question", required?: true, prompt: "The paragraph prompt"},
             ]
           }
         ]
@@ -107,7 +107,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "multiple_choice_question", prompt: "The prompt", options: ["Option 1", "Option 2"]},
+              %{type: "multiple_choice_question", required?: true, prompt: "The prompt", options: ["Option 1", "Option 2"]},
             ]
           }
         ]
@@ -145,7 +145,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
             id: page_id,
             title: "Page Title",
             questions: [
-              %{type: "checkbox_question", prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
+              %{type: "checkbox_question", required?: true, prompt: "The prompt", options: ["Option 1", "Option 2"], correct_answer_criteria: "#{:not_applicable}"},
             ]
           }
         ]
@@ -184,8 +184,8 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           questions: [
             %{
               type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
-                %{prompt: "The prompt 1"},
-                %{prompt: "The prompt 2"},
+                %{prompt: "The prompt 1", required?: true},
+                %{prompt: "The prompt 2", required?: true},
               ],
               add_button_label: "Add Question"
             },
@@ -234,8 +234,8 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           questions: [
             %{type: "multiple_choice_question_group", title: "Question Group 1",
               prompts: ["Statement 1", "Statement 2"], questions: [
-              %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
-              %{prompt: "The prompt", options: ["Option 1", "Option 2"]},
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: true},
+              %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: true},
             ]},
           ]
         }
@@ -283,7 +283,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           title: "Page 1 Title",
           transitions: [%{condition: :always, destination_page_id: page_2_id}],
           questions: [
-            %{type: "short_answer_question", prompt: "The short answer prompt"},
+            %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
           ]
         },
         %{
@@ -291,7 +291,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           title: "Page 2 Title",
           transitions: [%{condition: :always, destination_page_id: page_3_id}],
           questions: [
-            %{type: "short_answer_question", prompt: "The short answer prompt"},
+            %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
           ]
         },
         %{
@@ -299,7 +299,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
           title: "Page 3 Title",
           transitions: [%{condition: :always, destination_page_id: final_page_id, submit_response?: true}],
           questions: [
-            %{type: "short_answer_question", prompt: "The short answer prompt"},
+            %{type: "short_answer_question", required?: true, prompt: "The short answer prompt"},
           ]
         },
         %{
