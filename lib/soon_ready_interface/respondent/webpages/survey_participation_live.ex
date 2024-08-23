@@ -44,6 +44,11 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
           {page_id, socket}
       end
 
+    pages_touched = Map.get(params, "pages_touched", [])
+    pages_touched = Enum.uniq([page_id | pages_touched])
+    
+    params = Map.put(params, "pages_touched", pages_touched)
+
     current_page = get_page(survey, page_id)
 
     {:noreply, assign(socket, params: params, current_page: current_page)}
@@ -182,6 +187,6 @@ defmodule SoonReadyInterface.Respondent.Webpages.SurveyParticipationLive do
         end)
       end)
 
-    %{"survey_id" => params["survey_id"], "responses" => responses}
+    %{"survey_id" => params["survey_id"], "pages_touched" => params["pages_touched"], "responses" => responses}
   end
 end

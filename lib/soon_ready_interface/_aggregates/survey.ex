@@ -75,8 +75,8 @@ defmodule SoonReadyInterface.Aggregates.Survey do
     end
   end
 
-  def execute(%{pages: pages} = _aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, responses: responses} = command) do
-    with :ok <- validate_all_required_questions_are_answered(pages, responses) do
+  def execute(%{pages: pages} = _aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, pages_touched: pages_touched, responses: responses} = command) do
+    with :ok <- validate_all_required_questions_are_answered(pages, pages_touched, responses) do
       SurveyResponseSubmitted.new(%{
         response_id: response_id,
         survey_id: survey_id,
@@ -94,35 +94,39 @@ defmodule SoonReadyInterface.Aggregates.Survey do
     state
   end
 
-  defp validate_all_required_questions_are_answered(pages, responses) do
+  defp validate_all_required_questions_are_answered(pages, pages_touched, responses) do
     required_questions =
-      Enum.reduce(pages, [], fn %{questions: questions} = _page, required_questions ->
-        Enum.reduce(questions, required_questions, fn question, required_questions ->
-          case question do
-            %Ash.Union{value: %ShortAnswerQuestion{required?: true}} ->
-              [question | required_questions]
-            %Ash.Union{value: %ParagraphQuestion{required?: true}} ->
-              [question | required_questions]
-            %Ash.Union{value: %MultipleChoiceQuestion{required?: true}} ->
-              [question | required_questions]
-            %Ash.Union{value: %CheckboxQuestion{required?: true}} ->
-              [question | required_questions]
-            %Ash.Union{value: %ShortAnswerQuestionGroup{questions: questions}} ->
-              if Enum.any?(questions, fn question -> question.required? end) do
+      Enum.reduce(pages, [], fn %{questions: questions} = page, required_questions ->
+        unless page.id in pages_touched do
+          required_questions
+        else
+          Enum.reduce(questions, required_questions, fn question, required_questions ->
+            case question do
+              %Ash.Union{value: %ShortAnswerQuestion{required?: true}} ->
                 [question | required_questions]
-              else
-                required_questions
-              end
-            %Ash.Union{value: %MultipleChoiceQuestionGroup{questions: questions}} ->
-              if Enum.any?(questions, fn question -> question.required? end) do
+              %Ash.Union{value: %ParagraphQuestion{required?: true}} ->
                 [question | required_questions]
-              else
+              %Ash.Union{value: %MultipleChoiceQuestion{required?: true}} ->
+                [question | required_questions]
+              %Ash.Union{value: %CheckboxQuestion{required?: true}} ->
+                [question | required_questions]
+              %Ash.Union{value: %ShortAnswerQuestionGroup{questions: questions}} ->
+                if Enum.any?(questions, fn question -> question.required? end) do
+                  [question | required_questions]
+                else
+                  required_questions
+                end
+              %Ash.Union{value: %MultipleChoiceQuestionGroup{questions: questions}} ->
+                if Enum.any?(questions, fn question -> question.required? end) do
+                  [question | required_questions]
+                else
+                  required_questions
+                end
+              _ ->
                 required_questions
-              end
-            _ ->
-              required_questions
-          end
-        end)
+            end
+          end)
+        end
       end)
 
     unanswered_questions =

@@ -42,6 +42,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
         ]
@@ -80,6 +81,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: paragraph_question.id, type: "paragraph_question_response", response: "The paragraph answer"},
         ]
@@ -118,6 +120,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: multiple_choice_question.id, type: "multiple_choice_question_response", response: "Option 1"},
         ]
@@ -156,6 +159,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{question_id: checkbox_question.id, type: "checkbox_question_response", responses: ["Option 1", "Option 2"]},
         ]
@@ -201,6 +205,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{group_id: short_answer_question_group.id, type: "short_answer_question_group_responses", responses: [
             %{batch_id: batch_1_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
@@ -246,6 +251,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: [
           %{group_id: multiple_choice_question_group.id, type: "multiple_choice_question_group_responses", responses: [
             %{prompt_id: prompt_1.id, question_id: question_1.id, response: "Option 1"},
@@ -316,6 +322,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_1_id, page_2_id, page_3_id],
         responses: [
           %{question_id: question_1.id, type: "short_answer_question_response", response: "The short answer"},
           %{question_id: question_2.id, type: "short_answer_question_response", response: "The short answer"},
@@ -359,6 +366,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: []
       }
 
@@ -388,6 +396,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: []
       }
 
@@ -428,6 +437,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: []
       }
 
@@ -461,6 +471,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: []
       }
       {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
@@ -500,6 +511,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: []
       }
 
@@ -531,6 +543,7 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       survey_response = %{
         survey_id: survey_id,
+        pages_touched: [page_id],
         responses: []
       }
       {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
