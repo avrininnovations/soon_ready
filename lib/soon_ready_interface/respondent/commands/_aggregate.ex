@@ -39,7 +39,7 @@ defmodule SoonReadyInterface.Respondent.Commands.Aggregate do
     define :create
   end
 
-  dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
+  # dispatch SubmitSurveyResponse, to: __MODULE__, identity: :survey_id
 
   def execute(%{pages: pages} = _aggregate_state, %SubmitSurveyResponse{response_id: response_id, survey_id: survey_id, responses: responses} = command) do
     with :ok <- validate_all_required_questions_are_answered(pages, responses) do
