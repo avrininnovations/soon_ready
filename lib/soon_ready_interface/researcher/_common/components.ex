@@ -3,6 +3,8 @@ defmodule SoonReadyInterface.Researcher.Common.Components do
   import Phoenix.HTML.Form
   use PhoenixHTMLHelpers
 
+  # TODO: MOVE FILE
+
   attr :is_wide, :boolean, default: false
   slot :title, required: true
   slot :subtitle
@@ -103,6 +105,7 @@ defmodule SoonReadyInterface.Researcher.Common.Components do
 
   slot :title, required: true
   slot :thrash_button, required: true
+  slot :checkbox, default: []
   slot :text_input, required: true
   def card_header(assigns) do
     ~H"""
@@ -116,6 +119,9 @@ defmodule SoonReadyInterface.Researcher.Common.Components do
       <% end %>
     </div>
 
+    <%= for checkbox <- @checkbox do %>
+      <.checkbox field={checkbox.field} />
+    <% end %>
     <%= for text_input <- @text_input do %>
       <.text_input
         field={text_input.field}
