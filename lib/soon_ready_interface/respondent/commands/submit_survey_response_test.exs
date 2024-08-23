@@ -310,12 +310,16 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
 
       {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
 
-      short_answer_question = get_question(survey_published_event, 0, 0)
+      question_1 = get_question(survey_published_event, 0, 0)
+      question_2 = get_question(survey_published_event, 1, 0)
+      question_3 = get_question(survey_published_event, 2, 0)
 
       survey_response = %{
         survey_id: survey_id,
         responses: [
-          %{question_id: short_answer_question.id, type: "short_answer_question_response", response: "The short answer"},
+          %{question_id: question_1.id, type: "short_answer_question_response", response: "The short answer"},
+          %{question_id: question_2.id, type: "short_answer_question_response", response: "The short answer"},
+          %{question_id: question_3.id, type: "short_answer_question_response", response: "The short answer"},
         ]
       }
       {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
@@ -399,6 +403,100 @@ defmodule SoonReadyInterface.Respondent.Commands.SubmitSurveyResponseTest do
       )
     end
 
+    # test "GIVEN: A survey with a short answer question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+    #   page_id = Ash.UUID.generate()
+    #   survey_id = Ash.UUID.generate()
+
+    #   survey = %{survey_id: survey_id, starting_page_id: page_id, pages: [
+    #     %{
+    #       id: page_id,
+    #       title: "Page Title",
+    #       questions: [
+    #         %{
+    #           type: "short_answer_question_group", group_prompt: "Group Prompt", questions: [
+    #             %{prompt: "The prompt 1", required?: true},
+    #             %{prompt: "The prompt 2", required?: true},
+    #           ],
+    #           add_button_label: "Add Question"
+    #         },
+    #       ]
+    #     }
+    #   ]}
+
+    #   {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+    #   %{questions: [short_answer_question_1, short_answer_question_2]} = short_answer_question_group = get_question(survey_published_event, 0, 0)
+
+    #   batch_1_response_id = Ash.UUID.generate()
+    #   batch_2_response_id = Ash.UUID.generate()
+
+    #   survey_response = %{
+    #     survey_id: survey_id,
+    #     responses: [
+    #       %{group_id: short_answer_question_group.id, type: "short_answer_question_group_responses", responses: [
+    #         %{batch_id: batch_1_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
+    #         %{batch_id: batch_1_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
+    #         %{batch_id: batch_2_response_id, question_id: short_answer_question_1.id, response: "The short answer 1"},
+    #         %{batch_id: batch_2_response_id, question_id: short_answer_question_2.id, response: "The short answer 2"},
+    #       ]},
+    #     ]
+    #   }
+    #   {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+
+    #   assert_receive_event(Application, SurveyResponseSubmitted,
+    #     fn event -> event.response_id == command.response_id end,
+    #     fn event ->
+    #       {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+    #       assert event.survey_id == command.survey_id
+    #       assert Jason.encode(event.responses) == Jason.encode(command.responses)
+    #     end
+    #   )
+    # end
+
+    # test "GIVEN: A survey with a multiple choice question group has been published, WHEN: A participant tries to submit a response, THEN: A survey response is submitted", %{user: user} do
+    #   page_id = Ash.UUID.generate()
+    #   survey_id = Ash.UUID.generate()
+
+    #   survey = %{survey_id: survey_id, starting_page_id: page_id, pages: [
+    #     %{
+    #       id: page_id,
+    #       title: "Page Title",
+    #       questions: [
+    #         %{type: "multiple_choice_question_group", title: "Question Group 1",
+    #           prompts: ["Statement 1", "Statement 2"], questions: [
+    #           %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: true},
+    #           %{prompt: "The prompt", options: ["Option 1", "Option 2"], required?: true},
+    #         ]},
+    #       ]
+    #     }
+    #   ]}
+
+    #   {:ok, [_survey_created_event, survey_published_event]} = append_events_to_stream(survey)
+    #   %{prompts: [prompt_1, prompt_2], questions: [question_1, question_2]} = multiple_choice_question_group = get_question(survey_published_event, 0, 0)
+
+    #   survey_response = %{
+    #     survey_id: survey_id,
+    #     responses: [
+    #       %{group_id: multiple_choice_question_group.id, type: "multiple_choice_question_group_responses", responses: [
+    #         %{prompt_id: prompt_1.id, question_id: question_1.id, response: "Option 1"},
+    #         %{prompt_id: prompt_1.id, question_id: question_2.id, response: "Option 1"},
+    #         %{prompt_id: prompt_2.id, question_id: question_1.id, response: "Option 1"},
+    #         %{prompt_id: prompt_2.id, question_id: question_2.id, response: "Option 1"},
+    #       ]},
+    #     ]
+    #   }
+    #   {:ok, command} = SoonReadyInterface.Respondent.submit_survey_response(survey_response)
+
+
+    #   assert_receive_event(Application, SurveyResponseSubmitted,
+    #     fn event -> event.response_id == command.response_id end,
+    #     fn event ->
+    #       {:ok, event} = SurveyResponseSubmitted.regenerate(event)
+    #       assert event.survey_id == command.survey_id
+    #       assert Jason.encode(event.responses) == Jason.encode(command.responses)
+    #     end
+    #   )
+    # end
   end
 
 
